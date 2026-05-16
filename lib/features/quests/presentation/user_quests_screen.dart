@@ -10,15 +10,26 @@ import 'package:mobile/core/widgets/error_view.dart';
 import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/features/quests/application/user_quests_provider.dart';
 import 'package:mobile/features/quests/data/dto/user_quest_response.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class UserQuestsScreen extends ConsumerWidget {
+class UserQuestsScreen extends ConsumerStatefulWidget {
   const UserQuestsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<UserQuestsScreen> createState() => _UserQuestsScreenState();
+}
+
+class _UserQuestsScreenState extends ConsumerState<UserQuestsScreen>
+    with SingleTickerProviderStateMixin {
+  String _filter = 'IN_PROGRESS';
+
+  @override
+  Widget build(BuildContext context) {
     final userQuestsAsync = ref.watch(userQuestsProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         leading: Navigator.canPop(context)
             ? IconButton(
@@ -26,11 +37,18 @@ class UserQuestsScreen extends ConsumerWidget {
                 onPressed: () => context.pop(),
               )
             : null,
-        title: Text('user_quests.title'.tr()),
+        title: Text('user_quests.title'.tr(), style: AppTypography.titleLarge),
+        centerTitle: false,
       ),
       body: userQuestsAsync.when(
-        data: (quests) => _buildContent(context, quests),
-        loading: () => const AppLoadingIndicator(),
+        data: (quests) => Column(
+          children: [
+            _buildFilterChips(context),
+            const SizedBox(height: AppSpacing.sm),
+            Expanded(child: _buildContent(context, quests)),
+          ],
+        ),
+        loading: () => const Center(child: AppLoadingIndicator()),
         error: (error, _) => ErrorView(
           message: error.toString(),
           onRetry: () => ref.invalidate(userQuestsProvider),
@@ -40,21 +58,61 @@ class UserQuestsScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildFilterChips(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final filters = [
+      ('user_quests.in_progress'.tr(), 'IN_PROGRESS'),
+      ('user_quests.completed'.tr(), 'COMPLETED'),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: SegmentedButton<String>(
+        segments: filters
+            .map(
+              (f) => ButtonSegment<String>(
+                value: f.$2,
+                label: Text(f.$1),
+                icon: Icon(
+                  f.$2 == 'IN_PROGRESS'
+                      ? Icons.play_circle_outline
+                      : Icons.check_circle_outline,
+                ),
+              ),
+            )
+            .toList(),
+        selected: {_filter},
+        onSelectionChanged: (selected) {
+          setState(() => _filter = selected.first);
+        },
+        style: SegmentedButton.styleFrom(
+          backgroundColor: colorScheme.surfaceContainerLow,
+          selectedBackgroundColor: colorScheme.primaryContainer,
+          selectedForegroundColor: colorScheme.onPrimaryContainer,
+        ),
+      ),
+    );
+  }
+
   Widget _buildContent(BuildContext context, List<UserQuestResponse> quests) {
-    if (quests.isEmpty) {
+    final filtered = quests.where((q) => q.status == _filter).toList();
+
+    if (filtered.isEmpty) {
       return EmptyState(
-        icon: Icons.emoji_events_outlined,
-        title: 'user_quests.no_quests'.tr(),
+        icon: _filter == 'IN_PROGRESS'
+            ? Icons.play_circle_outline
+            : Icons.emoji_events_outlined,
+        title: _filter == 'IN_PROGRESS'
+            ? 'user_quests.no_quests'.tr()
+            : 'user_quests.no_completed_quests'.tr(),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      itemCount: quests.length,
-      itemBuilder: (context, index) {
-        final quest = quests[index];
-        return _UserQuestCard(quest: quest);
-      },
+    return ListView.separated(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      itemCount: filtered.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+      itemBuilder: (context, index) => _UserQuestCard(quest: filtered[index]),
     );
   }
 }
@@ -66,148 +124,188 @@ class _UserQuestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final progress = quest.totalSteps > 0
         ? quest.completedSteps / quest.totalSteps
         : 0.0;
+    final isCompleted = quest.status == 'COMPLETED';
 
-    return Card(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs,
-      ),
-      child: InkWell(
-        onTap: () => context.push(AppRoutes.questDetailPath(quest.questId)),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (quest.questThumbnailUrl != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  child: Image.network(
-                    quest.questThumbnailUrl!,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        _placeholderThumbnail(context),
-                  ),
-                )
-              else
-                _placeholderThumbnail(context),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      quest.questTitle,
-                      style: AppTypography.titleMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      quest.questDescription,
-                      style: AppTypography.bodySmall.copyWith(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    _StatusBadge(status: quest.status),
-                    const SizedBox(height: AppSpacing.xs),
-                    Row(
-                      children: [
-                        Text(
-                          'user_quests.progress'.tr(),
-                          style: AppTypography.bodySmall.copyWith(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          '${quest.completedSteps}/${quest.totalSteps}',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 4,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    return InkWell(
+      onTap: () => context.push(AppRoutes.questDetailPath(quest.questId)),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context, isCompleted),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircularPercentIndicator(
+                        radius: 32,
+                        lineWidth: 6,
+                        percent: progress,
+                        center: Text(
+                          '${(progress * 100).toInt()}%',
+                          style: AppTypography.labelMedium.copyWith(
+                            color: isCompleted
+                                ? colorScheme.tertiary
+                                : colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        progressColor: isCompleted
+                            ? colorScheme.tertiary
+                            : colorScheme.primary,
+                        backgroundColor: colorScheme.primary.withValues(
+                          alpha: 0.15,
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              quest.questTitle,
+                              style: AppTypography.titleMedium,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              quest.questDescription,
+                              style: AppTypography.bodySmall.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Row(
+                    children: [
+                      _InfoChip(
+                        icon: Icons.flag_outlined,
+                        label:
+                            '${quest.completedSteps}/${quest.totalSteps} ${'quests.steps'.tr()}',
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _InfoChip(
+                        icon: Icons.stars_outlined,
+                        label: '${quest.totalSteps * 50} XP',
+                        color: colorScheme.tertiary,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _placeholderThumbnail(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isCompleted) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final gradientColors = isCompleted
+        ? [
+            colorScheme.tertiary.withValues(alpha: 0.8),
+            colorScheme.tertiaryContainer.withValues(alpha: 0.6),
+          ]
+        : [
+            colorScheme.primary.withValues(alpha: 0.8),
+            colorScheme.primaryContainer.withValues(alpha: 0.6),
+          ];
+
     return Container(
-      width: 60,
-      height: 60,
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: gradientColors,
+        ),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.radiusLg),
+          topRight: Radius.circular(AppSpacing.radiusLg),
+        ),
       ),
-      child: Icon(
-        Icons.emoji_events_outlined,
-        color: Theme.of(context).colorScheme.outlineVariant,
-        size: 28,
+      child: Row(
+        children: [
+          Icon(
+            isCompleted ? Icons.emoji_events : Icons.explore_outlined,
+            color: colorScheme.onPrimaryContainer,
+            size: 24,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Text(
+            isCompleted ? 'user_quests.completed'.tr() : 'user_quests.in_progress'.tr(),
+            style: AppTypography.labelLarge.copyWith(
+              color: colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final String status;
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color? color;
 
-  const _StatusBadge({required this.status});
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final (label, color) = _statusConfig(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final chipColor = color ?? colorScheme.primary;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: chipColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
-      child: Text(
-        label,
-        style: AppTypography.labelSmall.copyWith(color: color),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: chipColor),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: AppTypography.labelSmall.copyWith(color: chipColor),
+          ),
+        ],
       ),
     );
-  }
-
-  (String, Color) _statusConfig(BuildContext context) {
-    return switch (status) {
-      'IN_PROGRESS' => (
-          'user_quests.in_progress'.tr(),
-          Theme.of(context).colorScheme.primary,
-        ),
-      'COMPLETED' => (
-          'user_quests.completed'.tr(),
-          Theme.of(context).colorScheme.tertiary,
-        ),
-      _ => (
-          'user_quests.in_progress'.tr(),
-          Theme.of(context).colorScheme.outlineVariant,
-        ),
-    };
   }
 }

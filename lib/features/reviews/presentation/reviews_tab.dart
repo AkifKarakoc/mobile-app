@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
+import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/core/widgets/app_loading_indicator.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
@@ -53,7 +54,8 @@ class ReviewsTab extends ConsumerWidget {
                       return ReviewCard(
                         review: review,
                         currentUserId: currentUserId,
-                        onDelete: currentUserId != null &&
+                        onDelete:
+                            currentUserId != null &&
                                 review.userId == currentUserId
                             ? () => _deleteReview(context, ref, review.id)
                             : null,
@@ -94,9 +96,7 @@ class ReviewsTab extends ConsumerWidget {
           .deleteReview(reviewId);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        showFloatingSnackBar(context, e.toString());
       }
     }
   }

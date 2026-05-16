@@ -10,11 +10,13 @@ class PlacePhotoHeader extends StatelessWidget {
     super.key,
     required this.place,
     required this.title,
+    required this.heroTag,
     required this.onDirectionsPressed,
   });
 
   final PlaceDetailResponse place;
   final String title;
+  final String heroTag;
   final VoidCallback onDirectionsPressed;
 
   @override
@@ -25,33 +27,39 @@ class PlacePhotoHeader extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Stack(
         children: [
-          AspectRatio(
-            aspectRatio: 16 / 10,
-            child: photoUrl == null || photoUrl.isEmpty
-                ? DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerHighest,
-                    ),
-                    child: Icon(
-                      Icons.photo_camera_outlined,
-                      size: 64,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  )
-                : Image.network(
-                    photoUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, _, _) => DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colorScheme.surfaceContainerHighest,
+          Hero(
+            tag: heroTag,
+            child: Material(
+              type: MaterialType.transparency,
+              child: AspectRatio(
+                aspectRatio: 16 / 10,
+                child: photoUrl == null || photoUrl.isEmpty
+                    ? DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest,
+                        ),
+                        child: Icon(
+                          Icons.photo_camera_outlined,
+                          size: 64,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      )
+                    : Image.network(
+                        photoUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, _, _) => DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest,
+                          ),
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            size: 64,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        Icons.broken_image_outlined,
-                        size: 64,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
+              ),
+            ),
           ),
           PositionedDirectional(
             start: AppSpacing.md,
@@ -68,10 +76,16 @@ class PlacePhotoHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      title,
-                      style: AppTypography.headlineSmall.copyWith(
-                        color: colorScheme.onSurface,
+                    Hero(
+                      tag: 'place-title-$heroTag',
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Text(
+                          title,
+                          style: AppTypography.headlineSmall.copyWith(
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),

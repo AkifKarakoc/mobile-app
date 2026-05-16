@@ -42,16 +42,24 @@ class PlaceSummaryCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
-                    child: Icon(
-                      Icons.place_outlined,
-                      color: theme.colorScheme.onPrimaryContainer,
+                  Hero(
+                    tag: 'place-image-${place.id}',
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusSm,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.place_outlined,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -135,10 +143,12 @@ class PlaceSummaryCard extends StatelessWidget {
   String _formatDistance(double meters) {
     if (meters >= 1000) {
       return 'places.map.distance_kilometers'.tr(
-        args: [(meters / 1000).toStringAsFixed(1)],
+        namedArgs: {'distance': (meters / 1000).toStringAsFixed(1)},
       );
     }
 
-    return 'places.map.distance_meters'.tr(args: [meters.round().toString()]);
+    return 'places.map.distance_meters'.tr(
+      namedArgs: {'distance': meters.round().toString()},
+    );
   }
 }

@@ -2,28 +2,12 @@ import 'package:flutter/material.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/app_typography.dart';
 
-/// Error state display widget
-///
-/// Shows an error icon, message, and optional retry button.
-/// Used to display errors from API calls or async operations.
-class ErrorView extends StatelessWidget {
-  /// Error message to display
+class ErrorView extends StatefulWidget {
   final String message;
-
-  /// Optional callback for retry action
   final VoidCallback? onRetry;
-
-  /// Optional retry button label
   final String retryLabel;
-
-  /// Custom error icon
   final IconData icon;
-
-  /// Icon color
-  final Color? iconColor;
-
-  /// Icon size
-  final double iconSize;
+  final Duration animationDuration;
 
   const ErrorView({
     super.key,
@@ -31,12 +15,47 @@ class ErrorView extends StatelessWidget {
     this.onRetry,
     this.retryLabel = 'common.retry',
     this.icon = Icons.error_outline,
-    this.iconColor,
-    this.iconSize = 80,
+    this.animationDuration = const Duration(milliseconds: 400),
   });
 
   @override
+  State<ErrorView> createState() => _ErrorViewState();
+}
+
+class _ErrorViewState extends State<ErrorView>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: SingleChildScrollView(
         child: Padding(
@@ -47,29 +66,48 @@ class ErrorView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Error icon
-              Icon(
-                icon,
-                size: iconSize,
-                color: iconColor ?? Theme.of(context).colorScheme.error,
-              ),
+              _buildIcon(colorScheme),
               const SizedBox(height: AppSpacing.lg),
-
-              // Error message
-              Text(
-                message,
-                style: AppTypography.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-
-              // Retry button
-              if (onRetry != null) ...[
+              _buildMessage(colorScheme),
+              if (widget.onRetry != null) ...[
                 const SizedBox(height: AppSpacing.lg),
-                ElevatedButton(onPressed: onRetry, child: Text(retryLabel)),
+                _buildRetryButton(),
               ],
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildIcon(ColorScheme colorScheme) {
+    return SlideTransition(
+      position: _slideAnimation,
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: Icon(widget.icon, size: 80, color: colorScheme.error),
+      ),
+    );
+  }
+
+  Widget _buildMessage(ColorScheme colorScheme) {
+    return Text(
+      widget.message,
+      style: AppTypography.bodyLarge.copyWith(color: colorScheme.onSurface),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildRetryButton() {
+    return FilledButton.tonal(
+      onPressed: widget.onRetry,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.refresh, size: 18),
+          const SizedBox(width: AppSpacing.xs),
+          Text(widget.retryLabel),
+        ],
       ),
     );
   }

@@ -9,14 +9,16 @@ abstract class RouteResponse with _$RouteResponse {
     required String id,
     required String name,
     String? description,
-    required DateTime createdAt,
+    DateTime? createdAt,
     required double centerLatitude,
     required double centerLongitude,
     required int radiusMeters,
     required int estimatedMinutes,
     required int expReward,
     String? thumbnailUrl,
-    required int totalStops,
+    @Default(200) int gpsThresholdMeters,
+    int? totalStops,
+    String? userStatus,
     required List<RoutePlaceResponse> places,
   }) = _RouteResponse;
 
@@ -27,13 +29,15 @@ abstract class RouteResponse with _$RouteResponse {
 @freezed
 abstract class RoutePlaceResponse with _$RoutePlaceResponse {
   const factory RoutePlaceResponse({
+    String? id,
     required String placeId,
     required int stopOrder,
-    required int estimatedMinutes,
+    int? estimatedMinutes,
     String? notes,
     double? latitude,
     double? longitude,
     String? placeName,
+    @Default(false) bool completed,
   }) = _RoutePlaceResponse;
 
   factory RoutePlaceResponse.fromJson(Map<String, dynamic> json) =>

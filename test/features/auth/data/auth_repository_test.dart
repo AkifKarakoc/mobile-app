@@ -206,7 +206,7 @@ void main() {
             lastName: 'Doe',
             phoneNumber: '+1234567890',
             preferredLanguage: 'en',
-            ageGroup: '25-34',
+            birthDate: DateTime(1990, 1, 15),
           );
 
           // Assert

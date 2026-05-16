@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
@@ -16,8 +17,10 @@ class RoutesListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final routesState = ref.watch(routesProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         leading: Navigator.canPop(context)
             ? IconButton(
@@ -25,12 +28,16 @@ class RoutesListScreen extends ConsumerWidget {
                 onPressed: () => context.pop(),
               )
             : null,
-        title: Text('routes.list_title'.tr()),
+        title: Text('routes.list_title'.tr(), style: AppTypography.titleLarge),
+        centerTitle: false,
         actions: [
           TextButton.icon(
-            onPressed: () => context.push('/home/profile/routes'),
+            onPressed: () => context.push(AppRoutes.userRoutes),
             icon: const Icon(Icons.list_alt, size: 18),
             label: Text('routes.my_routes'.tr()),
+            style: TextButton.styleFrom(
+              foregroundColor: colorScheme.primary,
+            ),
           ),
         ],
       ),
@@ -42,16 +49,20 @@ class RoutesListScreen extends ConsumerWidget {
               title: 'routes.empty_message'.tr(),
             );
           }
-          return ListView.builder(
+          return ListView.separated(
             padding: const EdgeInsets.all(AppSpacing.md),
             itemCount: routes.length,
+            separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
             itemBuilder: (context, index) {
               final route = routes[index];
-              return _RouteTile(route: route);
+              return _RouteTile(
+                route: route,
+                heroTag: 'route-thumb-${route.id}',
+              );
             },
           );
         },
-        loading: () => const AppLoadingIndicator(),
+        loading: () => const Center(child: AppLoadingIndicator()),
         error: (error, stack) => ErrorView(
           message: error.toString(),
           onRetry: () => ref.invalidate(routesProvider),
@@ -64,89 +75,205 @@ class RoutesListScreen extends ConsumerWidget {
 
 class _RouteTile extends StatelessWidget {
   final RouteResponse route;
+  final String heroTag;
 
-  const _RouteTile({required this.route});
+  const _RouteTile({required this.route, required this.heroTag});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: InkWell(
-        onTap: () => context.go('/routes/${route.id}'),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (route.thumbnailUrl != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  child: Image.network(
-                    route.thumbnailUrl!,
-                    height: 160,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-                  ),
-                ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                route.name,
-                style: AppTypography.headlineSmall,
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              if (route.description != null && route.description!.isNotEmpty)
-                Text(
-                  route.description!.length > 100
-                      ? '${route.description!.substring(0, 100)}...'
-                      : route.description!,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                ),
-              const SizedBox(height: AppSpacing.sm),
-              Row(
+    final colorScheme = Theme.of(context).colorScheme;
+    final stops = route.totalStops ?? route.places.length;
+
+    return InkWell(
+      onTap: () => context.push(AppRoutes.routeDetailPath(route.id)),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildImageSection(context),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.directions_walk,
-                    size: AppSpacing.iconSmall,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
                   Text(
-                    '${route.totalStops} ${'routes.stops'.tr()}',
-                    style: AppTypography.bodySmall,
+                    route.name,
+                    style: AppTypography.titleMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(width: AppSpacing.md),
-                  Icon(
-                    Icons.access_time,
-                    size: AppSpacing.iconSmall,
-                    color: Theme.of(context).colorScheme.primary,
+                  if (route.description != null &&
+                      route.description!.isNotEmpty) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      route.description!,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                  const SizedBox(height: AppSpacing.md),
+                  Row(
+                    children: [
+                      _InfoChip(
+                        icon: Icons.directions_walk_outlined,
+                        label: '$stops ${'routes.stops'.tr()}',
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _InfoChip(
+                        icon: Icons.access_time_outlined,
+                        label: '${route.estimatedMinutes} ${'routes.minutes'.tr()}',
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      _InfoChip(
+                        icon: Icons.stars_outlined,
+                        label: '${route.expReward} XP',
+                        color: colorScheme.tertiary,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '${route.estimatedMinutes} ${'routes.minutes'.tr()}',
-                    style: AppTypography.bodySmall,
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.star,
-                    size: AppSpacing.iconSmall,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  Text(
-                    '${route.expReward} ${'routes.xp_reward'.tr()}',
-                    style: AppTypography.bodySmall.copyWith(
-                      color: Theme.of(context).colorScheme.tertiary,
+                  const SizedBox(height: AppSpacing.md),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () =>
+                          context.push(AppRoutes.routeDetailPath(route.id)),
+                      icon: const Icon(Icons.map_outlined, size: 20),
+                      label: Text('user_routes.view_map'.tr()),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildImageSection(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (route.thumbnailUrl == null) {
+      return _buildPlaceholderHeader(context);
+    }
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(AppSpacing.radiusLg),
+        topRight: Radius.circular(AppSpacing.radiusLg),
+      ),
+      child: Stack(
+        children: [
+          Hero(
+            tag: heroTag,
+            child: Material(
+              type: MaterialType.transparency,
+              child: Image.network(
+                route.thumbnailUrl!,
+                height: 140,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    _buildPlaceholderHeader(context),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    colorScheme.surfaceContainerLow.withValues(alpha: 0.8),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      height: 100,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.primaryContainer.withValues(alpha: 0.6),
+            colorScheme.secondaryContainer.withValues(alpha: 0.4),
+          ],
+        ),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.radiusLg),
+          topRight: Radius.circular(AppSpacing.radiusLg),
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.route_outlined,
+          color: colorScheme.primary,
+          size: 40,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color? color;
+
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final chipColor = color ?? colorScheme.primary;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: chipColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: chipColor),
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            label,
+            style: AppTypography.labelSmall.copyWith(color: chipColor),
+          ),
+        ],
       ),
     );
   }

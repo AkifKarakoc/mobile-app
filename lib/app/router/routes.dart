@@ -20,11 +20,11 @@ abstract final class AppRoutes {
   static const String explore = '/home/explore';
 
   // Explore / Places (Sprint 2)
-  static const String placeSearch = '/home/explore/search';
-  static const String placeDetail = '/home/explore/place/:id';
+  static const String placeSearch = '/home/nearby/search';
+  static const String placeDetail = '/home/nearby/place/:id';
 
   // Place Actions (Sprint 3)
-  static const String reviewWrite = '/home/explore/place/:id/review-write';
+  static const String reviewWrite = '/home/nearby/place/:id/review-write';
 
   // Profile sub-screens
   static const String profileEdit = '/home/profile/edit';
@@ -44,6 +44,7 @@ abstract final class AppRoutes {
   // Quests (Sprint 4-5)
   static const String questsList = '/home/quests';
   static const String questDetail = '/home/quests/:id';
+  static const String questMap = '/home/quests/:id/map';
   static const String questStepVerify = '/home/quests/:id/step/:stepId/verify';
   static const String questSuccess = '/home/quests/:id/success';
   static const String userQuests = '/home/profile/quests';
@@ -55,15 +56,16 @@ abstract final class AppRoutes {
 
   // Helpers
   static String placeDetailPath(String placeId) =>
-      '/home/explore/place/$placeId';
+      '/home/nearby/place/$placeId';
   static String reviewWritePath(String placeId) =>
-      '/home/explore/place/$placeId/review-write';
+      '/home/nearby/place/$placeId/review-write';
   static String routeDetailPath(String routeId) => '/home/routes/$routeId';
   static String routeMapPath(String routeId) => '/home/routes/$routeId/map';
   static String routePlayerPath(String routeId) =>
       '/home/routes/$routeId/player';
   static String userRoutesPath() => '/home/profile/routes';
   static String questDetailPath(String questId) => '/home/quests/$questId';
+  static String questMapPath(String questId) => '/home/quests/$questId/map';
   static String questStepVerifyPath(String questId, String stepId) =>
       '/home/quests/$questId/step/$stepId/verify';
   static String questSuccessPath(String questId) =>

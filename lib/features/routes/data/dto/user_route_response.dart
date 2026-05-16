@@ -8,8 +8,8 @@ abstract class UserRouteResponse with _$UserRouteResponse {
   const factory UserRouteResponse({
     required String id,
     required String routeId,
-    required String routeName,
-    required String routeDescription,
+    String? routeName,
+    String? routeDescription,
     String? routeThumbnailUrl,
     required String status,
     required String startedAt,

@@ -165,63 +165,82 @@ class _NearbyPlacesContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final query = nearbyPlacesQuery(
-      latitude: position.latitude,
-      longitude: position.longitude,
-    );
-    final placesAsync = ref.watch(nearbyPlacesProvider(query));
+    // Use queryPositionProvider to apply 25m/15min cache logic
+    final queryPosAsync = ref.watch(queryPositionProvider);
 
-    return placesAsync.when(
+    return queryPosAsync.when(
       loading: () => const AppLoadingIndicator(),
       error: (error, stackTrace) => ErrorView(
         message: 'common.error_generic'.tr(),
         retryLabel: 'common.retry'.tr(),
-        onRetry: () => ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+        onRetry: () => ref
+            .read(currentLocationProvider.notifier)
+            .requestCurrentLocation(),
       ),
-      data: (places) {
-        final mappedPlaces = places
-            .where((place) => place.latitude != null && place.longitude != null)
-            .toList();
+      data: (queryPos) {
+        // Round coordinates to 5 decimal places to stabilize cache keys
+        final lat = double.parse(queryPos.latitude.toStringAsFixed(5));
+        final lon = double.parse(queryPos.longitude.toStringAsFixed(5));
 
-        if (mappedPlaces.isEmpty) {
-          return EmptyState(
-            icon: Icons.travel_explore_outlined,
-            title: 'places.map.empty_title'.tr(),
-            description: 'places.map.empty_description'.tr(),
-            actionLabel: 'common.retry'.tr(),
-            onAction: () {
-              ref.read(nearbyPlacesProvider(query).notifier).refresh();
-            },
-          );
-        }
+        final query = nearbyPlacesQuery(
+          latitude: lat,
+          longitude: lon,
+        );
+        final placesAsync = ref.watch(nearbyPlacesProvider(query));
 
-        return Stack(
-          children: [
-            _PlacesMap(
-              position: position,
-              places: mappedPlaces,
-              onMapCreated: onMapCreated,
-              onMarkerSelected: onMarkerSelected,
-              onMapTapped: onSheetClose,
-            ),
-            Positioned(
-              left: AppSpacing.md,
-              right: AppSpacing.md,
-              top: AppSpacing.md,
-              child: _PlacesCountPill(count: mappedPlaces.length),
-            ),
-            if (selectedPlace != null)
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: PlaceMarkerSheet(
-                  place: selectedPlace!,
-                  onClose: onSheetClose,
-                  onDetailPressed: () => onDetailPressed(selectedPlace!),
+        return placesAsync.when(
+          loading: () => const AppLoadingIndicator(),
+          error: (error, stackTrace) => ErrorView(
+            message: 'common.error_generic'.tr(),
+            retryLabel: 'common.retry'.tr(),
+            onRetry: () => ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+          ),
+          data: (places) {
+            final mappedPlaces = places
+                .where((place) => place.latitude != null && place.longitude != null)
+                .toList();
+
+            if (mappedPlaces.isEmpty) {
+              return EmptyState(
+                icon: Icons.travel_explore_outlined,
+                title: 'places.map.empty_title'.tr(),
+                description: 'places.map.empty_description'.tr(),
+                actionLabel: 'common.retry'.tr(),
+                onAction: () {
+                  ref.read(nearbyPlacesProvider(query).notifier).refresh();
+                },
+              );
+            }
+
+            return Stack(
+              children: [
+                _PlacesMap(
+                  position: queryPos,
+                  places: mappedPlaces,
+                  onMapCreated: onMapCreated,
+                  onMarkerSelected: onMarkerSelected,
+                  onMapTapped: onSheetClose,
                 ),
-              ),
-          ],
+                Positioned(
+                  left: AppSpacing.md,
+                  right: AppSpacing.md,
+                  top: AppSpacing.md,
+                  child: _PlacesCountPill(count: mappedPlaces.length),
+                ),
+                if (selectedPlace != null)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: PlaceMarkerSheet(
+                      place: selectedPlace!,
+                      onClose: onSheetClose,
+                      onDetailPressed: () => onDetailPressed(selectedPlace!),
+                    ),
+                  ),
+              ],
+            );
+          },
         );
       },
     );
@@ -338,7 +357,7 @@ class _PlacesCountPill extends StatelessWidget {
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
-          child: Text('places.map.places_count'.tr(args: [count.toString()])),
+          child: Text('places.map.places_count'.tr(namedArgs: {'count': count.toString()})),
         ),
       ),
     );

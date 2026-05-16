@@ -8,15 +8,15 @@ final userQuestsProvider = FutureProvider<List<UserQuestResponse>>((ref) async {
 });
 
 class StartQuestNotifier extends FamilyAsyncNotifier<void, String> {
-  late QuestsRepository _repository;
+  QuestsRepository? _repository;
 
   @override
   Future<void> build(String arg) async {
-    _repository = ref.watch(questsRepositoryProvider);
+    _repository ??= ref.watch(questsRepositoryProvider);
   }
 
   Future<void> start() async {
-    await _repository.startQuest(arg);
+    await _repository!.startQuest(arg);
     ref.invalidate(userQuestsProvider);
   }
 }

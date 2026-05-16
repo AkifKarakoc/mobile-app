@@ -15,6 +15,7 @@ _QuestDetailResponse _$QuestDetailResponseFromJson(Map<String, dynamic> json) =>
       region: json['region'] as String,
       thumbnailUrl: json['thumbnailUrl'] as String?,
       badgeId: json['badgeId'] as String?,
+      gpsThresholdMeters: (json['gpsThresholdMeters'] as num?)?.toInt() ?? 200,
       steps: (json['steps'] as List<dynamic>)
           .map((e) => StepResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -31,6 +32,7 @@ Map<String, dynamic> _$QuestDetailResponseToJson(
   'region': instance.region,
   'thumbnailUrl': instance.thumbnailUrl,
   'badgeId': instance.badgeId,
+  'gpsThresholdMeters': instance.gpsThresholdMeters,
   'steps': instance.steps,
   'userStatus': instance.userStatus,
 };
@@ -40,9 +42,12 @@ _StepResponse _$StepResponseFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       placeId: json['placeId'] as String,
       stepOrder: (json['stepOrder'] as num).toInt(),
-      hint: json['hint'] as String,
+      hint: json['hint'] as String?,
       requiresPhoto: json['requiresPhoto'] as bool,
       isCompleted: json['isCompleted'] as bool,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      placeName: json['placeName'] as String?,
     );
 
 Map<String, dynamic> _$StepResponseToJson(_StepResponse instance) =>
@@ -53,4 +58,7 @@ Map<String, dynamic> _$StepResponseToJson(_StepResponse instance) =>
       'hint': instance.hint,
       'requiresPhoto': instance.requiresPhoto,
       'isCompleted': instance.isCompleted,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'placeName': instance.placeName,
     };

@@ -21,12 +21,12 @@ class ReviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isOwner = currentUserId != null && review.userId == currentUserId;
-    final initials = review.userId.length >= 2
-        ? review.userId.substring(0, 2).toUpperCase()
-        : review.userId.toUpperCase();
-    final displayName = review.userId.length >= 8
-        ? review.userId.substring(0, 8)
-        : review.userId;
+    final displayName = (review.userFirstName != null && review.userLastName != null)
+        ? '${review.userFirstName} ${review.userLastName}'
+        : (review.userFirstName ?? 'Kullanıcı');
+    final initials = displayName.length >= 2
+        ? displayName.substring(0, 2).toUpperCase()
+        : displayName[0].toUpperCase();
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),

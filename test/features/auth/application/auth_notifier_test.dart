@@ -117,7 +117,7 @@ void main() {
           lastName: any(named: 'lastName'),
           phoneNumber: any(named: 'phoneNumber'),
           preferredLanguage: any(named: 'preferredLanguage'),
-          ageGroup: any(named: 'ageGroup'),
+          birthDate: any(named: 'birthDate'),
         ),
       ).thenAnswer(
         (_) async => const RegisterResponse(
@@ -157,7 +157,7 @@ void main() {
           lastName: any(named: 'lastName'),
           phoneNumber: any(named: 'phoneNumber'),
           preferredLanguage: any(named: 'preferredLanguage'),
-          ageGroup: any(named: 'ageGroup'),
+          birthDate: any(named: 'birthDate'),
         ),
       ).thenThrow(const ValidationException({'email': 'already taken'}));
 

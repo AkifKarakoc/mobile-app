@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
-import 'package:mobile/core/widgets/app_loading_indicator.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/places/application/location_provider.dart';
 import 'package:mobile/features/places/application/nearby_places_provider.dart';
 import 'package:mobile/features/places/presentation/widgets/place_search_result_tile.dart';
@@ -34,37 +34,40 @@ class NearbyScreen extends ConsumerWidget {
         ],
       ),
       body: locationAsync.when(
-        loading: () => const AppLoadingIndicator(),
+        loading: () => const _PlacesListShimmer(),
         error: (error, stackTrace) => ErrorView(
           message: 'common.error_generic'.tr(),
           retryLabel: 'common.retry'.tr(),
-          onRetry: () =>
-              ref.read(currentLocationProvider.notifier).requestCurrentLocation(),
+          onRetry: () => ref
+              .read(currentLocationProvider.notifier)
+              .requestCurrentLocation(),
         ),
         data: (locationState) => switch (locationState) {
           LocationReady(:final position) => _NearbyBody(position: position),
           LocationServiceDisabled() => EmptyState(
             icon: Icons.location_off_outlined,
             title: 'places.map.location_service_disabled_title'.tr(),
-            description:
-                'places.map.location_service_disabled_description'.tr(),
+            description: 'places.map.location_service_disabled_description'
+                .tr(),
             actionLabel: 'places.map.open_location_settings'.tr(),
-            onAction: () =>
-                ref.read(currentLocationProvider.notifier).openLocationSettings(),
+            onAction: () => ref
+                .read(currentLocationProvider.notifier)
+                .openLocationSettings(),
           ),
           LocationPermissionDenied() => EmptyState(
             icon: Icons.location_disabled_outlined,
             title: 'places.map.permission_denied_title'.tr(),
             description: 'places.map.permission_denied_description'.tr(),
             actionLabel: 'places.map.request_permission'.tr(),
-            onAction: () =>
-                ref.read(currentLocationProvider.notifier).requestCurrentLocation(),
+            onAction: () => ref
+                .read(currentLocationProvider.notifier)
+                .requestCurrentLocation(),
           ),
           LocationPermissionPermanentlyDenied() => EmptyState(
             icon: Icons.location_disabled_outlined,
             title: 'places.map.permission_permanently_denied_title'.tr(),
-            description:
-                'places.map.permission_permanently_denied_description'.tr(),
+            description: 'places.map.permission_permanently_denied_description'
+                .tr(),
             actionLabel: 'places.map.open_app_settings'.tr(),
             onAction: () =>
                 ref.read(currentLocationProvider.notifier).openAppSettings(),
@@ -84,12 +87,8 @@ class _NearbyBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategory = ref.watch(selectedCategoryProvider);
 
-    final query = nearbyPlacesQuery(
-      latitude: position.latitude,
-      longitude: position.longitude,
-      category: selectedCategory,
-    );
-    final placesAsync = ref.watch(nearbyPlacesProvider(query));
+    // Use queryPositionProvider to apply 25m/15min cache logic
+    final queryPosAsync = ref.watch(queryPositionProvider);
 
     return Column(
       children: [
@@ -97,37 +96,59 @@ class _NearbyBody extends ConsumerWidget {
         _ViewMapButton(),
         const SizedBox(height: AppSpacing.sm),
         Expanded(
-          child: placesAsync.when(
-            loading: () => const AppLoadingIndicator(),
+          child: queryPosAsync.when(
+            loading: () => const _NearbyShimmer(),
             error: (error, stackTrace) => ErrorView(
               message: 'common.error_generic'.tr(),
               retryLabel: 'common.retry'.tr(),
-              onRetry: () =>
-                  ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+              onRetry: () => ref
+                  .read(currentLocationProvider.notifier)
+                  .requestCurrentLocation(),
             ),
-            data: (places) {
-              if (places.isEmpty) {
-                return EmptyState(
-                  icon: Icons.travel_explore_outlined,
-                  title: 'nearby.no_places'.tr(),
-                  description: 'places.map.empty_description'.tr(),
-                  actionLabel: 'common.retry'.tr(),
-                  onAction: () =>
-                      ref.read(nearbyPlacesProvider(query).notifier).refresh(),
-                );
-              }
+            data: (queryPos) {
+              // Round coordinates to 5 decimal places to stabilize cache keys against GPS drift
+              final lat = double.parse(queryPos.latitude.toStringAsFixed(5));
+              final lon = double.parse(queryPos.longitude.toStringAsFixed(5));
+              
+              final query = nearbyPlacesQuery(
+                latitude: lat,
+                longitude: lon,
+                category: selectedCategory,
+              );
+              final placesAsync = ref.watch(nearbyPlacesProvider(query));
 
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
+              return placesAsync.when(
+                loading: () => const _NearbyShimmer(),
+                error: (error, stackTrace) => ErrorView(
+                  message: 'common.error_generic'.tr(),
+                  retryLabel: 'common.retry'.tr(),
+                  onRetry: () =>
+                      ref.read(nearbyPlacesProvider(query).notifier).refresh(),
                 ),
-                itemCount: places.length,
-                itemBuilder: (context, index) {
-                  final place = places[index];
-                  return PlaceSearchResultTile(
-                    place: place,
-                    onTap: () =>
-                        context.push(AppRoutes.placeDetailPath(place.id)),
+                data: (places) {
+                  if (places.isEmpty) {
+                    return EmptyState(
+                      icon: Icons.travel_explore_outlined,
+                      title: 'nearby.no_places'.tr(),
+                      description: 'places.map.empty_description'.tr(),
+                      actionLabel: 'common.retry'.tr(),
+                      onAction: () =>
+                          ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    itemCount: places.length,
+                    itemBuilder: (context, index) {
+                      final place = places[index];
+                      return PlaceSearchResultTile(
+                        place: place,
+                        onTap: () =>
+                            context.push(AppRoutes.placeDetailPath(place.id)),
+                        heroTag: 'place-image-${place.id}',
+                      );
+                    },
                   );
                 },
               );
@@ -203,6 +224,70 @@ class _ViewMapButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _NearbyShimmer extends StatelessWidget {
+  const _NearbyShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 48,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            itemCount: 5,
+            separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
+            itemBuilder: (_, __) => const ShimmerPlaceholder(
+              height: 36,
+              width: 80,
+              borderRadius: AppSpacing.radiusSm,
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: const ShimmerPlaceholder(
+            height: 44,
+            borderRadius: AppSpacing.radiusMd,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            itemCount: 5,
+            separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+            itemBuilder: (_, __) => const ShimmerPlaceholder(
+              height: 80,
+              shape: ShimmerShape.roundedRect,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PlacesListShimmer extends StatelessWidget {
+  const _PlacesListShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      itemCount: 5,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (_, __) =>
+          const ShimmerPlaceholder(height: 80, shape: ShimmerShape.roundedRect),
     );
   }
 }

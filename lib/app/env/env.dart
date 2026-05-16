@@ -12,6 +12,9 @@ abstract class Env {
   /// Google Maps API key
   String get googleMapsApiKey;
 
+  /// Google OAuth Client ID (for Google Sign-In)
+  String get googleClientId;
+
   /// Environment name (dev, prod)
   String get name;
 
@@ -47,6 +50,9 @@ class EnvDev implements Env {
   String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
 
   @override
+  String get googleClientId => dotenv.env['GOOGLE_CLIENT_ID'] ?? '';
+
+  @override
   String get name => 'dev';
 }
 
@@ -62,6 +68,9 @@ class EnvProd implements Env {
 
   @override
   String get googleMapsApiKey => dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
+
+  @override
+  String get googleClientId => dotenv.env['GOOGLE_CLIENT_ID'] ?? '';
 
   @override
   String get name => 'prod';

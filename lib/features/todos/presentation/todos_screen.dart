@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/dialog_helper.dart';
+import 'package:mobile/core/widgets/animated_card.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/core/widgets/app_text_field.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
-import 'package:mobile/core/widgets/loading_indicator.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
+import 'package:mobile/core/widgets/tap_feedback.dart';
 import 'package:mobile/features/todos/application/todos_provider.dart';
 import 'package:mobile/features/todos/data/dto/todo_response.dart';
 import 'package:mobile/features/todos/presentation/widgets/todo_tile.dart';
@@ -49,7 +52,7 @@ class _TodosScreenState extends ConsumerState<TodosScreen> {
           _buildFilterChips(context),
           Expanded(
             child: todosAsync.when(
-              loading: () => const AppLoadingIndicator(),
+              loading: () => _buildShimmerList(),
               error: (error, _) => ErrorView(
                 message: error.toString(),
                 onRetry: () => ref.read(todosProvider.notifier).loadTodos(),
@@ -111,14 +114,26 @@ class _TodosScreenState extends ConsumerState<TodosScreen> {
       itemCount: filtered.length,
       itemBuilder: (context, index) {
         final todo = filtered[index];
-        return TodoTile(
-          todo: todo,
-          onToggle: () =>
-              ref.read(todosProvider.notifier).toggleComplete(todo.id),
-          onDelete: () =>
-              ref.read(todosProvider.notifier).deleteTodo(todo.id),
+        return AnimatedCard(
+          delayMs: index < 10 ? index * 50 : 0,
+          child: TodoTile(
+            todo: todo,
+            onToggle: () =>
+                ref.read(todosProvider.notifier).toggleComplete(todo.id),
+            onDelete: () =>
+                ref.read(todosProvider.notifier).deleteTodo(todo.id),
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildShimmerList() {
+    return ListView.separated(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      itemCount: 5,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (context, index) => const ListTileShimmer(),
     );
   }
 
@@ -133,7 +148,7 @@ class _TodosScreenState extends ConsumerState<TodosScreen> {
   void _showAddDialog(BuildContext context) {
     final controller = TextEditingController();
 
-    showDialog(
+    showAnimatedDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('todos.add_todo'.tr()),
@@ -184,9 +199,8 @@ class _FilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return InkWell(
+    return TapFeedback(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
@@ -197,11 +211,18 @@ class _FilterChip extends StatelessWidget {
               ? colorScheme.primaryContainer
               : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          border: Border.all(
+            color: selected
+                ? colorScheme.primary.withValues(alpha: 0.3)
+                : Colors.transparent,
+          ),
         ),
         child: Text(
           label,
           style: AppTypography.labelMedium.copyWith(
-            color: selected ? colorScheme.onPrimaryContainer : colorScheme.onSurfaceVariant,
+            color: selected
+                ? colorScheme.onPrimaryContainer
+                : colorScheme.onSurfaceVariant,
           ),
         ),
       ),

@@ -6,6 +6,8 @@
     "delete": "Löschen",
     "edit": "Bearbeiten",
     "retry": "Erneut versuchen",
+    "continue": "Fortsetzen",
+    "see_all": "Alle anzeigen",
     "loading": "Wird geladen",
     "error_generic": "Ein Fehler ist aufgetreten",
     "error_network": "Keine Netzwerkverbindung",
@@ -27,7 +29,7 @@
     "email_label": "E-Mail",
     "email_hint": "beispiel@email.com",
     "password_label": "Passwort",
-    "password_hint": "Mindestens 8 Zeichen",
+    "password_hint": "Min. 8 Zeichen, Groß-/Kleinbuchstabe & Ziffer erforderlich",
     "confirm_password_label": "Passwort bestätigen",
     "confirm_password_hint": "Geben Sie Ihr Passwort erneut ein",
     "forgot_password": "Passwort vergessen?",
@@ -40,6 +42,11 @@
     "first_name_hint": "Ihr Vorname",
     "last_name_label": "Nachname",
     "last_name_hint": "Ihr Nachname",
+    "birth_date_label": "Geburtsdatum",
+    "birth_date_hint": "Wählen Sie Ihr Geburtsdatum",
+    "country_code_label": "Code",
+    "phone_label": "Telefon",
+    "phone_hint": "5XX XXX XX XX",
     "submit_login": "Anmelden",
     "submit_register": "Registrieren",
     "validation_email_required": "E-Mail ist erforderlich",
@@ -52,12 +59,25 @@
     "validation_required": "Dieses Feld ist erforderlich",
     "error_invalid_credentials": "Ungültige E-Mail oder Passwort",
     "error_email_taken": "Diese E-Mail ist bereits registriert",
-    "coming_soon": "Diese Funktion wird bald verfügbar sein"
+    "error_password_requirements": "Passwort muss mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Ziffer enthalten",
+    "coming_soon": "Diese Funktion wird bald verfügbar sein",
+    "or": "oder",
+    "continue_with_google": "Mit Google fortfahren"
   },
   "home": {
     "title": "Startseite",
     "my_quests": "Meine Quests",
     "my_routes": "Meine Routen",
+    "welcome": "Willkommen, {}",
+    "welcome_subtitle": "Was möchtest du entdecken?",
+    "xp_to_next": "{} XP bis zur nächsten Stufe",
+    "explore": "Entdecken",
+    "active_quest": "Aktive Quest",
+    "active_route": "Aktive Route",
+    "no_active_quest": "Kein aktives Abenteuer",
+    "start_exploring": "Starte ein neues Abenteuer!",
+    "popular_nearby": "Beliebte Orte in der Nähe",
+    "unknown_route": "Unbekannte Route",
     "quests_title": "Quests",
     "quests_subtitle": "Quests entdecken",
     "routes_title": "Routen",
@@ -126,15 +146,13 @@
     "title": "Profil bearbeiten",
     "first_name": "Vorname",
     "last_name": "Nachname",
+    "country_code": "Code",
     "phone": "Telefonnummer",
-    "age_group": "Altersgruppe",
+    "birth_date": "Geburtsdatum",
+    "birth_date_hint": "Wählen Sie Ihr Geburtsdatum",
     "preferred_language": "Bevorzugte Sprache",
     "save": "Speichern",
-    "upload_photo": "Foto hochladen",
-    "age_group_18_25": "18-25",
-    "age_group_26_35": "26-35",
-    "age_group_36_50": "36-50",
-    "age_group_50_plus": "50+"
+    "upload_photo": "Foto hochladen"
   },
   "favorites": {
     "title": "Meine Favoriten",
@@ -261,6 +279,7 @@
     "completed": "Abgeschlossen",
     "no_routes": "Sie haben noch keine Routen hinzugefügt",
     "accept_route": "Route akzeptieren",
+    "route_accepted": "Akzeptiert",
     "view_map": "Karte anzeigen",
     "total_stops": "Gesamtstopps",
     "estimated_time": "Geschätzte Zeit"
@@ -294,7 +313,8 @@
     "hint": "Hinweis",
     "requires_photo": "Foto erforderlich",
     "not_completed": "Nicht abgeschlossen",
-    "my_quests": "Meine Quests"
+    "my_quests": "Meine Quests",
+    "verify_step": "Verifizieren"
   },
   "user_quests": {
     "title": "Meine Quests",
@@ -334,7 +354,11 @@
     "ok": "OK",
     "retry": "Erneut versuchen",
     "gps_error": "Standort konnte nicht ermittelt werden",
-    "gps_accuracy_error": "Standortgenauigkeit unzureichend"
+    "gps_accuracy_error": "Standortgenauigkeit unzureichend",
+    "location_acquired": "Standort erfasst",
+    "target_place": "Ziel: {place}",
+    "distance_meters": "Entfernung zum Ziel: {distance}m",
+    "distance_kilometers": "Entfernung zum Ziel: {distance}km"
   },
   "todos": {
     "title": "Aufgaben",
@@ -364,5 +388,24 @@
     "minutes_ago": "vor {count} Minuten",
     "hours_ago": "vor {count} Stunden",
     "days_ago": "vor {count} Tagen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "nearby": "In der Nähe",
+    "chat": "Chat",
+    "profile": "Profil"
+  },
+  "route_stop": {
+    "title": "Stopp abschließen",
+    "location_permission": "Standortberechtigung erforderlich",
+    "location_acquired": "Standort erfasst",
+    "complete": "Abschließen",
+    "stop_completed": "Stopp abgeschlossen! +{0} XP",
+    "route_completed": "Route abgeschlossen!",
+    "instructions": "Bestätigen Sie Ihren Standort, um diesen Stopp abzuschließen",
+    "gps_error": "Standort konnte nicht ermittelt werden",
+    "gps_accuracy_error": "Standortgenauigkeit unzureichend",
+    "distance_meters": "Entfernung zum Ziel: {distance}m",
+    "distance_kilometers": "Entfernung zum Ziel: {distance}km"
   }
 }

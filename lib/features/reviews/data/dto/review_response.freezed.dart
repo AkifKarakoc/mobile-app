@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ReviewResponse {
 
- String get id; String get userId; String get placeId; int get rating; String? get comment; String get status; String get createdAt;
+ String get id; String get userId; String? get userFirstName; String? get userLastName; String get placeId; int get rating; String? get comment; String get status; String get createdAt;
 /// Create a copy of ReviewResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ReviewResponseCopyWith<ReviewResponse> get copyWith => _$ReviewResponseCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReviewResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReviewResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userFirstName, userFirstName) || other.userFirstName == userFirstName)&&(identical(other.userLastName, userLastName) || other.userLastName == userLastName)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,placeId,rating,comment,status,createdAt);
+int get hashCode => Object.hash(runtimeType,id,userId,userFirstName,userLastName,placeId,rating,comment,status,createdAt);
 
 @override
 String toString() {
-  return 'ReviewResponse(id: $id, userId: $userId, placeId: $placeId, rating: $rating, comment: $comment, status: $status, createdAt: $createdAt)';
+  return 'ReviewResponse(id: $id, userId: $userId, userFirstName: $userFirstName, userLastName: $userLastName, placeId: $placeId, rating: $rating, comment: $comment, status: $status, createdAt: $createdAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ReviewResponseCopyWith<$Res>  {
   factory $ReviewResponseCopyWith(ReviewResponse value, $Res Function(ReviewResponse) _then) = _$ReviewResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, String placeId, int rating, String? comment, String status, String createdAt
+ String id, String userId, String? userFirstName, String? userLastName, String placeId, int rating, String? comment, String status, String createdAt
 });
 
 
@@ -65,11 +65,13 @@ class _$ReviewResponseCopyWithImpl<$Res>
 
 /// Create a copy of ReviewResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? placeId = null,Object? rating = null,Object? comment = freezed,Object? status = null,Object? createdAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? userFirstName = freezed,Object? userLastName = freezed,Object? placeId = null,Object? rating = null,Object? comment = freezed,Object? status = null,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
+as String,userFirstName: freezed == userFirstName ? _self.userFirstName : userFirstName // ignore: cast_nullable_to_non_nullable
+as String?,userLastName: freezed == userLastName ? _self.userLastName : userLastName // ignore: cast_nullable_to_non_nullable
+as String?,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
 as String,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as int,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -159,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String placeId,  int rating,  String? comment,  String status,  String createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String? userFirstName,  String? userLastName,  String placeId,  int rating,  String? comment,  String status,  String createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReviewResponse() when $default != null:
-return $default(_that.id,_that.userId,_that.placeId,_that.rating,_that.comment,_that.status,_that.createdAt);case _:
+return $default(_that.id,_that.userId,_that.userFirstName,_that.userLastName,_that.placeId,_that.rating,_that.comment,_that.status,_that.createdAt);case _:
   return orElse();
 
 }
@@ -180,10 +182,10 @@ return $default(_that.id,_that.userId,_that.placeId,_that.rating,_that.comment,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String placeId,  int rating,  String? comment,  String status,  String createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String? userFirstName,  String? userLastName,  String placeId,  int rating,  String? comment,  String status,  String createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _ReviewResponse():
-return $default(_that.id,_that.userId,_that.placeId,_that.rating,_that.comment,_that.status,_that.createdAt);case _:
+return $default(_that.id,_that.userId,_that.userFirstName,_that.userLastName,_that.placeId,_that.rating,_that.comment,_that.status,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +202,10 @@ return $default(_that.id,_that.userId,_that.placeId,_that.rating,_that.comment,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String placeId,  int rating,  String? comment,  String status,  String createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String? userFirstName,  String? userLastName,  String placeId,  int rating,  String? comment,  String status,  String createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ReviewResponse() when $default != null:
-return $default(_that.id,_that.userId,_that.placeId,_that.rating,_that.comment,_that.status,_that.createdAt);case _:
+return $default(_that.id,_that.userId,_that.userFirstName,_that.userLastName,_that.placeId,_that.rating,_that.comment,_that.status,_that.createdAt);case _:
   return null;
 
 }
@@ -215,11 +217,13 @@ return $default(_that.id,_that.userId,_that.placeId,_that.rating,_that.comment,_
 @JsonSerializable()
 
 class _ReviewResponse implements ReviewResponse {
-  const _ReviewResponse({required this.id, required this.userId, required this.placeId, required this.rating, this.comment, required this.status, required this.createdAt});
+  const _ReviewResponse({required this.id, required this.userId, this.userFirstName, this.userLastName, required this.placeId, required this.rating, this.comment, required this.status, required this.createdAt});
   factory _ReviewResponse.fromJson(Map<String, dynamic> json) => _$ReviewResponseFromJson(json);
 
 @override final  String id;
 @override final  String userId;
+@override final  String? userFirstName;
+@override final  String? userLastName;
 @override final  String placeId;
 @override final  int rating;
 @override final  String? comment;
@@ -239,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReviewResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReviewResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.userFirstName, userFirstName) || other.userFirstName == userFirstName)&&(identical(other.userLastName, userLastName) || other.userLastName == userLastName)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.comment, comment) || other.comment == comment)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,placeId,rating,comment,status,createdAt);
+int get hashCode => Object.hash(runtimeType,id,userId,userFirstName,userLastName,placeId,rating,comment,status,createdAt);
 
 @override
 String toString() {
-  return 'ReviewResponse(id: $id, userId: $userId, placeId: $placeId, rating: $rating, comment: $comment, status: $status, createdAt: $createdAt)';
+  return 'ReviewResponse(id: $id, userId: $userId, userFirstName: $userFirstName, userLastName: $userLastName, placeId: $placeId, rating: $rating, comment: $comment, status: $status, createdAt: $createdAt)';
 }
 
 
@@ -259,7 +263,7 @@ abstract mixin class _$ReviewResponseCopyWith<$Res> implements $ReviewResponseCo
   factory _$ReviewResponseCopyWith(_ReviewResponse value, $Res Function(_ReviewResponse) _then) = __$ReviewResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, String placeId, int rating, String? comment, String status, String createdAt
+ String id, String userId, String? userFirstName, String? userLastName, String placeId, int rating, String? comment, String status, String createdAt
 });
 
 
@@ -276,11 +280,13 @@ class __$ReviewResponseCopyWithImpl<$Res>
 
 /// Create a copy of ReviewResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? placeId = null,Object? rating = null,Object? comment = freezed,Object? status = null,Object? createdAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? userFirstName = freezed,Object? userLastName = freezed,Object? placeId = null,Object? rating = null,Object? comment = freezed,Object? status = null,Object? createdAt = null,}) {
   return _then(_ReviewResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
+as String,userFirstName: freezed == userFirstName ? _self.userFirstName : userFirstName // ignore: cast_nullable_to_non_nullable
+as String?,userLastName: freezed == userLastName ? _self.userLastName : userLastName // ignore: cast_nullable_to_non_nullable
+as String?,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
 as String,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as int,comment: freezed == comment ? _self.comment : comment // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable

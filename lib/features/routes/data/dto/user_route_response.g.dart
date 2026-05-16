@@ -10,8 +10,8 @@ _UserRouteResponse _$UserRouteResponseFromJson(Map<String, dynamic> json) =>
     _UserRouteResponse(
       id: json['id'] as String,
       routeId: json['routeId'] as String,
-      routeName: json['routeName'] as String,
-      routeDescription: json['routeDescription'] as String,
+      routeName: json['routeName'] as String?,
+      routeDescription: json['routeDescription'] as String?,
       routeThumbnailUrl: json['routeThumbnailUrl'] as String?,
       status: json['status'] as String,
       startedAt: json['startedAt'] as String,

@@ -8,8 +8,6 @@ import 'package:mobile/core/network/api_exception.dart';
 import 'package:mobile/core/utils/validators.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/core/widgets/app_text_field.dart';
-import 'package:mobile/core/widgets/error_view.dart';
-import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/features/auth/application/auth_notifier.dart';
 
 /// Registration screen for new user signup.
@@ -30,8 +28,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   late final TextEditingController _confirmPasswordController;
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
+  late final TextEditingController _phoneCountryCodeController;
+  late final TextEditingController _phoneNumberController;
+  late final TextEditingController _birthDateController;
   late final GlobalKey<FormState> _formKey;
   String? _errorMessage;
+  DateTime? _selectedBirthDate;
+  String _selectedCountryCode = '+90';
+
+  static const List<String> _countryCodes = ['+90', '+1', '+44', '+49', '+33', '+39', '+34', '+7', '+86', '+81', '+91'];
 
   @override
   void initState() {
@@ -41,6 +46,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _confirmPasswordController = TextEditingController();
     _firstNameController = TextEditingController();
     _lastNameController = TextEditingController();
+    _phoneCountryCodeController = TextEditingController(text: '+90');
+    _phoneNumberController = TextEditingController();
+    _birthDateController = TextEditingController();
     _formKey = GlobalKey<FormState>();
   }
 
@@ -51,6 +59,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _confirmPasswordController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
+    _phoneCountryCodeController.dispose();
+    _phoneNumberController.dispose();
+    _birthDateController.dispose();
     super.dispose();
   }
 
@@ -71,6 +82,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             password: _passwordController.text,
             firstName: _firstNameController.text.trim(),
             lastName: _lastNameController.text.trim(),
+            phoneCountryCode: _selectedCountryCode,
+            phoneNumber: _phoneNumberController.text.trim().isEmpty
+                ? null
+                : _phoneNumberController.text.trim(),
+            birthDate: _selectedBirthDate,
           );
 
       // On success, navigate to home
@@ -103,7 +119,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return 'auth.error_email_taken'.tr();
     }
 
-    return 'common.error_generic'.tr();
+    final passwordError = errors['password'];
+    if (passwordError != null) {
+      if (passwordError.contains('uppercase') ||
+          passwordError.contains('lowercase') ||
+          passwordError.contains('digit')) {
+        return 'auth.error_password_requirements'.tr();
+      }
+      return passwordError;
+    }
+
+    final allErrors = errors.values.toList();
+    if (allErrors.isEmpty) {
+      return 'common.error_generic'.tr();
+    }
+    return allErrors.join('\n');
   }
 
   @override
@@ -113,18 +143,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('auth.register_title'.tr()), elevation: 0),
-      body: authState.when(
-        loading: () => const AppLoadingIndicator(),
-        error: (error, stackTrace) => ErrorView(
-          message: _getErrorMessage(
-            error is ApiException
-                ? error
-                : ApiException.unknown(error.toString()),
-          ),
-          onRetry: () => setState(() {}),
-        ),
-        data: (_) => _buildRegisterForm(isLoading),
-      ),
+      body: _buildRegisterForm(isLoading),
     );
   }
 
@@ -192,6 +211,77 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             const SizedBox(height: AppSpacing.md),
 
+            // Birth date field
+            GestureDetector(
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime(2000),
+                  firstDate: DateTime(1920),
+                  lastDate: DateTime.now(),
+                );
+                if (picked != null) {
+                  setState(() {
+                    _selectedBirthDate = picked;
+                    _birthDateController.text =
+                        '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
+                  });
+                }
+              },
+              child: AbsorbPointer(
+                child: AppTextField(
+                  controller: _birthDateController,
+                  label: 'auth.birth_date_label'.tr(),
+                  hint: 'auth.birth_date_hint'.tr(),
+                  readOnly: true,
+                  keyboardType: TextInputType.datetime,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
+            // Phone fields (country code + number)
+            Row(
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedCountryCode,
+                    decoration: InputDecoration(
+                      labelText: 'auth.country_code_label'.tr(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.md,
+                      ),
+                    ),
+                    items: _countryCodes.map((code) {
+                      return DropdownMenuItem(value: code, child: Text(code));
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedCountryCode = value);
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: AppTextField(
+                    controller: _phoneNumberController,
+                    label: 'auth.phone_label'.tr(),
+                    hint: 'auth.phone_hint'.tr(),
+                    keyboardType: TextInputType.phone,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
             // Email field
             AppTextField(
               controller: _emailController,
@@ -222,6 +312,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 }
                 return null;
               },
+            ),
+
+            const SizedBox(height: AppSpacing.sm),
+
+            // Password requirements hint
+            Text(
+              '• ${'auth.password_hint'.tr()}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
 
             const SizedBox(height: AppSpacing.md),

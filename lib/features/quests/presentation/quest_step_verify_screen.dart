@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -16,11 +17,19 @@ import 'package:permission_handler/permission_handler.dart';
 class QuestStepVerifyScreen extends ConsumerStatefulWidget {
   final String questId;
   final String stepId;
+  final double? targetLatitude;
+  final double? targetLongitude;
+  final String? placeName;
+  final int gpsThresholdMeters;
 
   const QuestStepVerifyScreen({
     super.key,
     required this.questId,
     required this.stepId,
+    this.targetLatitude,
+    this.targetLongitude,
+    this.placeName,
+    this.gpsThresholdMeters = 200,
   });
 
   @override
@@ -34,6 +43,7 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
   Position? _position;
   bool _isSubmitting = false;
   String? _errorMessage;
+  double? _distanceToTarget;
 
   @override
   void initState() {
@@ -42,18 +52,31 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
   }
 
   Future<void> _requestPermissions() async {
-    final locationStatus = await Permission.location.request();
-    if (locationStatus.isDenied || locationStatus.isPermanentlyDenied) {
-      setState(() {
-        _errorMessage = 'quest_verify.location_permission'.tr();
-      });
-      if (locationStatus.isPermanentlyDenied) {
-        await openAppSettings();
+    try {
+      final locationStatus = await Permission.location.request().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => PermissionStatus.denied,
+      );
+      
+      if (!mounted) return;
+      
+      if (locationStatus.isDenied || locationStatus.isPermanentlyDenied) {
+        setState(() {
+          _errorMessage = 'quest_verify.location_permission'.tr();
+        });
+        if (locationStatus.isPermanentlyDenied) {
+          await openAppSettings();
+        }
+        return;
       }
-      return;
-    }
 
-    await _getCurrentLocation();
+      await _getCurrentLocation();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'quest_verify.gps_error'.tr();
+      });
+    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -68,9 +91,14 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
 
       final position = await Geolocator.getCurrentPosition(
         locationSettings: AndroidSettings(
-          accuracy: LocationAccuracy.best,
-          timeLimit: const Duration(seconds: 15),
+          accuracy: LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 5),
         ),
+      ).timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          throw TimeoutException('Konum alınamadı - zaman aşımı');
+        },
       );
 
       if (position.accuracy > 50) {
@@ -80,9 +108,24 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
         return;
       }
 
+      double? distance;
+      if (widget.targetLatitude != null && widget.targetLongitude != null) {
+        distance = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          widget.targetLatitude!,
+          widget.targetLongitude!,
+        );
+      }
+
       setState(() {
         _position = position;
+        _distanceToTarget = distance;
         _errorMessage = null;
+      });
+    } on TimeoutException {
+      setState(() {
+        _errorMessage = 'quest_verify.gps_error'.tr();
       });
     } catch (e) {
       setState(() {
@@ -92,24 +135,35 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
   }
 
   Future<void> _takePhoto() async {
-    final cameraStatus = await Permission.camera.request();
-    if (cameraStatus.isDenied || cameraStatus.isPermanentlyDenied) {
-      setState(() {
-        _errorMessage = 'quest_verify.camera_permission'.tr();
-      });
-      if (cameraStatus.isPermanentlyDenied) {
-        await openAppSettings();
-      }
-      return;
-    }
-
     try {
+      final cameraStatus = await Permission.camera.request().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => PermissionStatus.denied,
+      );
+
+      if (!mounted) return;
+
+      if (cameraStatus.isDenied || cameraStatus.isPermanentlyDenied) {
+        setState(() {
+          _errorMessage = 'quest_verify.camera_permission'.tr();
+        });
+        if (cameraStatus.isPermanentlyDenied) {
+          await openAppSettings();
+        }
+        return;
+      }
+
       final XFile? image = await _picker.pickImage(
         source: ImageSource.camera,
         maxWidth: 1920,
         maxHeight: 1080,
         imageQuality: 80,
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => null,
       );
+
+      if (!mounted) return;
 
       if (image != null) {
         setState(() {
@@ -117,6 +171,7 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'quest_verify.taking_photo'.tr();
       });
@@ -143,6 +198,11 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
         photo: multipartFile,
         latitude: _position!.latitude,
         longitude: _position!.longitude,
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('Doğrulama zaman aşımına uğradı');
+        },
       );
 
       if (!mounted) return;
@@ -152,7 +212,13 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
           builder: (_) => QuestVerifyResultScreen(result: result),
         ),
       );
+    } on TimeoutException {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Doğrulama işlemi çok uzun sürdü, tekrar deneyin.';
+      });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = e.toString();
       });
@@ -248,36 +314,82 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            _position != null
-                ? Icons.location_on
-                : Icons.location_off_outlined,
-            color: _position != null
-                ? Theme.of(context).colorScheme.tertiary
-                : Theme.of(context).colorScheme.outlineVariant,
+          Row(
+            children: [
+              Icon(
+                _position != null
+                    ? Icons.location_on
+                    : Icons.location_off_outlined,
+                color: _position != null
+                    ? Theme.of(context).colorScheme.tertiary
+                    : Theme.of(context).colorScheme.outlineVariant,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  _position != null
+                      ? 'quest_verify.location_acquired'.tr()
+                      : 'quest_verify.location_permission'.tr(),
+                  style: AppTypography.bodyMedium,
+                ),
+              ),
+              if (_position != null)
+                IconButton(
+                  icon: const Icon(Icons.refresh, size: AppSpacing.iconMedium),
+                  onPressed: _getCurrentLocation,
+                ),
+            ],
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              _position != null
-                  ? 'quest_verify.location_accuracy'.tr(
-                      args: [
-                        _position!.accuracy.toStringAsFixed(1),
-                      ],
-                    )
-                  : 'quest_verify.location_permission'.tr(),
-              style: AppTypography.bodyMedium,
+          if (_distanceToTarget != null) ...[
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Icon(
+                  Icons.near_me,
+                  size: AppSpacing.iconMedium,
+                  color: _distanceToTarget! <= widget.gpsThresholdMeters
+                      ? Theme.of(context).colorScheme.tertiary
+                      : Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    _formatDistance(_distanceToTarget!),
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: _distanceToTarget! <= widget.gpsThresholdMeters
+                          ? Theme.of(context).colorScheme.tertiary
+                          : null,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          if (_position != null)
-            IconButton(
-              icon: const Icon(Icons.refresh, size: AppSpacing.iconMedium),
-              onPressed: _getCurrentLocation,
+          ],
+          if (widget.placeName != null && _distanceToTarget != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'quest_verify.target_place'.tr(namedArgs: {'place': widget.placeName!}),
+              style: AppTypography.bodySmall.copyWith(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
             ),
+          ],
         ],
       ),
+    );
+  }
+
+  String _formatDistance(double meters) {
+    if (meters < 1000) {
+      return 'quest_verify.distance_meters'.tr(
+        namedArgs: {'distance': meters.round().toString()},
+      );
+    }
+    return 'quest_verify.distance_kilometers'.tr(
+      namedArgs: {'distance': (meters / 1000).toStringAsFixed(1)},
     );
   }
 

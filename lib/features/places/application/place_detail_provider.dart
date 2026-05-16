@@ -6,17 +6,18 @@ import 'package:mobile/features/places/data/places_repository.dart';
 
 class PlaceDetailNotifier
     extends AutoDisposeFamilyAsyncNotifier<PlaceDetailResponse, String> {
-  late final PlacesRepository _repository;
+  PlacesRepository? _repository;
 
   @override
   FutureOr<PlaceDetailResponse> build(String arg) {
-    _repository = ref.watch(placesRepositoryProvider);
-    return _repository.getById(arg);
+    _repository ??= ref.watch(placesRepositoryProvider);
+    ref.keepAlive(); // Keep cached across navigation
+    return _repository!.getById(arg);
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _repository.getById(arg));
+    state = await AsyncValue.guard(() => _repository!.getById(arg));
   }
 }
 

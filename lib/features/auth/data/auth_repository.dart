@@ -9,6 +9,7 @@ import 'package:mobile/features/auth/data/dto/login_response.dart';
 import 'package:mobile/features/auth/data/dto/register_request.dart';
 import 'package:mobile/features/auth/data/dto/register_response.dart';
 import 'package:mobile/features/auth/data/dto/refresh_request.dart';
+import 'package:mobile/features/auth/data/dto/google_oauth_response.dart';
 
 /// Abstract repository interface for authentication operations.
 abstract class AuthRepository {
@@ -21,9 +22,10 @@ abstract class AuthRepository {
     required String password,
     required String firstName,
     required String lastName,
+    String? phoneCountryCode,
     String? phoneNumber,
     String? preferredLanguage,
-    String? ageGroup,
+    DateTime? birthDate,
   });
 
   /// Login with email and password.
@@ -33,6 +35,14 @@ abstract class AuthRepository {
   Future<LoginResponse> login({
     required String email,
     required String password,
+  });
+
+  /// Login with Google OAuth.
+  ///
+  /// Saves access and refresh tokens to secure storage on success.
+  /// Throws [ApiException] on failure.
+  Future<GoogleOAuthResponse> loginWithGoogle({
+    required String idToken,
   });
 
   /// Refresh access token using refresh token.
@@ -66,9 +76,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String firstName,
     required String lastName,
+    String? phoneCountryCode,
     String? phoneNumber,
     String? preferredLanguage,
-    String? ageGroup,
+    DateTime? birthDate,
   }) async {
     try {
       final request = RegisterRequest(
@@ -76,9 +87,10 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
         firstName: firstName,
         lastName: lastName,
+        phoneCountryCode: phoneCountryCode,
         phoneNumber: phoneNumber,
         preferredLanguage: preferredLanguage,
-        ageGroup: ageGroup,
+        birthDate: birthDate,
       );
 
       final response = await _api.register(request);
@@ -103,6 +115,25 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final request = LoginRequest(email: email, password: password);
       final response = await _api.login(request);
+
+      // Save tokens to secure storage
+      await Future.wait([
+        _secureStorage.saveAccessToken(response.accessToken),
+        _secureStorage.saveRefreshToken(response.refreshToken),
+      ]);
+
+      return response;
+    } on DioException catch (e) {
+      throw ApiException.fromDio(e);
+    }
+  }
+
+  @override
+  Future<GoogleOAuthResponse> loginWithGoogle({
+    required String idToken,
+  }) async {
+    try {
+      final response = await _api.loginWithGoogle({'idToken': idToken});
 
       // Save tokens to secure storage
       await Future.wait([

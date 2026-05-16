@@ -12,9 +12,12 @@ _RegisterRequest _$RegisterRequestFromJson(Map<String, dynamic> json) =>
       password: json['password'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
+      phoneCountryCode: json['phoneCountryCode'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
       preferredLanguage: json['preferredLanguage'] as String?,
-      ageGroup: json['ageGroup'] as String?,
+      birthDate: json['birthDate'] == null
+          ? null
+          : DateTime.parse(json['birthDate'] as String),
     );
 
 Map<String, dynamic> _$RegisterRequestToJson(_RegisterRequest instance) =>
@@ -23,7 +26,8 @@ Map<String, dynamic> _$RegisterRequestToJson(_RegisterRequest instance) =>
       'password': instance.password,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
+      'phoneCountryCode': instance.phoneCountryCode,
       'phoneNumber': instance.phoneNumber,
       'preferredLanguage': instance.preferredLanguage,
-      'ageGroup': instance.ageGroup,
+      'birthDate': instance.birthDate?.toIso8601String(),
     };

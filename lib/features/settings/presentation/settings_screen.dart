@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
+import 'package:mobile/core/widgets/tap_feedback.dart';
 import 'package:mobile/features/settings/application/theme_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -12,88 +13,87 @@ class SettingsScreen extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final locale = context.locale;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('settings.title'.tr()),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        children: [
-          // Language section
-          _SectionTitle(title: 'settings.language'.tr()),
-          _LanguageTile(
-            locale: const Locale('tr'),
-            label: 'Türkçe',
-            selected: locale.languageCode == 'tr',
-          ),
-          _LanguageTile(
-            locale: const Locale('en'),
-            label: 'English',
-            selected: locale.languageCode == 'en',
-          ),
-          _LanguageTile(
-            locale: const Locale('de'),
-            label: 'Deutsch',
-            selected: locale.languageCode == 'de',
-          ),
+    return AnimatedTheme(
+      data: Theme.of(context),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      child: Scaffold(
+        appBar: AppBar(title: Text('settings.title'.tr()), centerTitle: true),
+        body: ListView(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          children: [
+            _SectionTitle(title: 'settings.language'.tr()),
+            _LanguageTile(
+              locale: const Locale('tr'),
+              label: 'Türkçe',
+              selected: locale.languageCode == 'tr',
+            ),
+            _LanguageTile(
+              locale: const Locale('en'),
+              label: 'English',
+              selected: locale.languageCode == 'en',
+            ),
+            _LanguageTile(
+              locale: const Locale('de'),
+              label: 'Deutsch',
+              selected: locale.languageCode == 'de',
+            ),
 
-          const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
-          // Theme section
-          _SectionTitle(title: 'settings.theme'.tr()),
-          _ThemeTile(
-            mode: ThemeMode.light,
-            label: 'settings.theme_light'.tr(),
-            icon: Icons.light_mode_outlined,
-            selected: themeMode == ThemeMode.light,
-          ),
-          _ThemeTile(
-            mode: ThemeMode.dark,
-            label: 'settings.theme_dark'.tr(),
-            icon: Icons.dark_mode_outlined,
-            selected: themeMode == ThemeMode.dark,
-          ),
-          _ThemeTile(
-            mode: ThemeMode.system,
-            label: 'settings.theme_system'.tr(),
-            icon: Icons.brightness_auto_outlined,
-            selected: themeMode == ThemeMode.system,
-          ),
+            _SectionTitle(title: 'settings.theme'.tr()),
+            _ThemeTile(
+              mode: ThemeMode.light,
+              label: 'settings.theme_light'.tr(),
+              icon: Icons.light_mode_outlined,
+              selected: themeMode == ThemeMode.light,
+            ),
+            _ThemeTile(
+              mode: ThemeMode.dark,
+              label: 'settings.theme_dark'.tr(),
+              icon: Icons.dark_mode_outlined,
+              selected: themeMode == ThemeMode.dark,
+            ),
+            _ThemeTile(
+              mode: ThemeMode.system,
+              label: 'settings.theme_system'.tr(),
+              icon: Icons.brightness_auto_outlined,
+              selected: themeMode == ThemeMode.system,
+            ),
 
-          const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.lg),
 
-          // About section
-          _SectionTitle(title: 'settings.about'.tr()),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'app.name'.tr(),
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'app.tagline'.tr(),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'v0.1.0',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                  ),
-                ],
+            _SectionTitle(title: 'settings.about'.tr()),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'app.name'.tr(),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'app.tagline'.tr(),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'v0.1.0',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -111,9 +111,9 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -132,14 +132,16 @@ class _LanguageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(label),
-      trailing: selected
-          ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary)
-          : null,
+    return TapFeedback(
       onTap: () {
         context.setLocale(locale);
       },
+      child: ListTile(
+        title: Text(label),
+        trailing: selected
+            ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary)
+            : null,
+      ),
     );
   }
 }
@@ -159,15 +161,17 @@ class _ThemeTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(label),
-      trailing: selected
-          ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary)
-          : null,
+    return TapFeedback(
       onTap: () {
         ref.read(themeModeProvider.notifier).setThemeMode(mode);
       },
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(label),
+        trailing: selected
+            ? Icon(Icons.check, color: Theme.of(context).colorScheme.primary)
+            : null,
+      ),
     );
   }
 }

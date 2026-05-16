@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserRouteResponse {
 
- String get id; String get routeId; String get routeName; String get routeDescription; String? get routeThumbnailUrl; String get status; String get startedAt; String? get completedAt; int get totalStops;
+ String get id; String get routeId; String? get routeName; String? get routeDescription; String? get routeThumbnailUrl; String get status; String get startedAt; String? get completedAt; int get totalStops;
 /// Create a copy of UserRouteResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserRouteResponseCopyWith<$Res>  {
   factory $UserRouteResponseCopyWith(UserRouteResponse value, $Res Function(UserRouteResponse) _then) = _$UserRouteResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String routeId, String routeName, String routeDescription, String? routeThumbnailUrl, String status, String startedAt, String? completedAt, int totalStops
+ String id, String routeId, String? routeName, String? routeDescription, String? routeThumbnailUrl, String status, String startedAt, String? completedAt, int totalStops
 });
 
 
@@ -65,13 +65,13 @@ class _$UserRouteResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserRouteResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? routeId = null,Object? routeName = null,Object? routeDescription = null,Object? routeThumbnailUrl = freezed,Object? status = null,Object? startedAt = null,Object? completedAt = freezed,Object? totalStops = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? routeId = null,Object? routeName = freezed,Object? routeDescription = freezed,Object? routeThumbnailUrl = freezed,Object? status = null,Object? startedAt = null,Object? completedAt = freezed,Object? totalStops = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,routeId: null == routeId ? _self.routeId : routeId // ignore: cast_nullable_to_non_nullable
-as String,routeName: null == routeName ? _self.routeName : routeName // ignore: cast_nullable_to_non_nullable
-as String,routeDescription: null == routeDescription ? _self.routeDescription : routeDescription // ignore: cast_nullable_to_non_nullable
-as String,routeThumbnailUrl: freezed == routeThumbnailUrl ? _self.routeThumbnailUrl : routeThumbnailUrl // ignore: cast_nullable_to_non_nullable
+as String,routeName: freezed == routeName ? _self.routeName : routeName // ignore: cast_nullable_to_non_nullable
+as String?,routeDescription: freezed == routeDescription ? _self.routeDescription : routeDescription // ignore: cast_nullable_to_non_nullable
+as String?,routeThumbnailUrl: freezed == routeThumbnailUrl ? _self.routeThumbnailUrl : routeThumbnailUrl // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,startedAt: null == startedAt ? _self.startedAt : startedAt // ignore: cast_nullable_to_non_nullable
 as String,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
@@ -161,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String routeId,  String routeName,  String routeDescription,  String? routeThumbnailUrl,  String status,  String startedAt,  String? completedAt,  int totalStops)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String routeId,  String? routeName,  String? routeDescription,  String? routeThumbnailUrl,  String status,  String startedAt,  String? completedAt,  int totalStops)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserRouteResponse() when $default != null:
 return $default(_that.id,_that.routeId,_that.routeName,_that.routeDescription,_that.routeThumbnailUrl,_that.status,_that.startedAt,_that.completedAt,_that.totalStops);case _:
@@ -182,7 +182,7 @@ return $default(_that.id,_that.routeId,_that.routeName,_that.routeDescription,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String routeId,  String routeName,  String routeDescription,  String? routeThumbnailUrl,  String status,  String startedAt,  String? completedAt,  int totalStops)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String routeId,  String? routeName,  String? routeDescription,  String? routeThumbnailUrl,  String status,  String startedAt,  String? completedAt,  int totalStops)  $default,) {final _that = this;
 switch (_that) {
 case _UserRouteResponse():
 return $default(_that.id,_that.routeId,_that.routeName,_that.routeDescription,_that.routeThumbnailUrl,_that.status,_that.startedAt,_that.completedAt,_that.totalStops);case _:
@@ -202,7 +202,7 @@ return $default(_that.id,_that.routeId,_that.routeName,_that.routeDescription,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String routeId,  String routeName,  String routeDescription,  String? routeThumbnailUrl,  String status,  String startedAt,  String? completedAt,  int totalStops)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String routeId,  String? routeName,  String? routeDescription,  String? routeThumbnailUrl,  String status,  String startedAt,  String? completedAt,  int totalStops)?  $default,) {final _that = this;
 switch (_that) {
 case _UserRouteResponse() when $default != null:
 return $default(_that.id,_that.routeId,_that.routeName,_that.routeDescription,_that.routeThumbnailUrl,_that.status,_that.startedAt,_that.completedAt,_that.totalStops);case _:
@@ -217,13 +217,13 @@ return $default(_that.id,_that.routeId,_that.routeName,_that.routeDescription,_t
 @JsonSerializable()
 
 class _UserRouteResponse implements UserRouteResponse {
-  const _UserRouteResponse({required this.id, required this.routeId, required this.routeName, required this.routeDescription, this.routeThumbnailUrl, required this.status, required this.startedAt, this.completedAt, required this.totalStops});
+  const _UserRouteResponse({required this.id, required this.routeId, this.routeName, this.routeDescription, this.routeThumbnailUrl, required this.status, required this.startedAt, this.completedAt, required this.totalStops});
   factory _UserRouteResponse.fromJson(Map<String, dynamic> json) => _$UserRouteResponseFromJson(json);
 
 @override final  String id;
 @override final  String routeId;
-@override final  String routeName;
-@override final  String routeDescription;
+@override final  String? routeName;
+@override final  String? routeDescription;
 @override final  String? routeThumbnailUrl;
 @override final  String status;
 @override final  String startedAt;
@@ -263,7 +263,7 @@ abstract mixin class _$UserRouteResponseCopyWith<$Res> implements $UserRouteResp
   factory _$UserRouteResponseCopyWith(_UserRouteResponse value, $Res Function(_UserRouteResponse) _then) = __$UserRouteResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String routeId, String routeName, String routeDescription, String? routeThumbnailUrl, String status, String startedAt, String? completedAt, int totalStops
+ String id, String routeId, String? routeName, String? routeDescription, String? routeThumbnailUrl, String status, String startedAt, String? completedAt, int totalStops
 });
 
 
@@ -280,13 +280,13 @@ class __$UserRouteResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserRouteResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? routeId = null,Object? routeName = null,Object? routeDescription = null,Object? routeThumbnailUrl = freezed,Object? status = null,Object? startedAt = null,Object? completedAt = freezed,Object? totalStops = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? routeId = null,Object? routeName = freezed,Object? routeDescription = freezed,Object? routeThumbnailUrl = freezed,Object? status = null,Object? startedAt = null,Object? completedAt = freezed,Object? totalStops = null,}) {
   return _then(_UserRouteResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,routeId: null == routeId ? _self.routeId : routeId // ignore: cast_nullable_to_non_nullable
-as String,routeName: null == routeName ? _self.routeName : routeName // ignore: cast_nullable_to_non_nullable
-as String,routeDescription: null == routeDescription ? _self.routeDescription : routeDescription // ignore: cast_nullable_to_non_nullable
-as String,routeThumbnailUrl: freezed == routeThumbnailUrl ? _self.routeThumbnailUrl : routeThumbnailUrl // ignore: cast_nullable_to_non_nullable
+as String,routeName: freezed == routeName ? _self.routeName : routeName // ignore: cast_nullable_to_non_nullable
+as String?,routeDescription: freezed == routeDescription ? _self.routeDescription : routeDescription // ignore: cast_nullable_to_non_nullable
+as String?,routeThumbnailUrl: freezed == routeThumbnailUrl ? _self.routeThumbnailUrl : routeThumbnailUrl // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,startedAt: null == startedAt ? _self.startedAt : startedAt // ignore: cast_nullable_to_non_nullable
 as String,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable

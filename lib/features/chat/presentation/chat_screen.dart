@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
-import 'package:mobile/core/widgets/app_button.dart';
-import 'package:mobile/core/widgets/app_text_field.dart';
+import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/dialog_helper.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/chat/application/chat_messages_provider.dart';
 import 'package:mobile/features/chat/data/dto/chat_response.dart';
 import 'package:mobile/features/chat/presentation/widgets/message_bubble.dart';
@@ -56,7 +57,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Future<void> _deleteSession() async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAnimatedDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('chat.delete_session'.tr()),
@@ -87,8 +88,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final messagesAsync = ref.watch(chatMessagesProvider(widget.sessionId));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: Navigator.canPop(context)
@@ -97,7 +100,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 onPressed: () => context.pop(),
               )
             : null,
-        title: Text('chat.title'.tr()),
+        title: Text('chat.title'.tr(), style: AppTypography.titleLarge),
+        centerTitle: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline),
@@ -111,17 +115,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Expanded(
             child: messagesAsync.when(
               data: (messages) => _buildMessageList(messages),
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => _buildChatShimmer(),
               error: (error, _) => Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: colorScheme.error,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
                     Text('common.error_generic'.tr()),
                     const SizedBox(height: AppSpacing.md),
-                    AppButton.text(
-                      label: 'common.retry'.tr(),
-                      onPressed: () =>
-                          ref.invalidate(chatMessagesProvider(widget.sessionId)),
+                    FilledButton.icon(
+                      onPressed: () => ref.invalidate(
+                        chatMessagesProvider(widget.sessionId),
+                      ),
+                      icon: const Icon(Icons.refresh, size: 18),
+                      label: Text('common.retry'.tr()),
                     ),
                   ],
                 ),
@@ -135,10 +147,40 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Widget _buildMessageList(List<ChatResponse> messages) {
-    return ListView.builder(
+    if (messages.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.chat_bubble_outline,
+              size: 64,
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'chat.empty_title'.tr(),
+              style: AppTypography.titleMedium.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'chat.empty_description'.tr(),
+              style: AppTypography.bodySmall.copyWith(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.separated(
       controller: _scrollController,
       padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
       itemCount: messages.length,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.xs),
       itemBuilder: (context, index) {
         final message = messages[index];
         return MessageBubble(
@@ -149,9 +191,28 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
+  Widget _buildChatShimmer() {
+    return ListView.separated(
+      padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
+      itemCount: 5,
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      itemBuilder: (context, index) => Padding(
+        padding: EdgeInsets.only(
+          left: index % 2 == 0 ? AppSpacing.md : 60.0,
+          right: index % 2 == 0 ? 60.0 : AppSpacing.md,
+        ),
+        child: ShimmerPlaceholder(
+          height: 40 + (index % 3) * 15,
+          borderRadius: AppSpacing.radiusMd,
+        ),
+      ),
+    );
+  }
+
   Widget _buildInputArea() {
     final messagesAsync = ref.watch(chatMessagesProvider(widget.sessionId));
     final isSending = messagesAsync.isLoading;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -159,41 +220,67 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
+        color: colorScheme.surfaceContainerLow,
+        border: Border(
+          top: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
-        ],
+        ),
       ),
       child: SafeArea(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: AppTextField(
-                controller: _controller,
-                hint: 'chat.type_message'.tr(),
-                maxLines: 4,
-                minLines: 1,
-                enabled: !isSending,
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) => _sendMessage(),
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 120),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+                ),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    hintText: 'chat.type_message'.tr(),
+                    hintStyle: AppTypography.bodyMedium.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  maxLines: 4,
+                  minLines: 1,
+                  enabled: !isSending,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _sendMessage(),
+                  style: AppTypography.bodyMedium,
+                ),
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
             SizedBox(
               height: 48,
-              child: AppButton.primary(
-                label: '',
-                icon: Icons.send,
+              width: 48,
+              child: FilledButton(
                 onPressed:
                     _controller.text.trim().isNotEmpty && !isSending
                         ? _sendMessage
                         : null,
-                isLoading: isSending,
+                style: FilledButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: EdgeInsets.zero,
+                ),
+                child: isSending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.send, size: 20),
               ),
             ),
           ],

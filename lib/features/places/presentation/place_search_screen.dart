@@ -147,6 +147,7 @@ class _SearchContent extends ConsumerWidget {
                 );
                 context.push(AppRoutes.placeDetailPath(place.id));
               },
+              heroTag: 'place-image-${place.id}',
             );
           },
         );

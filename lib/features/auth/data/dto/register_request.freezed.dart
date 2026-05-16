@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RegisterRequest {
 
- String get email; String get password; String get firstName; String get lastName; String? get phoneNumber; String? get preferredLanguage; String? get ageGroup;
+ String get email; String get password; String get firstName; String get lastName; String? get phoneCountryCode; String? get phoneNumber; String? get preferredLanguage; DateTime? get birthDate;
 /// Create a copy of RegisterRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $RegisterRequestCopyWith<RegisterRequest> get copyWith => _$RegisterRequestCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequest&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RegisterRequest&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneCountryCode, phoneCountryCode) || other.phoneCountryCode == phoneCountryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,firstName,lastName,phoneNumber,preferredLanguage,ageGroup);
+int get hashCode => Object.hash(runtimeType,email,password,firstName,lastName,phoneCountryCode,phoneNumber,preferredLanguage,birthDate);
 
 @override
 String toString() {
-  return 'RegisterRequest(email: $email, password: $password, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, preferredLanguage: $preferredLanguage, ageGroup: $ageGroup)';
+  return 'RegisterRequest(email: $email, password: $password, firstName: $firstName, lastName: $lastName, phoneCountryCode: $phoneCountryCode, phoneNumber: $phoneNumber, preferredLanguage: $preferredLanguage, birthDate: $birthDate)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $RegisterRequestCopyWith<$Res>  {
   factory $RegisterRequestCopyWith(RegisterRequest value, $Res Function(RegisterRequest) _then) = _$RegisterRequestCopyWithImpl;
 @useResult
 $Res call({
- String email, String password, String firstName, String lastName, String? phoneNumber, String? preferredLanguage, String? ageGroup
+ String email, String password, String firstName, String lastName, String? phoneCountryCode, String? phoneNumber, String? preferredLanguage, DateTime? birthDate
 });
 
 
@@ -65,16 +65,17 @@ class _$RegisterRequestCopyWithImpl<$Res>
 
 /// Create a copy of RegisterRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? firstName = null,Object? lastName = null,Object? phoneNumber = freezed,Object? preferredLanguage = freezed,Object? ageGroup = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? password = null,Object? firstName = null,Object? lastName = null,Object? phoneCountryCode = freezed,Object? phoneNumber = freezed,Object? preferredLanguage = freezed,Object? birthDate = freezed,}) {
   return _then(_self.copyWith(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
-as String,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,phoneCountryCode: freezed == phoneCountryCode ? _self.phoneCountryCode : phoneCountryCode // ignore: cast_nullable_to_non_nullable
+as String?,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
 as String?,preferredLanguage: freezed == preferredLanguage ? _self.preferredLanguage : preferredLanguage // ignore: cast_nullable_to_non_nullable
-as String?,ageGroup: freezed == ageGroup ? _self.ageGroup : ageGroup // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String password,  String firstName,  String lastName,  String? phoneNumber,  String? preferredLanguage,  String? ageGroup)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String password,  String firstName,  String lastName,  String? phoneCountryCode,  String? phoneNumber,  String? preferredLanguage,  DateTime? birthDate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RegisterRequest() when $default != null:
-return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.phoneNumber,_that.preferredLanguage,_that.ageGroup);case _:
+return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.phoneCountryCode,_that.phoneNumber,_that.preferredLanguage,_that.birthDate);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String password,  String firstName,  String lastName,  String? phoneNumber,  String? preferredLanguage,  String? ageGroup)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String password,  String firstName,  String lastName,  String? phoneCountryCode,  String? phoneNumber,  String? preferredLanguage,  DateTime? birthDate)  $default,) {final _that = this;
 switch (_that) {
 case _RegisterRequest():
-return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.phoneNumber,_that.preferredLanguage,_that.ageGroup);case _:
+return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.phoneCountryCode,_that.phoneNumber,_that.preferredLanguage,_that.birthDate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String password,  String firstName,  String lastName,  String? phoneNumber,  String? preferredLanguage,  String? ageGroup)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String password,  String firstName,  String lastName,  String? phoneCountryCode,  String? phoneNumber,  String? preferredLanguage,  DateTime? birthDate)?  $default,) {final _that = this;
 switch (_that) {
 case _RegisterRequest() when $default != null:
-return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.phoneNumber,_that.preferredLanguage,_that.ageGroup);case _:
+return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.phoneCountryCode,_that.phoneNumber,_that.preferredLanguage,_that.birthDate);case _:
   return null;
 
 }
@@ -215,16 +216,17 @@ return $default(_that.email,_that.password,_that.firstName,_that.lastName,_that.
 @JsonSerializable()
 
 class _RegisterRequest implements RegisterRequest {
-  const _RegisterRequest({required this.email, required this.password, required this.firstName, required this.lastName, this.phoneNumber, this.preferredLanguage, this.ageGroup});
+  const _RegisterRequest({required this.email, required this.password, required this.firstName, required this.lastName, this.phoneCountryCode, this.phoneNumber, this.preferredLanguage, this.birthDate});
   factory _RegisterRequest.fromJson(Map<String, dynamic> json) => _$RegisterRequestFromJson(json);
 
 @override final  String email;
 @override final  String password;
 @override final  String firstName;
 @override final  String lastName;
+@override final  String? phoneCountryCode;
 @override final  String? phoneNumber;
 @override final  String? preferredLanguage;
-@override final  String? ageGroup;
+@override final  DateTime? birthDate;
 
 /// Create a copy of RegisterRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterRequest&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RegisterRequest&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneCountryCode, phoneCountryCode) || other.phoneCountryCode == phoneCountryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,email,password,firstName,lastName,phoneNumber,preferredLanguage,ageGroup);
+int get hashCode => Object.hash(runtimeType,email,password,firstName,lastName,phoneCountryCode,phoneNumber,preferredLanguage,birthDate);
 
 @override
 String toString() {
-  return 'RegisterRequest(email: $email, password: $password, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, preferredLanguage: $preferredLanguage, ageGroup: $ageGroup)';
+  return 'RegisterRequest(email: $email, password: $password, firstName: $firstName, lastName: $lastName, phoneCountryCode: $phoneCountryCode, phoneNumber: $phoneNumber, preferredLanguage: $preferredLanguage, birthDate: $birthDate)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$RegisterRequestCopyWith<$Res> implements $RegisterRequest
   factory _$RegisterRequestCopyWith(_RegisterRequest value, $Res Function(_RegisterRequest) _then) = __$RegisterRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String password, String firstName, String lastName, String? phoneNumber, String? preferredLanguage, String? ageGroup
+ String email, String password, String firstName, String lastName, String? phoneCountryCode, String? phoneNumber, String? preferredLanguage, DateTime? birthDate
 });
 
 
@@ -276,16 +278,17 @@ class __$RegisterRequestCopyWithImpl<$Res>
 
 /// Create a copy of RegisterRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? firstName = null,Object? lastName = null,Object? phoneNumber = freezed,Object? preferredLanguage = freezed,Object? ageGroup = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,Object? firstName = null,Object? lastName = null,Object? phoneCountryCode = freezed,Object? phoneNumber = freezed,Object? preferredLanguage = freezed,Object? birthDate = freezed,}) {
   return _then(_RegisterRequest(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
-as String,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,phoneCountryCode: freezed == phoneCountryCode ? _self.phoneCountryCode : phoneCountryCode // ignore: cast_nullable_to_non_nullable
+as String?,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
 as String?,preferredLanguage: freezed == preferredLanguage ? _self.preferredLanguage : preferredLanguage // ignore: cast_nullable_to_non_nullable
-as String?,ageGroup: freezed == ageGroup ? _self.ageGroup : ageGroup // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

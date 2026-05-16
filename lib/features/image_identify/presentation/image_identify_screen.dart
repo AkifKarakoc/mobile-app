@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,13 +9,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobile/app/theme/app_colors.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
 import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/features/image_identify/application/image_identify_provider.dart';
 import 'package:mobile/features/image_identify/data/dto/image_analysis_response.dart';
-import 'package:mobile/features_shared/permissions/permission_helper.dart' as perms;
+import 'package:mobile/features_shared/permissions/permission_helper.dart'
+    as perms;
 
 class ImageIdentifyScreen extends ConsumerStatefulWidget {
   const ImageIdentifyScreen({super.key});
@@ -71,8 +72,9 @@ class _ImageIdentifyScreenState extends ConsumerState<ImageIdentifyScreen> {
       final granted = await perms.requestCameraPermission();
       if (!granted) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('image_identify.camera_permission'.tr())),
+          showFloatingSnackBar(
+            context,
+            'image_identify.camera_permission'.tr(),
           );
         }
         return;
@@ -94,32 +96,23 @@ class _ImageIdentifyScreenState extends ConsumerState<ImageIdentifyScreen> {
 
   Future<void> _identify() async {
     if (_selectedPhoto == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('image_identify.no_photo'.tr())),
-      );
+      showFloatingSnackBar(context, 'image_identify.no_photo'.tr());
       return;
     }
 
     if (_currentPosition == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('image_identify.gps_error'.tr())),
-      );
+      showFloatingSnackBar(context, 'image_identify.gps_error'.tr());
       return;
     }
 
-    final bytes = await _selectedPhoto!.readAsBytes();
-    final multipartFile = MultipartFile.fromBytes(
-      bytes,
-      filename: 'photo.jpg',
-      contentType: DioMediaType('image', 'jpeg'),
-    );
-
     if (mounted) {
-      await ref.read(imageIdentifyProvider.notifier).identifyImage(
-        photo: multipartFile,
-        latitude: _currentPosition!.latitude,
-        longitude: _currentPosition!.longitude,
-      );
+      await ref
+          .read(imageIdentifyProvider.notifier)
+          .identifyImage(
+            photoFile: _selectedPhoto!,
+            latitude: _currentPosition!.latitude,
+            longitude: _currentPosition!.longitude,
+          );
     }
   }
 
@@ -197,12 +190,46 @@ class _ImageIdentifyScreenState extends ConsumerState<ImageIdentifyScreen> {
       );
     }
 
-    return EmptyState(
-      icon: Icons.camera_alt_outlined,
-      title: 'image_identify.take_photo'.tr(),
-      description: 'image_identify.choose_gallery'.tr(),
-      actionLabel: 'image_identify.take_photo'.tr(),
-      onAction: _takePhoto,
+    // Custom empty state with two buttons
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.camera_alt_outlined,
+          size: 64,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          'image_identify.take_photo'.tr(),
+          style: AppTypography.titleLarge,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          'image_identify.choose_gallery'.tr(),
+          style: AppTypography.bodyMedium.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FilledButton.icon(
+              onPressed: _takePhoto,
+              icon: const Icon(Icons.camera_alt),
+              label: Text('image_identify.take_photo'.tr()),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            OutlinedButton.icon(
+              onPressed: _pickFromGallery,
+              icon: const Icon(Icons.photo_library),
+              label: Text('image_identify.choose_gallery'.tr()),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -256,17 +283,14 @@ class _ImageIdentifyScreenState extends ConsumerState<ImageIdentifyScreen> {
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
-        TextButton(
-          onPressed: _fetchLocation,
-          child: Text('common.retry'.tr()),
-        ),
+        TextButton(onPressed: _fetchLocation, child: Text('common.retry'.tr())),
       ],
     );
   }
 
-  Widget _buildResultSection(AsyncValue<ImageAnalysisResponse> state) {
+  Widget _buildResultSection(AsyncValue<ImageAnalysisResponse?> state) {
     return state.when(
-      data: (result) => _ResultCard(result: result),
+      data: (result) => result == null ? const SizedBox.shrink() : _ResultCard(result: result),
       loading: () => const AppLoadingIndicator(),
       error: (error, stack) => ErrorView(
         message: error.toString(),
@@ -300,10 +324,7 @@ class _ResultCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              result.placeName,
-              style: AppTypography.headlineSmall,
-            ),
+            Text(result.placeName, style: AppTypography.headlineSmall),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'image_identify.confidence'.tr(),
@@ -312,7 +333,9 @@ class _ResultCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             LinearProgressIndicator(
               value: result.confidence,
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               valueColor: AlwaysStoppedAnimation<Color>(
                 isLowConfidence
                     ? AppColors.warningLight
@@ -344,10 +367,7 @@ class _ResultCard extends StatelessWidget {
               style: AppTypography.labelMedium,
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              result.description,
-              style: AppTypography.bodyMedium,
-            ),
+            Text(result.description, style: AppTypography.bodyMedium),
             if (result.imageUrl.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
               ClipRRect(

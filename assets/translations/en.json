@@ -6,6 +6,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "retry": "Retry",
+    "continue": "Continue",
+    "see_all": "See All",
     "loading": "Loading",
     "error_generic": "An error occurred",
     "error_network": "No network connection",
@@ -27,7 +29,7 @@
     "email_label": "Email",
     "email_hint": "example@email.com",
     "password_label": "Password",
-    "password_hint": "At least 8 characters",
+    "password_hint": "Min. 8 chars, uppercase, lowercase & digit required",
     "confirm_password_label": "Confirm Password",
     "confirm_password_hint": "Re-enter your password",
     "forgot_password": "Forgot password?",
@@ -40,6 +42,11 @@
     "first_name_hint": "Your first name",
     "last_name_label": "Last Name",
     "last_name_hint": "Your last name",
+    "birth_date_label": "Birth Date",
+    "birth_date_hint": "Select your birth date",
+    "country_code_label": "Code",
+    "phone_label": "Phone",
+    "phone_hint": "5XX XXX XX XX",
     "submit_login": "Sign In",
     "submit_register": "Sign Up",
     "validation_email_required": "Email is required",
@@ -52,12 +59,25 @@
     "validation_required": "This field is required",
     "error_invalid_credentials": "Invalid email or password",
     "error_email_taken": "This email is already registered",
-    "coming_soon": "This feature will be available soon"
+    "error_password_requirements": "Password must contain at least one uppercase letter, one lowercase letter, and one digit",
+    "coming_soon": "This feature will be available soon",
+    "or": "or",
+    "continue_with_google": "Continue with Google"
   },
   "home": {
     "title": "Home",
     "my_quests": "My Quests",
     "my_routes": "My Routes",
+    "welcome": "Welcome, {}",
+    "welcome_subtitle": "What would you like to explore?",
+    "xp_to_next": "{} XP to next level",
+    "explore": "Explore",
+    "active_quest": "Active Quest",
+    "active_route": "Active Route",
+    "no_active_quest": "No active adventure",
+    "start_exploring": "Start a new adventure!",
+    "popular_nearby": "Popular Nearby",
+    "unknown_route": "Unknown Route",
     "quests_title": "Quests",
     "quests_subtitle": "Discover quests",
     "routes_title": "Routes",
@@ -126,15 +146,13 @@
     "title": "Edit Profile",
     "first_name": "First Name",
     "last_name": "Last Name",
+    "country_code": "Code",
     "phone": "Phone Number",
-    "age_group": "Age Group",
+    "birth_date": "Birth Date",
+    "birth_date_hint": "Select your birth date",
     "preferred_language": "Preferred Language",
     "save": "Save",
-    "upload_photo": "Upload Photo",
-    "age_group_18_25": "18-25",
-    "age_group_26_35": "26-35",
-    "age_group_36_50": "36-50",
-    "age_group_50_plus": "50+"
+    "upload_photo": "Upload Photo"
   },
   "favorites": {
     "title": "My Favorites",
@@ -261,6 +279,7 @@
     "completed": "Completed",
     "no_routes": "You haven't added any routes yet",
     "accept_route": "Accept Route",
+    "route_accepted": "Accepted",
     "view_map": "View Map",
     "total_stops": "Total Stops",
     "estimated_time": "Estimated Time"
@@ -294,7 +313,8 @@
     "hint": "Hint",
     "requires_photo": "Photo Required",
     "not_completed": "Not Completed",
-    "my_quests": "My Quests"
+    "my_quests": "My Quests",
+    "verify_step": "Verify"
   },
   "user_quests": {
     "title": "My Quests",
@@ -334,7 +354,11 @@
     "ok": "OK",
     "retry": "Retry",
     "gps_error": "Location could not be obtained",
-    "gps_accuracy_error": "Location accuracy insufficient"
+    "gps_accuracy_error": "Location accuracy insufficient",
+    "location_acquired": "Location acquired",
+    "target_place": "Target: {place}",
+    "distance_meters": "Distance to target: {distance}m",
+    "distance_kilometers": "Distance to target: {distance}km"
   },
   "todos": {
     "title": "To-Do",
@@ -364,5 +388,24 @@
     "minutes_ago": "{count} minutes ago",
     "hours_ago": "{count} hours ago",
     "days_ago": "{count} days ago"
+  },
+  "nav": {
+    "home": "Home",
+    "nearby": "Nearby",
+    "chat": "Chat",
+    "profile": "Profile"
+  },
+  "route_stop": {
+    "title": "Complete Stop",
+    "location_permission": "Location permission required",
+    "location_acquired": "Location acquired",
+    "complete": "Complete",
+    "stop_completed": "Stop completed! +{0} XP",
+    "route_completed": "Route completed!",
+    "instructions": "Verify your location to complete this stop",
+    "gps_error": "Location could not be obtained",
+    "gps_accuracy_error": "Location accuracy insufficient",
+    "distance_meters": "Distance to target: {distance}m",
+    "distance_kilometers": "Distance to target: {distance}km"
   }
 }

@@ -1,8 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/core/storage/secure_storage.dart';
 import 'package:mobile/features/auth/data/auth_repository.dart';
+import 'package:mobile/features/auth/presentation/google_sign_in_helper.dart';
+import 'package:mobile/features/routes/application/routes_provider.dart';
+import 'package:mobile/features/routes/application/user_routes_provider.dart';
+import 'package:mobile/features/quests/application/quests_provider.dart';
+import 'package:mobile/features/quests/application/user_quests_provider.dart';
+import 'package:mobile/features/user/application/profile_provider.dart';
 
 /// Notifier for authentication state management.
 ///
@@ -17,20 +25,70 @@ class AuthNotifier extends AsyncNotifier<bool> {
     _authRepository = ref.watch(authRepositoryProvider);
     _secureStorage = ref.watch(secureStorageProvider);
 
-    // On app startup, check if there's a valid token in secure storage
+    // Listen for token cleared events (e.g., from refresh interceptor)
+    ref.onDispose(() {
+      // Stream subscription is handled below
+    });
+
+    // Subscribe to token cleared events
+    _secureStorage.onTokenCleared.listen((_) {
+      debugPrint('AuthNotifier: token cleared event received, setting state to unauthenticated');
+      state = const AsyncValue.data(false);
+    });
+
+    // On app startup, check if there's a valid token in storage
     return _restoreSession();
   }
 
   /// Restores session from stored tokens.
   ///
-  /// Returns true if access token exists, false otherwise.
-  /// In a real scenario, you might decode the JWT to check expiry.
+  /// Returns true if access token exists and is not expired, false otherwise.
   Future<bool> _restoreSession() async {
     try {
       final accessToken = await _secureStorage.getAccessToken();
-      return accessToken != null;
+      debugPrint('AuthNotifier: restoreSession - accessToken exists: ${accessToken != null}');
+      
+      if (accessToken == null || accessToken.isEmpty) {
+        return false;
+      }
+
+      // Check if token is expired
+      if (!_isTokenValid(accessToken)) {
+        debugPrint('AuthNotifier: restoreSession - token is expired, clearing tokens');
+        await _secureStorage.clearTokens();
+        return false;
+      }
+
+      return true;
     } catch (e) {
-      // Log error but don't fail
+      debugPrint('AuthNotifier: restoreSession failed: $e');
+      return false;
+    }
+  }
+
+  /// Checks if a JWT token is still valid (not expired).
+  ///
+  /// Decodes the JWT payload and checks the 'exp' claim.
+  bool _isTokenValid(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return false;
+
+      final payload = parts[1];
+      final normalized = base64Url.normalize(payload);
+      final decoded = utf8.decode(base64Url.decode(normalized));
+      final map = jsonDecode(decoded) as Map<String, dynamic>;
+
+      final exp = map['exp'] as int?;
+      if (exp == null) return false;
+
+      final expiry = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      final isValid = expiry.isAfter(DateTime.now());
+      
+      debugPrint('AuthNotifier: token expiry: $expiry, isValid: $isValid');
+      return isValid;
+    } catch (e) {
+      debugPrint('AuthNotifier: token validation failed: $e');
       return false;
     }
   }
@@ -47,8 +105,10 @@ class AuthNotifier extends AsyncNotifier<bool> {
 
       // After successful login, state is authenticated
       state = const AsyncValue.data(true);
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
+      _clearUserCache();
+    } catch (e) {
+      // Reset to data(false) so the form remains visible
+      state = const AsyncValue.data(false);
       rethrow;
     }
   }
@@ -62,6 +122,9 @@ class AuthNotifier extends AsyncNotifier<bool> {
     required String password,
     required String firstName,
     required String lastName,
+    String? phoneCountryCode,
+    String? phoneNumber,
+    DateTime? birthDate,
   }) async {
     state = const AsyncLoading();
 
@@ -71,14 +134,50 @@ class AuthNotifier extends AsyncNotifier<bool> {
         password: password,
         firstName: firstName,
         lastName: lastName,
+        phoneCountryCode: phoneCountryCode,
+        phoneNumber: phoneNumber,
+        birthDate: birthDate,
       );
 
       // After successful registration, state is authenticated
       state = const AsyncValue.data(true);
-    } catch (e, stackTrace) {
-      state = AsyncValue.error(e, stackTrace);
+      _clearUserCache();
+    } catch (e) {
+      // Reset to data(false) so the form remains visible
+      state = const AsyncValue.data(false);
       rethrow;
     }
+  }
+
+  /// Login with Google OAuth.
+  ///
+  /// On success, tokens are stored and state becomes authenticated.
+  /// On failure, state becomes error and exception is rethrown for UI to handle.
+  Future<void> loginWithGoogle({required String idToken}) async {
+    state = const AsyncLoading();
+
+    try {
+      await _authRepository.loginWithGoogle(idToken: idToken);
+
+      // After successful login, state is authenticated
+      state = const AsyncValue.data(true);
+      _clearUserCache();
+    } catch (e) {
+      // Reset to data(false) so the form remains visible
+      state = const AsyncValue.data(false);
+      rethrow;
+    }
+  }
+
+  /// Clears all user-specific cached providers to prevent stale data.
+  void _clearUserCache() {
+    ref.invalidate(profileProvider);
+    ref.invalidate(routesProvider);
+    ref.invalidate(routeDetailProvider);
+    ref.invalidate(userRoutesProvider);
+    ref.invalidate(questsProvider);
+    ref.invalidate(questDetailProvider);
+    ref.invalidate(userQuestsProvider);
   }
 
   /// Logout the current user.
@@ -91,6 +190,16 @@ class AuthNotifier extends AsyncNotifier<bool> {
     } catch (e) {
       // Logout is best-effort: callers should end in an unauthenticated state.
     } finally {
+      // Clear Google Sign-In session on device
+      try {
+        await GoogleSignInHelper().signOut().timeout(const Duration(seconds: 5));
+      } catch (e) {
+        debugPrint('AuthNotifier: Google sign-out failed: $e');
+      }
+
+      // Clear user-specific cache to prevent stale data on next login
+      _clearUserCache();
+      
       // Always set state to unauthenticated, regardless of API outcome
       state = const AsyncValue.data(false);
     }

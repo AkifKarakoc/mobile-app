@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RouteResponse {
 
- String get id; String get name; String? get description; DateTime get createdAt; double get centerLatitude; double get centerLongitude; int get radiusMeters; int get estimatedMinutes; int get expReward; String? get thumbnailUrl; int get totalStops; List<RoutePlaceResponse> get places;
+ String get id; String get name; String? get description; DateTime? get createdAt; double get centerLatitude; double get centerLongitude; int get radiusMeters; int get estimatedMinutes; int get expReward; String? get thumbnailUrl; int get gpsThresholdMeters; int? get totalStops; String? get userStatus; List<RoutePlaceResponse> get places;
 /// Create a copy of RouteResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $RouteResponseCopyWith<RouteResponse> get copyWith => _$RouteResponseCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.centerLatitude, centerLatitude) || other.centerLatitude == centerLatitude)&&(identical(other.centerLongitude, centerLongitude) || other.centerLongitude == centerLongitude)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.totalStops, totalStops) || other.totalStops == totalStops)&&const DeepCollectionEquality().equals(other.places, places));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RouteResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.centerLatitude, centerLatitude) || other.centerLatitude == centerLatitude)&&(identical(other.centerLongitude, centerLongitude) || other.centerLongitude == centerLongitude)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.gpsThresholdMeters, gpsThresholdMeters) || other.gpsThresholdMeters == gpsThresholdMeters)&&(identical(other.totalStops, totalStops) || other.totalStops == totalStops)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus)&&const DeepCollectionEquality().equals(other.places, places));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,description,createdAt,centerLatitude,centerLongitude,radiusMeters,estimatedMinutes,expReward,thumbnailUrl,totalStops,const DeepCollectionEquality().hash(places));
+int get hashCode => Object.hash(runtimeType,id,name,description,createdAt,centerLatitude,centerLongitude,radiusMeters,estimatedMinutes,expReward,thumbnailUrl,gpsThresholdMeters,totalStops,userStatus,const DeepCollectionEquality().hash(places));
 
 @override
 String toString() {
-  return 'RouteResponse(id: $id, name: $name, description: $description, createdAt: $createdAt, centerLatitude: $centerLatitude, centerLongitude: $centerLongitude, radiusMeters: $radiusMeters, estimatedMinutes: $estimatedMinutes, expReward: $expReward, thumbnailUrl: $thumbnailUrl, totalStops: $totalStops, places: $places)';
+  return 'RouteResponse(id: $id, name: $name, description: $description, createdAt: $createdAt, centerLatitude: $centerLatitude, centerLongitude: $centerLongitude, radiusMeters: $radiusMeters, estimatedMinutes: $estimatedMinutes, expReward: $expReward, thumbnailUrl: $thumbnailUrl, gpsThresholdMeters: $gpsThresholdMeters, totalStops: $totalStops, userStatus: $userStatus, places: $places)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $RouteResponseCopyWith<$Res>  {
   factory $RouteResponseCopyWith(RouteResponse value, $Res Function(RouteResponse) _then) = _$RouteResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String? description, DateTime createdAt, double centerLatitude, double centerLongitude, int radiusMeters, int estimatedMinutes, int expReward, String? thumbnailUrl, int totalStops, List<RoutePlaceResponse> places
+ String id, String name, String? description, DateTime? createdAt, double centerLatitude, double centerLongitude, int radiusMeters, int estimatedMinutes, int expReward, String? thumbnailUrl, int gpsThresholdMeters, int? totalStops, String? userStatus, List<RoutePlaceResponse> places
 });
 
 
@@ -65,20 +65,22 @@ class _$RouteResponseCopyWithImpl<$Res>
 
 /// Create a copy of RouteResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? createdAt = null,Object? centerLatitude = null,Object? centerLongitude = null,Object? radiusMeters = null,Object? estimatedMinutes = null,Object? expReward = null,Object? thumbnailUrl = freezed,Object? totalStops = null,Object? places = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? createdAt = freezed,Object? centerLatitude = null,Object? centerLongitude = null,Object? radiusMeters = null,Object? estimatedMinutes = null,Object? expReward = null,Object? thumbnailUrl = freezed,Object? gpsThresholdMeters = null,Object? totalStops = freezed,Object? userStatus = freezed,Object? places = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,centerLatitude: null == centerLatitude ? _self.centerLatitude : centerLatitude // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,centerLatitude: null == centerLatitude ? _self.centerLatitude : centerLatitude // ignore: cast_nullable_to_non_nullable
 as double,centerLongitude: null == centerLongitude ? _self.centerLongitude : centerLongitude // ignore: cast_nullable_to_non_nullable
 as double,radiusMeters: null == radiusMeters ? _self.radiusMeters : radiusMeters // ignore: cast_nullable_to_non_nullable
 as int,estimatedMinutes: null == estimatedMinutes ? _self.estimatedMinutes : estimatedMinutes // ignore: cast_nullable_to_non_nullable
 as int,expReward: null == expReward ? _self.expReward : expReward // ignore: cast_nullable_to_non_nullable
 as int,thumbnailUrl: freezed == thumbnailUrl ? _self.thumbnailUrl : thumbnailUrl // ignore: cast_nullable_to_non_nullable
-as String?,totalStops: null == totalStops ? _self.totalStops : totalStops // ignore: cast_nullable_to_non_nullable
-as int,places: null == places ? _self.places : places // ignore: cast_nullable_to_non_nullable
+as String?,gpsThresholdMeters: null == gpsThresholdMeters ? _self.gpsThresholdMeters : gpsThresholdMeters // ignore: cast_nullable_to_non_nullable
+as int,totalStops: freezed == totalStops ? _self.totalStops : totalStops // ignore: cast_nullable_to_non_nullable
+as int?,userStatus: freezed == userStatus ? _self.userStatus : userStatus // ignore: cast_nullable_to_non_nullable
+as String?,places: null == places ? _self.places : places // ignore: cast_nullable_to_non_nullable
 as List<RoutePlaceResponse>,
   ));
 }
@@ -164,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? description,  DateTime createdAt,  double centerLatitude,  double centerLongitude,  int radiusMeters,  int estimatedMinutes,  int expReward,  String? thumbnailUrl,  int totalStops,  List<RoutePlaceResponse> places)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? description,  DateTime? createdAt,  double centerLatitude,  double centerLongitude,  int radiusMeters,  int estimatedMinutes,  int expReward,  String? thumbnailUrl,  int gpsThresholdMeters,  int? totalStops,  String? userStatus,  List<RoutePlaceResponse> places)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RouteResponse() when $default != null:
-return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.centerLatitude,_that.centerLongitude,_that.radiusMeters,_that.estimatedMinutes,_that.expReward,_that.thumbnailUrl,_that.totalStops,_that.places);case _:
+return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.centerLatitude,_that.centerLongitude,_that.radiusMeters,_that.estimatedMinutes,_that.expReward,_that.thumbnailUrl,_that.gpsThresholdMeters,_that.totalStops,_that.userStatus,_that.places);case _:
   return orElse();
 
 }
@@ -185,10 +187,10 @@ return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.cent
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? description,  DateTime createdAt,  double centerLatitude,  double centerLongitude,  int radiusMeters,  int estimatedMinutes,  int expReward,  String? thumbnailUrl,  int totalStops,  List<RoutePlaceResponse> places)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? description,  DateTime? createdAt,  double centerLatitude,  double centerLongitude,  int radiusMeters,  int estimatedMinutes,  int expReward,  String? thumbnailUrl,  int gpsThresholdMeters,  int? totalStops,  String? userStatus,  List<RoutePlaceResponse> places)  $default,) {final _that = this;
 switch (_that) {
 case _RouteResponse():
-return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.centerLatitude,_that.centerLongitude,_that.radiusMeters,_that.estimatedMinutes,_that.expReward,_that.thumbnailUrl,_that.totalStops,_that.places);case _:
+return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.centerLatitude,_that.centerLongitude,_that.radiusMeters,_that.estimatedMinutes,_that.expReward,_that.thumbnailUrl,_that.gpsThresholdMeters,_that.totalStops,_that.userStatus,_that.places);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +207,10 @@ return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.cent
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? description,  DateTime createdAt,  double centerLatitude,  double centerLongitude,  int radiusMeters,  int estimatedMinutes,  int expReward,  String? thumbnailUrl,  int totalStops,  List<RoutePlaceResponse> places)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? description,  DateTime? createdAt,  double centerLatitude,  double centerLongitude,  int radiusMeters,  int estimatedMinutes,  int expReward,  String? thumbnailUrl,  int gpsThresholdMeters,  int? totalStops,  String? userStatus,  List<RoutePlaceResponse> places)?  $default,) {final _that = this;
 switch (_that) {
 case _RouteResponse() when $default != null:
-return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.centerLatitude,_that.centerLongitude,_that.radiusMeters,_that.estimatedMinutes,_that.expReward,_that.thumbnailUrl,_that.totalStops,_that.places);case _:
+return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.centerLatitude,_that.centerLongitude,_that.radiusMeters,_that.estimatedMinutes,_that.expReward,_that.thumbnailUrl,_that.gpsThresholdMeters,_that.totalStops,_that.userStatus,_that.places);case _:
   return null;
 
 }
@@ -220,20 +222,22 @@ return $default(_that.id,_that.name,_that.description,_that.createdAt,_that.cent
 @JsonSerializable()
 
 class _RouteResponse implements RouteResponse {
-  const _RouteResponse({required this.id, required this.name, this.description, required this.createdAt, required this.centerLatitude, required this.centerLongitude, required this.radiusMeters, required this.estimatedMinutes, required this.expReward, this.thumbnailUrl, required this.totalStops, required final  List<RoutePlaceResponse> places}): _places = places;
+  const _RouteResponse({required this.id, required this.name, this.description, this.createdAt, required this.centerLatitude, required this.centerLongitude, required this.radiusMeters, required this.estimatedMinutes, required this.expReward, this.thumbnailUrl, this.gpsThresholdMeters = 200, this.totalStops, this.userStatus, required final  List<RoutePlaceResponse> places}): _places = places;
   factory _RouteResponse.fromJson(Map<String, dynamic> json) => _$RouteResponseFromJson(json);
 
 @override final  String id;
 @override final  String name;
 @override final  String? description;
-@override final  DateTime createdAt;
+@override final  DateTime? createdAt;
 @override final  double centerLatitude;
 @override final  double centerLongitude;
 @override final  int radiusMeters;
 @override final  int estimatedMinutes;
 @override final  int expReward;
 @override final  String? thumbnailUrl;
-@override final  int totalStops;
+@override@JsonKey() final  int gpsThresholdMeters;
+@override final  int? totalStops;
+@override final  String? userStatus;
  final  List<RoutePlaceResponse> _places;
 @override List<RoutePlaceResponse> get places {
   if (_places is EqualUnmodifiableListView) return _places;
@@ -255,16 +259,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RouteResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.centerLatitude, centerLatitude) || other.centerLatitude == centerLatitude)&&(identical(other.centerLongitude, centerLongitude) || other.centerLongitude == centerLongitude)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.totalStops, totalStops) || other.totalStops == totalStops)&&const DeepCollectionEquality().equals(other._places, _places));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RouteResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.centerLatitude, centerLatitude) || other.centerLatitude == centerLatitude)&&(identical(other.centerLongitude, centerLongitude) || other.centerLongitude == centerLongitude)&&(identical(other.radiusMeters, radiusMeters) || other.radiusMeters == radiusMeters)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.gpsThresholdMeters, gpsThresholdMeters) || other.gpsThresholdMeters == gpsThresholdMeters)&&(identical(other.totalStops, totalStops) || other.totalStops == totalStops)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus)&&const DeepCollectionEquality().equals(other._places, _places));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,description,createdAt,centerLatitude,centerLongitude,radiusMeters,estimatedMinutes,expReward,thumbnailUrl,totalStops,const DeepCollectionEquality().hash(_places));
+int get hashCode => Object.hash(runtimeType,id,name,description,createdAt,centerLatitude,centerLongitude,radiusMeters,estimatedMinutes,expReward,thumbnailUrl,gpsThresholdMeters,totalStops,userStatus,const DeepCollectionEquality().hash(_places));
 
 @override
 String toString() {
-  return 'RouteResponse(id: $id, name: $name, description: $description, createdAt: $createdAt, centerLatitude: $centerLatitude, centerLongitude: $centerLongitude, radiusMeters: $radiusMeters, estimatedMinutes: $estimatedMinutes, expReward: $expReward, thumbnailUrl: $thumbnailUrl, totalStops: $totalStops, places: $places)';
+  return 'RouteResponse(id: $id, name: $name, description: $description, createdAt: $createdAt, centerLatitude: $centerLatitude, centerLongitude: $centerLongitude, radiusMeters: $radiusMeters, estimatedMinutes: $estimatedMinutes, expReward: $expReward, thumbnailUrl: $thumbnailUrl, gpsThresholdMeters: $gpsThresholdMeters, totalStops: $totalStops, userStatus: $userStatus, places: $places)';
 }
 
 
@@ -275,7 +279,7 @@ abstract mixin class _$RouteResponseCopyWith<$Res> implements $RouteResponseCopy
   factory _$RouteResponseCopyWith(_RouteResponse value, $Res Function(_RouteResponse) _then) = __$RouteResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String? description, DateTime createdAt, double centerLatitude, double centerLongitude, int radiusMeters, int estimatedMinutes, int expReward, String? thumbnailUrl, int totalStops, List<RoutePlaceResponse> places
+ String id, String name, String? description, DateTime? createdAt, double centerLatitude, double centerLongitude, int radiusMeters, int estimatedMinutes, int expReward, String? thumbnailUrl, int gpsThresholdMeters, int? totalStops, String? userStatus, List<RoutePlaceResponse> places
 });
 
 
@@ -292,20 +296,22 @@ class __$RouteResponseCopyWithImpl<$Res>
 
 /// Create a copy of RouteResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? createdAt = null,Object? centerLatitude = null,Object? centerLongitude = null,Object? radiusMeters = null,Object? estimatedMinutes = null,Object? expReward = null,Object? thumbnailUrl = freezed,Object? totalStops = null,Object? places = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = freezed,Object? createdAt = freezed,Object? centerLatitude = null,Object? centerLongitude = null,Object? radiusMeters = null,Object? estimatedMinutes = null,Object? expReward = null,Object? thumbnailUrl = freezed,Object? gpsThresholdMeters = null,Object? totalStops = freezed,Object? userStatus = freezed,Object? places = null,}) {
   return _then(_RouteResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,centerLatitude: null == centerLatitude ? _self.centerLatitude : centerLatitude // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,centerLatitude: null == centerLatitude ? _self.centerLatitude : centerLatitude // ignore: cast_nullable_to_non_nullable
 as double,centerLongitude: null == centerLongitude ? _self.centerLongitude : centerLongitude // ignore: cast_nullable_to_non_nullable
 as double,radiusMeters: null == radiusMeters ? _self.radiusMeters : radiusMeters // ignore: cast_nullable_to_non_nullable
 as int,estimatedMinutes: null == estimatedMinutes ? _self.estimatedMinutes : estimatedMinutes // ignore: cast_nullable_to_non_nullable
 as int,expReward: null == expReward ? _self.expReward : expReward // ignore: cast_nullable_to_non_nullable
 as int,thumbnailUrl: freezed == thumbnailUrl ? _self.thumbnailUrl : thumbnailUrl // ignore: cast_nullable_to_non_nullable
-as String?,totalStops: null == totalStops ? _self.totalStops : totalStops // ignore: cast_nullable_to_non_nullable
-as int,places: null == places ? _self._places : places // ignore: cast_nullable_to_non_nullable
+as String?,gpsThresholdMeters: null == gpsThresholdMeters ? _self.gpsThresholdMeters : gpsThresholdMeters // ignore: cast_nullable_to_non_nullable
+as int,totalStops: freezed == totalStops ? _self.totalStops : totalStops // ignore: cast_nullable_to_non_nullable
+as int?,userStatus: freezed == userStatus ? _self.userStatus : userStatus // ignore: cast_nullable_to_non_nullable
+as String?,places: null == places ? _self._places : places // ignore: cast_nullable_to_non_nullable
 as List<RoutePlaceResponse>,
   ));
 }
@@ -317,7 +323,7 @@ as List<RoutePlaceResponse>,
 /// @nodoc
 mixin _$RoutePlaceResponse {
 
- String get placeId; int get stopOrder; int get estimatedMinutes; String? get notes; double? get latitude; double? get longitude; String? get placeName;
+ String? get id; String get placeId; int get stopOrder; int? get estimatedMinutes; String? get notes; double? get latitude; double? get longitude; String? get placeName; bool get completed;
 /// Create a copy of RoutePlaceResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -330,16 +336,16 @@ $RoutePlaceResponseCopyWith<RoutePlaceResponse> get copyWith => _$RoutePlaceResp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoutePlaceResponse&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stopOrder, stopOrder) || other.stopOrder == stopOrder)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.placeName, placeName) || other.placeName == placeName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoutePlaceResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stopOrder, stopOrder) || other.stopOrder == stopOrder)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.placeName, placeName) || other.placeName == placeName)&&(identical(other.completed, completed) || other.completed == completed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,placeId,stopOrder,estimatedMinutes,notes,latitude,longitude,placeName);
+int get hashCode => Object.hash(runtimeType,id,placeId,stopOrder,estimatedMinutes,notes,latitude,longitude,placeName,completed);
 
 @override
 String toString() {
-  return 'RoutePlaceResponse(placeId: $placeId, stopOrder: $stopOrder, estimatedMinutes: $estimatedMinutes, notes: $notes, latitude: $latitude, longitude: $longitude, placeName: $placeName)';
+  return 'RoutePlaceResponse(id: $id, placeId: $placeId, stopOrder: $stopOrder, estimatedMinutes: $estimatedMinutes, notes: $notes, latitude: $latitude, longitude: $longitude, placeName: $placeName, completed: $completed)';
 }
 
 
@@ -350,7 +356,7 @@ abstract mixin class $RoutePlaceResponseCopyWith<$Res>  {
   factory $RoutePlaceResponseCopyWith(RoutePlaceResponse value, $Res Function(RoutePlaceResponse) _then) = _$RoutePlaceResponseCopyWithImpl;
 @useResult
 $Res call({
- String placeId, int stopOrder, int estimatedMinutes, String? notes, double? latitude, double? longitude, String? placeName
+ String? id, String placeId, int stopOrder, int? estimatedMinutes, String? notes, double? latitude, double? longitude, String? placeName, bool completed
 });
 
 
@@ -367,16 +373,18 @@ class _$RoutePlaceResponseCopyWithImpl<$Res>
 
 /// Create a copy of RoutePlaceResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? placeId = null,Object? stopOrder = null,Object? estimatedMinutes = null,Object? notes = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? placeName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? placeId = null,Object? stopOrder = null,Object? estimatedMinutes = freezed,Object? notes = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? placeName = freezed,Object? completed = null,}) {
   return _then(_self.copyWith(
-placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
 as String,stopOrder: null == stopOrder ? _self.stopOrder : stopOrder // ignore: cast_nullable_to_non_nullable
-as int,estimatedMinutes: null == estimatedMinutes ? _self.estimatedMinutes : estimatedMinutes // ignore: cast_nullable_to_non_nullable
-as int,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as int,estimatedMinutes: freezed == estimatedMinutes ? _self.estimatedMinutes : estimatedMinutes // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double?,placeName: freezed == placeName ? _self.placeName : placeName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -461,10 +469,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String placeId,  int stopOrder,  int estimatedMinutes,  String? notes,  double? latitude,  double? longitude,  String? placeName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String placeId,  int stopOrder,  int? estimatedMinutes,  String? notes,  double? latitude,  double? longitude,  String? placeName,  bool completed)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoutePlaceResponse() when $default != null:
-return $default(_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes,_that.latitude,_that.longitude,_that.placeName);case _:
+return $default(_that.id,_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes,_that.latitude,_that.longitude,_that.placeName,_that.completed);case _:
   return orElse();
 
 }
@@ -482,10 +490,10 @@ return $default(_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String placeId,  int stopOrder,  int estimatedMinutes,  String? notes,  double? latitude,  double? longitude,  String? placeName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String placeId,  int stopOrder,  int? estimatedMinutes,  String? notes,  double? latitude,  double? longitude,  String? placeName,  bool completed)  $default,) {final _that = this;
 switch (_that) {
 case _RoutePlaceResponse():
-return $default(_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes,_that.latitude,_that.longitude,_that.placeName);case _:
+return $default(_that.id,_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes,_that.latitude,_that.longitude,_that.placeName,_that.completed);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -502,10 +510,10 @@ return $default(_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String placeId,  int stopOrder,  int estimatedMinutes,  String? notes,  double? latitude,  double? longitude,  String? placeName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String placeId,  int stopOrder,  int? estimatedMinutes,  String? notes,  double? latitude,  double? longitude,  String? placeName,  bool completed)?  $default,) {final _that = this;
 switch (_that) {
 case _RoutePlaceResponse() when $default != null:
-return $default(_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes,_that.latitude,_that.longitude,_that.placeName);case _:
+return $default(_that.id,_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes,_that.latitude,_that.longitude,_that.placeName,_that.completed);case _:
   return null;
 
 }
@@ -517,16 +525,18 @@ return $default(_that.placeId,_that.stopOrder,_that.estimatedMinutes,_that.notes
 @JsonSerializable()
 
 class _RoutePlaceResponse implements RoutePlaceResponse {
-  const _RoutePlaceResponse({required this.placeId, required this.stopOrder, required this.estimatedMinutes, this.notes, this.latitude, this.longitude, this.placeName});
+  const _RoutePlaceResponse({this.id, required this.placeId, required this.stopOrder, this.estimatedMinutes, this.notes, this.latitude, this.longitude, this.placeName, this.completed = false});
   factory _RoutePlaceResponse.fromJson(Map<String, dynamic> json) => _$RoutePlaceResponseFromJson(json);
 
+@override final  String? id;
 @override final  String placeId;
 @override final  int stopOrder;
-@override final  int estimatedMinutes;
+@override final  int? estimatedMinutes;
 @override final  String? notes;
 @override final  double? latitude;
 @override final  double? longitude;
 @override final  String? placeName;
+@override@JsonKey() final  bool completed;
 
 /// Create a copy of RoutePlaceResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -541,16 +551,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoutePlaceResponse&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stopOrder, stopOrder) || other.stopOrder == stopOrder)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.placeName, placeName) || other.placeName == placeName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoutePlaceResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stopOrder, stopOrder) || other.stopOrder == stopOrder)&&(identical(other.estimatedMinutes, estimatedMinutes) || other.estimatedMinutes == estimatedMinutes)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.placeName, placeName) || other.placeName == placeName)&&(identical(other.completed, completed) || other.completed == completed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,placeId,stopOrder,estimatedMinutes,notes,latitude,longitude,placeName);
+int get hashCode => Object.hash(runtimeType,id,placeId,stopOrder,estimatedMinutes,notes,latitude,longitude,placeName,completed);
 
 @override
 String toString() {
-  return 'RoutePlaceResponse(placeId: $placeId, stopOrder: $stopOrder, estimatedMinutes: $estimatedMinutes, notes: $notes, latitude: $latitude, longitude: $longitude, placeName: $placeName)';
+  return 'RoutePlaceResponse(id: $id, placeId: $placeId, stopOrder: $stopOrder, estimatedMinutes: $estimatedMinutes, notes: $notes, latitude: $latitude, longitude: $longitude, placeName: $placeName, completed: $completed)';
 }
 
 
@@ -561,7 +571,7 @@ abstract mixin class _$RoutePlaceResponseCopyWith<$Res> implements $RoutePlaceRe
   factory _$RoutePlaceResponseCopyWith(_RoutePlaceResponse value, $Res Function(_RoutePlaceResponse) _then) = __$RoutePlaceResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String placeId, int stopOrder, int estimatedMinutes, String? notes, double? latitude, double? longitude, String? placeName
+ String? id, String placeId, int stopOrder, int? estimatedMinutes, String? notes, double? latitude, double? longitude, String? placeName, bool completed
 });
 
 
@@ -578,16 +588,18 @@ class __$RoutePlaceResponseCopyWithImpl<$Res>
 
 /// Create a copy of RoutePlaceResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? placeId = null,Object? stopOrder = null,Object? estimatedMinutes = null,Object? notes = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? placeName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? placeId = null,Object? stopOrder = null,Object? estimatedMinutes = freezed,Object? notes = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? placeName = freezed,Object? completed = null,}) {
   return _then(_RoutePlaceResponse(
-placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
 as String,stopOrder: null == stopOrder ? _self.stopOrder : stopOrder // ignore: cast_nullable_to_non_nullable
-as int,estimatedMinutes: null == estimatedMinutes ? _self.estimatedMinutes : estimatedMinutes // ignore: cast_nullable_to_non_nullable
-as int,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as int,estimatedMinutes: freezed == estimatedMinutes ? _self.estimatedMinutes : estimatedMinutes // ignore: cast_nullable_to_non_nullable
+as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double?,placeName: freezed == placeName ? _self.placeName : placeName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,completed: null == completed ? _self.completed : completed // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

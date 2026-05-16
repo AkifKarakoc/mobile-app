@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/core/utils/validators.dart';
+import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/core/widgets/app_text_field.dart';
 
@@ -48,11 +49,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
     // TODO: Sprint 8 — Call actual password reset API
     // For now, show "coming soon" message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('auth.coming_soon'.tr()),
-        duration: const Duration(seconds: 2),
-      ),
+    showFloatingSnackBar(
+      context,
+      'auth.coming_soon'.tr(),
+      duration: const Duration(seconds: 2),
     );
   }
 

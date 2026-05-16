@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/features/reviews/application/reviews_provider.dart';
 import 'package:mobile/features/reviews/presentation/widgets/star_rating.dart';
@@ -30,9 +31,7 @@ class _ReviewWriteSheetState extends ConsumerState<ReviewWriteSheet> {
 
   Future<void> _submit() async {
     if (_rating == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen bir puan seçin')),
-      );
+      showFloatingSnackBar(context, 'Lütfen bir puan seçin');
       return;
     }
 
@@ -50,15 +49,11 @@ class _ReviewWriteSheetState extends ConsumerState<ReviewWriteSheet> {
 
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Yorumunuz incelemeye alındı')),
-        );
+        showFloatingSnackBar(context, 'Yorumunuz incelemeye alındı');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        showFloatingSnackBar(context, e.toString());
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

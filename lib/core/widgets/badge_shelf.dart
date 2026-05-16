@@ -83,7 +83,7 @@ class BadgeShelf extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'common.more_badges'.tr(args: [remaining.toString()]),
+                  'common.more_badges'.tr(namedArgs: {'count': remaining.toString()}),
                   style: AppTypography.labelSmall.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),

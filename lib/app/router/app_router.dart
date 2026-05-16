@@ -38,6 +38,8 @@ import 'package:mobile/features/quests/presentation/quests_list_screen.dart'
     as quests_feature;
 import 'package:mobile/features/quests/presentation/quest_detail_screen.dart'
     as quest_detail_feature;
+import 'package:mobile/features/quests/presentation/quest_map_screen.dart'
+    as quest_map_feature;
 import 'package:mobile/features/quests/presentation/quest_step_verify_screen.dart'
     as quest_verify_feature;
 import 'package:mobile/features/quests/presentation/user_quests_screen.dart'
@@ -56,6 +58,25 @@ import 'package:mobile/features/settings/presentation/settings_screen.dart'
     as settings_feature;
 import 'package:mobile/features/todos/presentation/todos_screen.dart'
     as todos_feature;
+
+Page<void> _slidePage(LocalKey key, Widget child) {
+  return CustomTransitionPage<void>(
+    key: key,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.easeInOut;
+      final tween = Tween(
+        begin: begin,
+        end: end,
+      ).animate(CurvedAnimation(parent: animation, curve: curve));
+      return SlideTransition(position: tween, child: child);
+    },
+    transitionDuration: const Duration(milliseconds: 300),
+    reverseTransitionDuration: const Duration(milliseconds: 300),
+  );
+}
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -91,23 +112,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.onboarding,
         name: 'onboarding',
-        builder: (context, state) =>
-            const onboarding_feature.OnboardingScreen(),
+        pageBuilder: (context, state) => _slidePage(
+          state.pageKey,
+          const onboarding_feature.OnboardingScreen(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.login,
         name: 'login',
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) =>
+            _slidePage(state.pageKey, const LoginScreen()),
       ),
       GoRoute(
         path: AppRoutes.register,
         name: 'register',
-        builder: (context, state) => const RegisterScreen(),
+        pageBuilder: (context, state) =>
+            _slidePage(state.pageKey, const RegisterScreen()),
       ),
       GoRoute(
         path: AppRoutes.forgotPassword,
         name: 'forgotPassword',
-        builder: (context, state) => const ForgotPasswordScreen(),
+        pageBuilder: (context, state) =>
+            _slidePage(state.pageKey, const ForgotPasswordScreen()),
       ),
 
       // ── Main Shell (Bottom Navigation) ────────────────────────
@@ -130,29 +156,39 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'map',
                 name: 'nearbyMap',
-                builder: (context, state) =>
-                    const places_map.NearbyMapScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const places_map.NearbyMapScreen(),
+                ),
               ),
               GoRoute(
                 path: 'search',
                 name: 'placeSearch',
-                builder: (context, state) =>
-                    const places_search.PlaceSearchScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const places_search.PlaceSearchScreen(),
+                ),
               ),
               GoRoute(
                 path: 'place/:id',
                 name: 'placeDetail',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final id = state.pathParameters['id']!;
-                  return places_detail.PlaceDetailScreen(placeId: id);
+                  return _slidePage(
+                    state.pageKey,
+                    places_detail.PlaceDetailScreen(placeId: id),
+                  );
                 },
                 routes: [
                   GoRoute(
                     path: 'review-write',
                     name: 'reviewWrite',
-                    builder: (context, state) {
+                    pageBuilder: (context, state) {
                       final placeId = state.pathParameters['id']!;
-                      return ReviewWriteScreen(placeId: placeId);
+                      return _slidePage(
+                        state.pageKey,
+                        ReviewWriteScreen(placeId: placeId),
+                      );
                     },
                   ),
                 ],
@@ -170,9 +206,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'sessions/:sessionId',
                 name: 'chatScreen',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final sessionId = state.pathParameters['sessionId']!;
-                  return chat_feature.ChatScreen(sessionId: sessionId);
+                  return _slidePage(
+                    state.pageKey,
+                    chat_feature.ChatScreen(sessionId: sessionId),
+                  );
                 },
               ),
             ],
@@ -182,8 +221,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: AppRoutes.favoritesTab,
             name: 'favorites',
-            builder: (context, state) =>
-                const user_favorites.FavoritesScreen(),
+            pageBuilder: (context, state) => _slidePage(
+              state.pageKey,
+              const user_favorites.FavoritesScreen(),
+            ),
           ),
 
           // Tab 3: Profile
@@ -195,47 +236,62 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'edit',
                 name: 'profileEdit',
-                builder: (context, state) =>
-                    const user_profile_edit.ProfileEditScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const user_profile_edit.ProfileEditScreen(),
+                ),
               ),
               GoRoute(
                 path: 'settings',
                 name: 'settings',
-                builder: (context, state) =>
-                    const settings_feature.SettingsScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const settings_feature.SettingsScreen(),
+                ),
               ),
               GoRoute(
                 path: 'notifications',
                 name: 'notifications',
-                builder: (context, state) =>
-                    const notifications_feature.NotificationsScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const notifications_feature.NotificationsScreen(),
+                ),
               ),
               GoRoute(
                 path: 'change-password',
                 name: 'changePassword',
-                builder: (context, state) => const ChangePasswordScreen(),
+                pageBuilder: (context, state) =>
+                    _slidePage(state.pageKey, const ChangePasswordScreen()),
               ),
               GoRoute(
                 path: 'badges',
                 name: 'badges',
-                builder: (context, state) => const BadgesScreen(),
+                pageBuilder: (context, state) =>
+                    _slidePage(state.pageKey, const BadgesScreen()),
               ),
               GoRoute(
                 path: 'todos',
                 name: 'todos',
-                builder: (context, state) => const todos_feature.TodosScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const todos_feature.TodosScreen(),
+                ),
               ),
               GoRoute(
                 path: 'quests',
                 name: 'userQuests',
-                builder: (context, state) =>
-                    const user_quests_feature.UserQuestsScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const user_quests_feature.UserQuestsScreen(),
+                ),
               ),
               GoRoute(
                 path: 'routes',
                 name: 'userRoutes',
-                builder: (context, state) =>
-                    const user_routes_feature.UserRoutesScreen(),
+                pageBuilder: (context, state) => _slidePage(
+                  state.pageKey,
+                  const user_routes_feature.UserRoutesScreen(),
+                ),
               ),
             ],
           ),
@@ -246,23 +302,31 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/home/routes',
             name: 'routesShell',
-            builder: (context, state) =>
-                const routes_feature.RoutesListScreen(),
+            pageBuilder: (context, state) => _slidePage(
+              state.pageKey,
+              const routes_feature.RoutesListScreen(),
+            ),
             routes: [
               GoRoute(
                 path: ':id',
                 name: 'routeDetail',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final id = state.pathParameters['id']!;
-                  return route_detail_feature.RouteDetailScreen(routeId: id);
+                  return _slidePage(
+                    state.pageKey,
+                    route_detail_feature.RouteDetailScreen(routeId: id),
+                  );
                 },
                 routes: [
                   GoRoute(
                     path: 'map',
                     name: 'routeMap',
-                    builder: (context, state) {
+                    pageBuilder: (context, state) {
                       final routeId = state.pathParameters['id']!;
-                      return route_map_feature.RouteMapScreen(routeId: routeId);
+                      return _slidePage(
+                        state.pageKey,
+                        route_map_feature.RouteMapScreen(routeId: routeId),
+                      );
                     },
                   ),
                 ],
@@ -274,26 +338,45 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/home/quests',
             name: 'questsShell',
-            builder: (context, state) =>
-                const quests_feature.QuestsListScreen(),
+            pageBuilder: (context, state) => _slidePage(
+              state.pageKey,
+              const quests_feature.QuestsListScreen(),
+            ),
             routes: [
               GoRoute(
                 path: ':id',
                 name: 'questDetail',
-                builder: (context, state) {
+                pageBuilder: (context, state) {
                   final id = state.pathParameters['id']!;
-                  return quest_detail_feature.QuestDetailScreen(questId: id);
+                  return _slidePage(
+                    state.pageKey,
+                    quest_detail_feature.QuestDetailScreen(questId: id),
+                  );
                 },
                 routes: [
                   GoRoute(
+                    path: 'map',
+                    name: 'questMap',
+                    pageBuilder: (context, state) {
+                      final questId = state.pathParameters['id']!;
+                      return _slidePage(
+                        state.pageKey,
+                        quest_map_feature.QuestMapScreen(questId: questId),
+                      );
+                    },
+                  ),
+                  GoRoute(
                     path: 'steps/:stepId/verify',
                     name: 'questStepVerify',
-                    builder: (context, state) {
+                    pageBuilder: (context, state) {
                       final questId = state.pathParameters['id']!;
                       final stepId = state.pathParameters['stepId']!;
-                      return quest_verify_feature.QuestStepVerifyScreen(
-                        questId: questId,
-                        stepId: stepId,
+                      return _slidePage(
+                        state.pageKey,
+                        quest_verify_feature.QuestStepVerifyScreen(
+                          questId: questId,
+                          stepId: stepId,
+                        ),
                       );
                     },
                   ),
@@ -308,8 +391,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/image-identify',
         name: 'imageIdentifyFab',
-        builder: (context, state) =>
-            const image_identify_feature.ImageIdentifyScreen(),
+        pageBuilder: (context, state) => _slidePage(
+          state.pageKey,
+          const image_identify_feature.ImageIdentifyScreen(),
+        ),
       ),
     ],
   );
@@ -356,9 +441,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       );
     });
 
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
 

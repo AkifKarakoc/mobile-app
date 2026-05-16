@@ -48,6 +48,10 @@ sealed class ApiException implements Exception {
         final responseData = e.response!.data;
 
         switch (statusCode) {
+          case 400:
+            final message = _parseErrorMessage(responseData) ?? 'Bad request';
+            return ApiException.unknown(message);
+
           case 401:
             return ApiException.unauthorized('Unauthorized');
 
@@ -56,6 +60,10 @@ sealed class ApiException implements Exception {
 
           case 404:
             return ApiException.notFound('Not found');
+
+          case 409:
+            final message = _parseErrorMessage(responseData) ?? 'Conflict';
+            return ApiException.unknown(message);
 
           case 422:
             // Extract validation errors from response body
@@ -66,7 +74,8 @@ sealed class ApiException implements Exception {
             return ApiException.server(statusCode);
 
           default:
-            return ApiException.unknown('HTTP $statusCode: ${e.message}');
+            final message = _parseErrorMessage(responseData) ?? 'HTTP $statusCode: ${e.message}';
+            return ApiException.unknown(message);
         }
 
       case DioExceptionType.cancel:
@@ -95,6 +104,16 @@ sealed class ApiException implements Exception {
     }
 
     return result;
+  }
+
+  /// Parses error message from API response.
+  /// Expected format: `{ "message": "..." }` or `{ "error": "..." }`
+  static String? _parseErrorMessage(dynamic responseData) {
+    if (responseData is Map) {
+      return responseData['message']?.toString() ??
+          responseData['error']?.toString();
+    }
+    return null;
   }
 
   @override

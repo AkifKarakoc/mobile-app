@@ -7,24 +7,24 @@ import 'package:mobile/features/todos/data/dto/update_todo_request.dart';
 import 'package:mobile/features/todos/data/todos_repository.dart';
 
 class TodosNotifier extends AsyncNotifier<List<TodoResponse>> {
-  late TodosRepository _repository;
+  TodosRepository? _repository;
 
   @override
   Future<List<TodoResponse>> build() async {
-    _repository = ref.watch(todosRepositoryProvider);
-    return _repository.getAll();
+    _repository ??= ref.watch(todosRepositoryProvider);
+    return _repository!.getAll();
   }
 
   Future<void> loadTodos() async {
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => _repository.getAll());
+    state = await AsyncValue.guard(() => _repository!.getAll());
   }
 
   Future<void> createTodo({required String note, String? placeId}) async {
     final previous = state.valueOrNull ?? [];
     state = const AsyncValue.loading();
     try {
-      final todo = await _repository.create(
+      final todo = await _repository!.create(
         TodoRequest(note: note, placeId: placeId),
       );
       state = AsyncValue.data([...previous, todo]);
@@ -45,7 +45,7 @@ class TodosNotifier extends AsyncNotifier<List<TodoResponse>> {
     state = AsyncValue.data(newList);
 
     try {
-      await _repository.update(
+      await _repository!.update(
         id,
         UpdateTodoRequest(isCompleted: updated.isCompleted),
       );
@@ -65,7 +65,7 @@ class TodosNotifier extends AsyncNotifier<List<TodoResponse>> {
     state = AsyncValue.data(newList);
 
     try {
-      await _repository.update(id, UpdateTodoRequest(note: note));
+      await _repository!.update(id, UpdateTodoRequest(note: note));
     } catch (e) {
       state = AsyncValue.data(previous);
     }
@@ -79,7 +79,7 @@ class TodosNotifier extends AsyncNotifier<List<TodoResponse>> {
     state = AsyncValue.data(newList);
 
     try {
-      await _repository.delete(id);
+      await _repository!.delete(id);
     } catch (e) {
       state = AsyncValue.data(previous);
     }

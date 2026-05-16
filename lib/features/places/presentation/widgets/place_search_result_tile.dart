@@ -8,11 +8,13 @@ class PlaceSearchResultTile extends StatelessWidget {
   const PlaceSearchResultTile({
     required this.place,
     required this.onTap,
+    required this.heroTag,
     super.key,
   });
 
   final PlaceResponse place;
   final VoidCallback onTap;
+  final String heroTag;
 
   static const _categoryKeys = <String, String>{
     'LANDMARK': 'places.categories.landmark',
@@ -32,58 +34,136 @@ class PlaceSearchResultTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final category = _categoryLabel(place.category);
 
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      leading: CircleAvatar(
-        backgroundColor: colorScheme.primaryContainer,
-        foregroundColor: colorScheme.onPrimaryContainer,
-        child: const Icon(Icons.place_outlined),
-      ),
-      title: Text(
-        _placeName(context),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: AppTypography.titleMedium,
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.xs),
-        child: Column(
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              category,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTypography.bodySmall.copyWith(
-                color: colorScheme.onSurfaceVariant,
+            Hero(
+              tag: heroTag,
+              child: Material(
+                type: MaterialType.transparency,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.horizontal(
+                    left: Radius.circular(AppSpacing.radiusLg),
+                  ),
+                  child: _buildImage(context),
+                ),
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
-            Wrap(
-              spacing: AppSpacing.md,
-              runSpacing: AppSpacing.xs,
-              children: [
-                _Metric(
-                  icon: Icons.star_rounded,
-                  label: _ratingLabel(place.avgRating),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _placeName(context),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTypography.titleSmall,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _buildCategoryChip(context),
+                    const SizedBox(height: AppSpacing.sm),
+                    Wrap(
+                      spacing: AppSpacing.md,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        _Metric(
+                          icon: Icons.star_rounded,
+                          label: _ratingLabel(place.avgRating),
+                        ),
+                        if (place.distance != null)
+                          _Metric(
+                            icon: Icons.near_me_outlined,
+                            label: _distanceLabel(place.distance!),
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
-                if (place.distance != null)
-                  _Metric(
-                    icon: Icons.near_me_outlined,
-                    label: _distanceLabel(place.distance!),
-                  ),
-              ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                right: AppSpacing.sm,
+                top: AppSpacing.md,
+              ),
+              child: Icon(
+                Icons.chevron_right,
+                color: colorScheme.outlineVariant,
+                size: 20,
+              ),
             ),
           ],
         ),
       ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap,
+    );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (place.photoUrl == null || place.photoUrl!.isEmpty) {
+      return Container(
+        width: 80,
+        height: 80,
+        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+        child: Icon(
+          Icons.place_outlined,
+          color: colorScheme.primary,
+          size: 28,
+        ),
+      );
+    }
+
+    return Image.network(
+      place.photoUrl!,
+      width: 80,
+      height: 80,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) => Container(
+        width: 80,
+        height: 80,
+        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+        child: Icon(
+          Icons.place_outlined,
+          color: colorScheme.primary,
+          size: 28,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryChip(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.secondary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      ),
+      child: Text(
+        _categoryLabel(place.category),
+        style: AppTypography.labelSmall.copyWith(
+          color: colorScheme.secondary,
+        ),
+      ),
     );
   }
 
@@ -142,13 +222,15 @@ class _Metric extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
           icon,
           size: AppSpacing.iconSmall,
-          color: Theme.of(context).colorScheme.primary,
+          color: colorScheme.primary,
         ),
         const SizedBox(width: AppSpacing.xs),
         Text(label, style: AppTypography.labelSmall),

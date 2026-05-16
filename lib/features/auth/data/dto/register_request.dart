@@ -10,9 +10,10 @@ abstract class RegisterRequest with _$RegisterRequest {
     required String password,
     required String firstName,
     required String lastName,
+    String? phoneCountryCode,
     String? phoneNumber,
     String? preferredLanguage,
-    String? ageGroup,
+    DateTime? birthDate,
   }) = _RegisterRequest;
 
   factory RegisterRequest.fromJson(Map<String, dynamic> json) =>

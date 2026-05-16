@@ -36,8 +36,9 @@ class RefreshInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    // Only handle 401 Unauthorized
-    if (err.response?.statusCode != 401) {
+    // Only handle 401 Unauthorized and 403 Forbidden
+    final statusCode = err.response?.statusCode;
+    if (statusCode != 401 && statusCode != 403) {
       return handler.next(err);
     }
 

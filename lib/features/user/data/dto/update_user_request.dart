@@ -8,9 +8,10 @@ abstract class UpdateUserRequest with _$UpdateUserRequest {
   const factory UpdateUserRequest({
     String? firstName,
     String? lastName,
+    String? phoneCountryCode,
     String? phoneNumber,
     String? preferredLanguage,
-    String? ageGroup,
+    DateTime? birthDate,
   }) = _UpdateUserRequest;
 
   factory UpdateUserRequest.fromJson(Map<String, dynamic> json) =>

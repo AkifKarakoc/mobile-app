@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/widgets/tap_feedback.dart';
 import 'routes.dart';
 
 class MainShell extends StatelessWidget {
@@ -54,9 +56,7 @@ class MainShell extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: showNav
           ? FloatingActionButton(
-              onPressed: () {
-                context.push('/image-identify');
-              },
+              onPressed: () => context.push('/image-identify'),
               backgroundColor: primaryColor,
               foregroundColor: Colors.white,
               elevation: 4,
@@ -74,7 +74,7 @@ class MainShell extends StatelessWidget {
                   _NavItem(
                     icon: Icons.home_outlined,
                     activeIcon: Icons.home,
-                    label: 'Ana Sayfa',
+                    label: 'nav.home'.tr(),
                     selected: selectedIndex == 0,
                     color: selectedIndex == 0 ? primaryColor : mutedColor,
                     onTap: () => _onTabTapped(context, 0),
@@ -82,7 +82,7 @@ class MainShell extends StatelessWidget {
                   _NavItem(
                     icon: Icons.location_on_outlined,
                     activeIcon: Icons.location_on,
-                    label: 'Yakınımdakiler',
+                    label: 'nav.nearby'.tr(),
                     selected: selectedIndex == 1,
                     color: selectedIndex == 1 ? primaryColor : mutedColor,
                     onTap: () => _onTabTapped(context, 1),
@@ -91,7 +91,7 @@ class MainShell extends StatelessWidget {
                   _NavItem(
                     icon: Icons.chat_bubble_outline,
                     activeIcon: Icons.chat_bubble,
-                    label: 'Chat',
+                    label: 'nav.chat'.tr(),
                     selected: selectedIndex == 2,
                     color: selectedIndex == 2 ? primaryColor : mutedColor,
                     onTap: () => _onTabTapped(context, 2),
@@ -99,7 +99,7 @@ class MainShell extends StatelessWidget {
                   _NavItem(
                     icon: Icons.person_outline,
                     activeIcon: Icons.person,
-                    label: 'Profilim',
+                    label: 'nav.profile'.tr(),
                     selected: selectedIndex == 3,
                     color: selectedIndex == 3 ? primaryColor : mutedColor,
                     onTap: () => _onTabTapped(context, 3),
@@ -132,28 +132,59 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: InkWell(
+      child: TapFeedback(
         onTap: onTap,
-        customBorder: const CircleBorder(),
+        borderRadius: 0,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(selected ? activeIcon : icon, color: color, size: 24),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(
+                    scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOutBack,
+                      ),
+                    ),
+                    child: child,
+                  );
+                },
+                child: Icon(
+                  selected ? activeIcon : icon,
+                  key: ValueKey(selected),
+                  color: color,
+                  size: 24,
+                ),
+              ),
               const SizedBox(height: 2),
-              Text(
-                label,
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
                 style: TextStyle(
                   fontSize: 10,
                   color: color,
-                  fontWeight:
-                      selected ? FontWeight.w600 : FontWeight.normal,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              if (selected)
+                Container(
+                  margin: const EdgeInsets.only(top: 2),
+                  width: 4,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
             ],
           ),
         ),

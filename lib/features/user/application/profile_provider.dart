@@ -7,17 +7,17 @@ import 'package:mobile/features/user/data/user_repository.dart';
 
 /// Profile notifier — manages user profile state
 class ProfileNotifier extends AsyncNotifier<UserResponse?> {
-  late final IUserRepository _repository;
+  IUserRepository? _repository;
 
   @override
   FutureOr<UserResponse?> build() {
-    _repository = ref.watch(userRepositoryProvider);
+    _repository ??= ref.watch(userRepositoryProvider);
     return _loadProfile();
   }
 
   /// Load profile from API
   Future<UserResponse?> _loadProfile() async {
-    return await _repository.getProfile();
+    return await _repository!.getProfile();
   }
 
   /// Reload profile
@@ -30,26 +30,28 @@ class ProfileNotifier extends AsyncNotifier<UserResponse?> {
   Future<void> updateProfile({
     String? firstName,
     String? lastName,
+    String? phoneCountryCode,
     String? phoneNumber,
     String? preferredLanguage,
-    String? ageGroup,
+    DateTime? birthDate,
   }) async {
     final request = UpdateUserRequest(
       firstName: firstName,
       lastName: lastName,
+      phoneCountryCode: phoneCountryCode,
       phoneNumber: phoneNumber,
       preferredLanguage: preferredLanguage,
-      ageGroup: ageGroup,
+      birthDate: birthDate,
     );
 
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _repository.updateProfile(request));
+    state = await AsyncValue.guard(() => _repository!.updateProfile(request));
   }
 
   /// Upload profile photo
   Future<void> uploadPhoto(File file) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _repository.uploadPhoto(file));
+    state = await AsyncValue.guard(() => _repository!.uploadPhoto(file));
   }
 }
 

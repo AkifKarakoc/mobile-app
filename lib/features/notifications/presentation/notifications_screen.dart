@@ -2,9 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
-import 'package:mobile/core/widgets/app_loading_indicator.dart';
+import 'package:mobile/core/widgets/animated_card.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/notifications/application/notifications_provider.dart';
 import 'package:mobile/features/notifications/data/dto/notification_response.dart';
 
@@ -31,7 +32,7 @@ class NotificationsScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: notificationsAsync.when(
-          loading: () => AppLoadingIndicator(semanticsLabel: 'common.loading'.tr()),
+          loading: () => _buildShimmerList(context),
           error: (error, stackTrace) => ErrorView(
             message: 'common.error_generic'.tr(),
             retryLabel: 'common.retry'.tr(),
@@ -49,18 +50,26 @@ class NotificationsScreen extends ConsumerWidget {
             }
 
             return ListView.separated(
-              padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.md),
+              padding: const EdgeInsets.only(
+                top: AppSpacing.sm,
+                bottom: AppSpacing.md,
+              ),
               itemCount: notifications.length,
               separatorBuilder: (context, index) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final notification = notifications[index];
-                return _NotificationTile(
-                  notification: notification,
-                  onTap: () {
-                    if (!notification.isRead) {
-                      ref.read(notificationsProvider.notifier).markAsRead(notification.id);
-                    }
-                  },
+                return AnimatedCard(
+                  delayMs: index < 10 ? index * 50 : 0,
+                  child: _NotificationTile(
+                    notification: notification,
+                    onTap: () {
+                      if (!notification.isRead) {
+                        ref
+                            .read(notificationsProvider.notifier)
+                            .markAsRead(notification.id);
+                      }
+                    },
+                  ),
                 );
               },
             );
@@ -69,16 +78,22 @@ class NotificationsScreen extends ConsumerWidget {
       ),
     );
   }
+
+  static Widget _buildShimmerList(BuildContext context) {
+    return ListView.separated(
+      padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.md),
+      itemCount: 5,
+      separatorBuilder: (context, index) => const Divider(height: 1),
+      itemBuilder: (context, index) => const ListTileShimmer(),
+    );
+  }
 }
 
 class _NotificationTile extends StatelessWidget {
   final NotificationResponse notification;
   final VoidCallback onTap;
 
-  const _NotificationTile({
-    required this.notification,
-    required this.onTap,
-  });
+  const _NotificationTile({required this.notification, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -149,9 +164,18 @@ class _NotificationTile extends StatelessWidget {
       final diff = now.difference(date);
 
       if (diff.inMinutes < 1) return 'notifications.just_now'.tr();
-      if (diff.inHours < 1) return 'notifications.minutes_ago'.tr(args: [diff.inMinutes.toString()]);
-      if (diff.inDays < 1) return 'notifications.hours_ago'.tr(args: [diff.inHours.toString()]);
-      if (diff.inDays < 7) return 'notifications.days_ago'.tr(args: [diff.inDays.toString()]);
+      if (diff.inHours < 1)
+        return 'notifications.minutes_ago'.tr(
+          namedArgs: {'count': diff.inMinutes.toString()},
+        );
+      if (diff.inDays < 1)
+        return 'notifications.hours_ago'.tr(
+          namedArgs: {'count': diff.inHours.toString()},
+        );
+      if (diff.inDays < 7)
+        return 'notifications.days_ago'.tr(
+          namedArgs: {'count': diff.inDays.toString()},
+        );
 
       return DateFormat('dd.MM.yyyy').format(date);
     } catch (_) {

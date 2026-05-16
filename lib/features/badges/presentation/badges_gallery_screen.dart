@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/widgets/animated_card.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
-import 'package:mobile/core/widgets/loading_indicator.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/badges/application/badges_provider.dart';
 import 'package:mobile/features/badges/data/dto/badge_response.dart';
 
@@ -55,10 +56,7 @@ class _BadgesGalleryScreenState extends ConsumerState<BadgesGalleryScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          const _AllBadgesTab(),
-          const _MyBadgesTab(),
-        ],
+        children: [const _AllBadgesTab(), const _MyBadgesTab()],
       ),
     );
   }
@@ -72,7 +70,20 @@ class _AllBadgesTab extends ConsumerWidget {
     final badgesAsync = ref.watch(allBadgesProvider);
 
     return badgesAsync.when(
-      loading: () => const Center(child: AppLoadingIndicator()),
+      loading: () => GridView.builder(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: AppSpacing.md,
+          crossAxisSpacing: AppSpacing.md,
+          childAspectRatio: 0.85,
+        ),
+        itemCount: 6,
+        itemBuilder: (_, __) => const ShimmerPlaceholder(
+          height: 160,
+          shape: ShimmerShape.roundedRect,
+        ),
+      ),
       error: (e, _) => ErrorView(
         message: e.toString(),
         onRetry: () => ref.invalidate(allBadgesProvider),
@@ -96,7 +107,10 @@ class _AllBadgesTab extends ConsumerWidget {
           itemCount: badges.length,
           itemBuilder: (context, index) {
             final badge = badges[index];
-            return _BadgeCard(badge: badge, earned: badge.earnedByUser);
+            return AnimatedCard(
+              delayMs: index < 10 ? index * 80 : 0,
+              child: _BadgeCard(badge: badge, earned: badge.earnedByUser),
+            );
           },
         );
       },
@@ -112,7 +126,15 @@ class _MyBadgesTab extends ConsumerWidget {
     final myBadgesAsync = ref.watch(myBadgesProvider);
 
     return myBadgesAsync.when(
-      loading: () => const Center(child: AppLoadingIndicator()),
+      loading: () => ListView.separated(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        itemCount: 5,
+        separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+        itemBuilder: (_, __) => const ShimmerPlaceholder(
+          height: 80,
+          shape: ShimmerShape.roundedRect,
+        ),
+      ),
       error: (e, _) => ErrorView(
         message: e.toString(),
         onRetry: () => ref.invalidate(myBadgesProvider),
@@ -125,12 +147,16 @@ class _MyBadgesTab extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
+        return ListView.separated(
           padding: const EdgeInsets.all(AppSpacing.md),
           itemCount: myBadges.length,
+          separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
           itemBuilder: (context, index) {
             final badge = myBadges[index];
-            return _UserBadgeCard(userBadge: badge);
+            return AnimatedCard(
+              delayMs: index < 10 ? index * 80 : 0,
+              child: _UserBadgeCard(userBadge: badge),
+            );
           },
         );
       },
@@ -138,32 +164,58 @@ class _MyBadgesTab extends ConsumerWidget {
   }
 }
 
-class _BadgeCard extends StatelessWidget {
+class _BadgeCard extends StatefulWidget {
   final BadgeResponse badge;
   final bool earned;
 
   const _BadgeCard({required this.badge, required this.earned});
 
   @override
+  State<_BadgeCard> createState() => _BadgeCardState();
+}
+
+class _BadgeCardState extends State<_BadgeCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _bounceController;
+  late Animation<double> _bounceAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _bounceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _bounceAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.elasticOut),
+    );
+    if (widget.earned) {
+      _bounceController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _bounceController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final iconColor = _parseColor(badge.iconColor);
+    final iconColor = _parseColor(widget.badge.iconColor);
 
     return Opacity(
-      opacity: earned ? 1.0 : 0.5,
+      opacity: widget.earned ? 1.0 : 0.5,
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.emoji_events,
-                size: 48,
-                color: iconColor,
-              ),
+              _buildIcon(iconColor),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                badge.name,
+                widget.badge.name,
                 style: AppTypography.titleSmall,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -171,7 +223,7 @@ class _BadgeCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                badge.description,
+                widget.badge.description,
                 style: AppTypography.bodySmall.copyWith(
                   color: Theme.of(context).colorScheme.outline,
                 ),
@@ -180,30 +232,47 @@ class _BadgeCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: AppSpacing.sm),
-              if (badge.tier != null)
-                _TierBadge(tier: badge.tier!)
-              else if (!earned)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  ),
-                  child: Text(
-                    'badges.locked'.tr(),
-                    style: AppTypography.labelSmall.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                  ),
-                ),
+              _buildFooter(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildIcon(Color iconColor) {
+    if (widget.earned) {
+      return ScaleTransition(
+        scale: _bounceAnimation,
+        child: Icon(Icons.emoji_events, size: 48, color: iconColor),
+      );
+    }
+    return Icon(Icons.emoji_events, size: 48, color: iconColor);
+  }
+
+  Widget _buildFooter() {
+    if (widget.badge.tier != null) {
+      return _TierBadge(tier: widget.badge.tier!);
+    }
+    if (!widget.earned) {
+      return Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        ),
+        child: Text(
+          'badges.locked'.tr(),
+          style: AppTypography.labelSmall.copyWith(
+            color: Theme.of(context).colorScheme.outline,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Color _parseColor(String hexColor) {
@@ -232,9 +301,7 @@ class _TierBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: AppTypography.labelSmall.copyWith(
-          color: Colors.white,
-        ),
+        style: AppTypography.labelSmall.copyWith(color: Colors.white),
       ),
     );
   }
@@ -265,20 +332,13 @@ class _UserBadgeCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
-            Icon(
-              Icons.emoji_events,
-              size: 40,
-              color: iconColor,
-            ),
+            Icon(Icons.emoji_events, size: 40, color: iconColor),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    userBadge.badgeName,
-                    style: AppTypography.titleSmall,
-                  ),
+                  Text(userBadge.badgeName, style: AppTypography.titleSmall),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     userBadge.badgeDescription,

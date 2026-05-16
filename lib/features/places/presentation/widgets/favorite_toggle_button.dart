@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/features/favorites/application/favorites_provider.dart';
 
 class FavoriteToggleButton extends ConsumerWidget {
@@ -47,12 +48,24 @@ class FavoriteToggleButton extends ConsumerWidget {
                   currentlyFavorited: isFavorited,
                   favoriteId: status.favoriteId,
                 ),
-          icon: Icon(
-            isFavorited ? Icons.favorite : Icons.favorite_border,
-            size: size,
-            color: isFavorited
-                ? Theme.of(context).colorScheme.error
-                : Theme.of(context).colorScheme.onSurface,
+          icon: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) {
+              return ScaleTransition(
+                scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+                ),
+                child: child,
+              );
+            },
+            child: Icon(
+              isFavorited ? Icons.favorite : Icons.favorite_border,
+              key: ValueKey(isFavorited),
+              size: size,
+              color: isFavorited
+                  ? Theme.of(context).colorScheme.error
+                  : Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         );
       },
@@ -65,7 +78,6 @@ class FavoriteToggleButton extends ConsumerWidget {
     required bool currentlyFavorited,
     required String? favoriteId,
   }) async {
-    final messenger = ScaffoldMessenger.of(context);
     final errorColor = Theme.of(context).colorScheme.error;
 
     try {
@@ -79,25 +91,21 @@ class FavoriteToggleButton extends ConsumerWidget {
       if (!context.mounted) {
         return;
       }
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            (currentlyFavorited
-                    ? 'place_detail.favorite_removed'
-                    : 'place_detail.favorite_added')
-                .tr(),
-          ),
-        ),
+      showFloatingSnackBar(
+        context,
+        (currentlyFavorited
+                ? 'place_detail.favorite_removed'
+                : 'place_detail.favorite_added')
+            .tr(),
       );
     } catch (_) {
       if (!context.mounted) {
         return;
       }
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text('place_detail.favorite_error'.tr()),
-          backgroundColor: errorColor,
-        ),
+      showFloatingSnackBar(
+        context,
+        'place_detail.favorite_error'.tr(),
+        backgroundColor: errorColor,
       );
     }
   }

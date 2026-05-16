@@ -21,6 +21,9 @@ _PlaceDetailResponse _$PlaceDetailResponseFromJson(Map<String, dynamic> json) =>
       website: json['website'] as String?,
       openingHours: json['openingHours'] as String?,
       photoUrl: json['photoUrl'] as String?,
+      images: (json['images'] as List<dynamic>?)
+          ?.map((e) => PlaceImage.fromJson(e as Map<String, dynamic>))
+          .toList(),
       avgRating: (json['avgRating'] as num?)?.toDouble(),
       reviewCount: (json['reviewCount'] as num?)?.toInt(),
       isFavorited: json['isFavorited'] as bool?,
@@ -28,6 +31,8 @@ _PlaceDetailResponse _$PlaceDetailResponseFromJson(Map<String, dynamic> json) =>
       keywords: (json['keywords'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      ratingDistribution: (json['ratingDistribution'] as Map<String, dynamic>?)
+          ?.map((k, e) => MapEntry(int.parse(k), (e as num).toInt())),
     );
 
 Map<String, dynamic> _$PlaceDetailResponseToJson(
@@ -46,9 +51,13 @@ Map<String, dynamic> _$PlaceDetailResponseToJson(
   'website': instance.website,
   'openingHours': instance.openingHours,
   'photoUrl': instance.photoUrl,
+  'images': instance.images,
   'avgRating': instance.avgRating,
   'reviewCount': instance.reviewCount,
   'isFavorited': instance.isFavorited,
   'popularityScore': instance.popularityScore,
   'keywords': instance.keywords,
+  'ratingDistribution': instance.ratingDistribution?.map(
+    (k, e) => MapEntry(k.toString(), e),
+  ),
 };

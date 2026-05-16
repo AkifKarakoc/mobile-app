@@ -6,6 +6,7 @@ import 'package:mobile/features/auth/data/dto/login_request.dart';
 import 'package:mobile/features/auth/data/dto/login_response.dart';
 import 'package:mobile/features/auth/data/dto/refresh_request.dart';
 import 'package:mobile/features/auth/data/dto/refresh_response.dart';
+import 'package:mobile/features/auth/data/dto/google_oauth_response.dart';
 
 part 'auth_api.g.dart';
 
@@ -24,4 +25,7 @@ abstract class AuthApi {
 
   @POST('/auth/logout')
   Future<void> logout();
+
+  @POST('/auth/google')
+  Future<GoogleOAuthResponse> loginWithGoogle(@Body() Map<String, String> request);
 }

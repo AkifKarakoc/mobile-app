@@ -7,7 +7,7 @@ import 'app_typography.dart';
 /// Light ve dark tema tanımları
 abstract final class AppTheme {
   // Light theme
-  /// Light tema tanımı — turkuaz primary, turuncu secondary
+  /// Light tema tanımı — sky blue primary, ocean blue secondary
   static ThemeData get light {
     const seedColor = AppColors.primaryLight;
     final colorScheme = ColorScheme.fromSeed(
@@ -192,7 +192,7 @@ abstract final class AppTheme {
   }
 
   // Dark theme
-  /// Dark tema tanımı — turkuaz primary (lighter), sarı secondary
+  /// Dark tema tanımı — sky blue primary (lighter), ocean blue secondary
   static ThemeData get dark {
     const seedColor = AppColors.primaryDark;
     final colorScheme = ColorScheme.fromSeed(

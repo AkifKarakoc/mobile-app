@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/core/network/api_exception.dart';
 import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/features/routes/data/dto/accept_route_response.dart';
+import 'package:mobile/features/routes/data/dto/complete_route_stop_response.dart';
 import 'package:mobile/features/routes/data/dto/route_response.dart';
 import 'package:mobile/features/routes/data/dto/user_route_response.dart';
 import 'package:mobile/features/routes/data/routes_api.dart';
@@ -18,6 +19,13 @@ abstract class RoutesRepository {
   Future<AcceptRouteResponse> acceptRoute(String id);
 
   Future<List<UserRouteResponse>> getUserRoutes();
+
+  Future<CompleteRouteStopResponse> completeRouteStop({
+    required String routeId,
+    required String routePlaceId,
+    required double latitude,
+    required double longitude,
+  });
 }
 
 class RoutesRepositoryImpl implements RoutesRepository {
@@ -62,6 +70,25 @@ class RoutesRepositoryImpl implements RoutesRepository {
   Future<List<UserRouteResponse>> getUserRoutes() async {
     try {
       return await _api.getUserRoutes();
+    } on DioException catch (e) {
+      throw _toApiException(e);
+    }
+  }
+
+  @override
+  Future<CompleteRouteStopResponse> completeRouteStop({
+    required String routeId,
+    required String routePlaceId,
+    required double latitude,
+    required double longitude,
+  }) async {
+    try {
+      return await _api.completeRouteStop(
+        routeId,
+        routePlaceId,
+        latitude,
+        longitude,
+      );
     } on DioException catch (e) {
       throw _toApiException(e);
     }

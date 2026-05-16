@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QuestDetailResponse {
 
- String get id; String get title; String get description; int get expReward; String get region; String? get thumbnailUrl; String? get badgeId; List<StepResponse> get steps; String? get userStatus;
+ String get id; String get title; String get description; int get expReward; String get region; String? get thumbnailUrl; String? get badgeId; int get gpsThresholdMeters; List<StepResponse> get steps; String? get userStatus;
 /// Create a copy of QuestDetailResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $QuestDetailResponseCopyWith<QuestDetailResponse> get copyWith => _$QuestDetailR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.region, region) || other.region == region)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.badgeId, badgeId) || other.badgeId == badgeId)&&const DeepCollectionEquality().equals(other.steps, steps)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.region, region) || other.region == region)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.badgeId, badgeId) || other.badgeId == badgeId)&&(identical(other.gpsThresholdMeters, gpsThresholdMeters) || other.gpsThresholdMeters == gpsThresholdMeters)&&const DeepCollectionEquality().equals(other.steps, steps)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,expReward,region,thumbnailUrl,badgeId,const DeepCollectionEquality().hash(steps),userStatus);
+int get hashCode => Object.hash(runtimeType,id,title,description,expReward,region,thumbnailUrl,badgeId,gpsThresholdMeters,const DeepCollectionEquality().hash(steps),userStatus);
 
 @override
 String toString() {
-  return 'QuestDetailResponse(id: $id, title: $title, description: $description, expReward: $expReward, region: $region, thumbnailUrl: $thumbnailUrl, badgeId: $badgeId, steps: $steps, userStatus: $userStatus)';
+  return 'QuestDetailResponse(id: $id, title: $title, description: $description, expReward: $expReward, region: $region, thumbnailUrl: $thumbnailUrl, badgeId: $badgeId, gpsThresholdMeters: $gpsThresholdMeters, steps: $steps, userStatus: $userStatus)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $QuestDetailResponseCopyWith<$Res>  {
   factory $QuestDetailResponseCopyWith(QuestDetailResponse value, $Res Function(QuestDetailResponse) _then) = _$QuestDetailResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String description, int expReward, String region, String? thumbnailUrl, String? badgeId, List<StepResponse> steps, String? userStatus
+ String id, String title, String description, int expReward, String region, String? thumbnailUrl, String? badgeId, int gpsThresholdMeters, List<StepResponse> steps, String? userStatus
 });
 
 
@@ -65,7 +65,7 @@ class _$QuestDetailResponseCopyWithImpl<$Res>
 
 /// Create a copy of QuestDetailResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? expReward = null,Object? region = null,Object? thumbnailUrl = freezed,Object? badgeId = freezed,Object? steps = null,Object? userStatus = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? description = null,Object? expReward = null,Object? region = null,Object? thumbnailUrl = freezed,Object? badgeId = freezed,Object? gpsThresholdMeters = null,Object? steps = null,Object? userStatus = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,expReward: null == expReward ? _self.expReward : expReward // ignore: 
 as int,region: null == region ? _self.region : region // ignore: cast_nullable_to_non_nullable
 as String,thumbnailUrl: freezed == thumbnailUrl ? _self.thumbnailUrl : thumbnailUrl // ignore: cast_nullable_to_non_nullable
 as String?,badgeId: freezed == badgeId ? _self.badgeId : badgeId // ignore: cast_nullable_to_non_nullable
-as String?,steps: null == steps ? _self.steps : steps // ignore: cast_nullable_to_non_nullable
+as String?,gpsThresholdMeters: null == gpsThresholdMeters ? _self.gpsThresholdMeters : gpsThresholdMeters // ignore: cast_nullable_to_non_nullable
+as int,steps: null == steps ? _self.steps : steps // ignore: cast_nullable_to_non_nullable
 as List<StepResponse>,userStatus: freezed == userStatus ? _self.userStatus : userStatus // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -161,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int expReward,  String region,  String? thumbnailUrl,  String? badgeId,  List<StepResponse> steps,  String? userStatus)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int expReward,  String region,  String? thumbnailUrl,  String? badgeId,  int gpsThresholdMeters,  List<StepResponse> steps,  String? userStatus)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QuestDetailResponse() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.expReward,_that.region,_that.thumbnailUrl,_that.badgeId,_that.steps,_that.userStatus);case _:
+return $default(_that.id,_that.title,_that.description,_that.expReward,_that.region,_that.thumbnailUrl,_that.badgeId,_that.gpsThresholdMeters,_that.steps,_that.userStatus);case _:
   return orElse();
 
 }
@@ -182,10 +183,10 @@ return $default(_that.id,_that.title,_that.description,_that.expReward,_that.reg
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int expReward,  String region,  String? thumbnailUrl,  String? badgeId,  List<StepResponse> steps,  String? userStatus)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String description,  int expReward,  String region,  String? thumbnailUrl,  String? badgeId,  int gpsThresholdMeters,  List<StepResponse> steps,  String? userStatus)  $default,) {final _that = this;
 switch (_that) {
 case _QuestDetailResponse():
-return $default(_that.id,_that.title,_that.description,_that.expReward,_that.region,_that.thumbnailUrl,_that.badgeId,_that.steps,_that.userStatus);case _:
+return $default(_that.id,_that.title,_that.description,_that.expReward,_that.region,_that.thumbnailUrl,_that.badgeId,_that.gpsThresholdMeters,_that.steps,_that.userStatus);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +203,10 @@ return $default(_that.id,_that.title,_that.description,_that.expReward,_that.reg
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  int expReward,  String region,  String? thumbnailUrl,  String? badgeId,  List<StepResponse> steps,  String? userStatus)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String description,  int expReward,  String region,  String? thumbnailUrl,  String? badgeId,  int gpsThresholdMeters,  List<StepResponse> steps,  String? userStatus)?  $default,) {final _that = this;
 switch (_that) {
 case _QuestDetailResponse() when $default != null:
-return $default(_that.id,_that.title,_that.description,_that.expReward,_that.region,_that.thumbnailUrl,_that.badgeId,_that.steps,_that.userStatus);case _:
+return $default(_that.id,_that.title,_that.description,_that.expReward,_that.region,_that.thumbnailUrl,_that.badgeId,_that.gpsThresholdMeters,_that.steps,_that.userStatus);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.id,_that.title,_that.description,_that.expReward,_that.reg
 @JsonSerializable()
 
 class _QuestDetailResponse implements QuestDetailResponse {
-  const _QuestDetailResponse({required this.id, required this.title, required this.description, required this.expReward, required this.region, this.thumbnailUrl, this.badgeId, required final  List<StepResponse> steps, this.userStatus}): _steps = steps;
+  const _QuestDetailResponse({required this.id, required this.title, required this.description, required this.expReward, required this.region, this.thumbnailUrl, this.badgeId, this.gpsThresholdMeters = 200, required final  List<StepResponse> steps, this.userStatus}): _steps = steps;
   factory _QuestDetailResponse.fromJson(Map<String, dynamic> json) => _$QuestDetailResponseFromJson(json);
 
 @override final  String id;
@@ -227,6 +228,7 @@ class _QuestDetailResponse implements QuestDetailResponse {
 @override final  String region;
 @override final  String? thumbnailUrl;
 @override final  String? badgeId;
+@override@JsonKey() final  int gpsThresholdMeters;
  final  List<StepResponse> _steps;
 @override List<StepResponse> get steps {
   if (_steps is EqualUnmodifiableListView) return _steps;
@@ -249,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.region, region) || other.region == region)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.badgeId, badgeId) || other.badgeId == badgeId)&&const DeepCollectionEquality().equals(other._steps, _steps)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.expReward, expReward) || other.expReward == expReward)&&(identical(other.region, region) || other.region == region)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.badgeId, badgeId) || other.badgeId == badgeId)&&(identical(other.gpsThresholdMeters, gpsThresholdMeters) || other.gpsThresholdMeters == gpsThresholdMeters)&&const DeepCollectionEquality().equals(other._steps, _steps)&&(identical(other.userStatus, userStatus) || other.userStatus == userStatus));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,description,expReward,region,thumbnailUrl,badgeId,const DeepCollectionEquality().hash(_steps),userStatus);
+int get hashCode => Object.hash(runtimeType,id,title,description,expReward,region,thumbnailUrl,badgeId,gpsThresholdMeters,const DeepCollectionEquality().hash(_steps),userStatus);
 
 @override
 String toString() {
-  return 'QuestDetailResponse(id: $id, title: $title, description: $description, expReward: $expReward, region: $region, thumbnailUrl: $thumbnailUrl, badgeId: $badgeId, steps: $steps, userStatus: $userStatus)';
+  return 'QuestDetailResponse(id: $id, title: $title, description: $description, expReward: $expReward, region: $region, thumbnailUrl: $thumbnailUrl, badgeId: $badgeId, gpsThresholdMeters: $gpsThresholdMeters, steps: $steps, userStatus: $userStatus)';
 }
 
 
@@ -269,7 +271,7 @@ abstract mixin class _$QuestDetailResponseCopyWith<$Res> implements $QuestDetail
   factory _$QuestDetailResponseCopyWith(_QuestDetailResponse value, $Res Function(_QuestDetailResponse) _then) = __$QuestDetailResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String description, int expReward, String region, String? thumbnailUrl, String? badgeId, List<StepResponse> steps, String? userStatus
+ String id, String title, String description, int expReward, String region, String? thumbnailUrl, String? badgeId, int gpsThresholdMeters, List<StepResponse> steps, String? userStatus
 });
 
 
@@ -286,7 +288,7 @@ class __$QuestDetailResponseCopyWithImpl<$Res>
 
 /// Create a copy of QuestDetailResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? expReward = null,Object? region = null,Object? thumbnailUrl = freezed,Object? badgeId = freezed,Object? steps = null,Object? userStatus = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? description = null,Object? expReward = null,Object? region = null,Object? thumbnailUrl = freezed,Object? badgeId = freezed,Object? gpsThresholdMeters = null,Object? steps = null,Object? userStatus = freezed,}) {
   return _then(_QuestDetailResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -295,7 +297,8 @@ as String,expReward: null == expReward ? _self.expReward : expReward // ignore: 
 as int,region: null == region ? _self.region : region // ignore: cast_nullable_to_non_nullable
 as String,thumbnailUrl: freezed == thumbnailUrl ? _self.thumbnailUrl : thumbnailUrl // ignore: cast_nullable_to_non_nullable
 as String?,badgeId: freezed == badgeId ? _self.badgeId : badgeId // ignore: cast_nullable_to_non_nullable
-as String?,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
+as String?,gpsThresholdMeters: null == gpsThresholdMeters ? _self.gpsThresholdMeters : gpsThresholdMeters // ignore: cast_nullable_to_non_nullable
+as int,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
 as List<StepResponse>,userStatus: freezed == userStatus ? _self.userStatus : userStatus // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -308,7 +311,7 @@ as String?,
 /// @nodoc
 mixin _$StepResponse {
 
- String get id; String get placeId; int get stepOrder; String get hint; bool get requiresPhoto; bool get isCompleted;
+ String get id; String get placeId; int get stepOrder; String? get hint; bool get requiresPhoto; bool get isCompleted; double? get latitude; double? get longitude; String? get placeName;
 /// Create a copy of StepResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -321,16 +324,16 @@ $StepResponseCopyWith<StepResponse> get copyWith => _$StepResponseCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StepResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stepOrder, stepOrder) || other.stepOrder == stepOrder)&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.requiresPhoto, requiresPhoto) || other.requiresPhoto == requiresPhoto)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StepResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stepOrder, stepOrder) || other.stepOrder == stepOrder)&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.requiresPhoto, requiresPhoto) || other.requiresPhoto == requiresPhoto)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.placeName, placeName) || other.placeName == placeName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,placeId,stepOrder,hint,requiresPhoto,isCompleted);
+int get hashCode => Object.hash(runtimeType,id,placeId,stepOrder,hint,requiresPhoto,isCompleted,latitude,longitude,placeName);
 
 @override
 String toString() {
-  return 'StepResponse(id: $id, placeId: $placeId, stepOrder: $stepOrder, hint: $hint, requiresPhoto: $requiresPhoto, isCompleted: $isCompleted)';
+  return 'StepResponse(id: $id, placeId: $placeId, stepOrder: $stepOrder, hint: $hint, requiresPhoto: $requiresPhoto, isCompleted: $isCompleted, latitude: $latitude, longitude: $longitude, placeName: $placeName)';
 }
 
 
@@ -341,7 +344,7 @@ abstract mixin class $StepResponseCopyWith<$Res>  {
   factory $StepResponseCopyWith(StepResponse value, $Res Function(StepResponse) _then) = _$StepResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String placeId, int stepOrder, String hint, bool requiresPhoto, bool isCompleted
+ String id, String placeId, int stepOrder, String? hint, bool requiresPhoto, bool isCompleted, double? latitude, double? longitude, String? placeName
 });
 
 
@@ -358,15 +361,18 @@ class _$StepResponseCopyWithImpl<$Res>
 
 /// Create a copy of StepResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? placeId = null,Object? stepOrder = null,Object? hint = null,Object? requiresPhoto = null,Object? isCompleted = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? placeId = null,Object? stepOrder = null,Object? hint = freezed,Object? requiresPhoto = null,Object? isCompleted = null,Object? latitude = freezed,Object? longitude = freezed,Object? placeName = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
 as String,stepOrder: null == stepOrder ? _self.stepOrder : stepOrder // ignore: cast_nullable_to_non_nullable
-as int,hint: null == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
-as String,requiresPhoto: null == requiresPhoto ? _self.requiresPhoto : requiresPhoto // ignore: cast_nullable_to_non_nullable
+as int,hint: freezed == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
+as String?,requiresPhoto: null == requiresPhoto ? _self.requiresPhoto : requiresPhoto // ignore: cast_nullable_to_non_nullable
 as bool,isCompleted: null == isCompleted ? _self.isCompleted : isCompleted // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,placeName: freezed == placeName ? _self.placeName : placeName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -451,10 +457,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String placeId,  int stepOrder,  String hint,  bool requiresPhoto,  bool isCompleted)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String placeId,  int stepOrder,  String? hint,  bool requiresPhoto,  bool isCompleted,  double? latitude,  double? longitude,  String? placeName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StepResponse() when $default != null:
-return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requiresPhoto,_that.isCompleted);case _:
+return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requiresPhoto,_that.isCompleted,_that.latitude,_that.longitude,_that.placeName);case _:
   return orElse();
 
 }
@@ -472,10 +478,10 @@ return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requires
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String placeId,  int stepOrder,  String hint,  bool requiresPhoto,  bool isCompleted)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String placeId,  int stepOrder,  String? hint,  bool requiresPhoto,  bool isCompleted,  double? latitude,  double? longitude,  String? placeName)  $default,) {final _that = this;
 switch (_that) {
 case _StepResponse():
-return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requiresPhoto,_that.isCompleted);case _:
+return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requiresPhoto,_that.isCompleted,_that.latitude,_that.longitude,_that.placeName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -492,10 +498,10 @@ return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requires
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String placeId,  int stepOrder,  String hint,  bool requiresPhoto,  bool isCompleted)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String placeId,  int stepOrder,  String? hint,  bool requiresPhoto,  bool isCompleted,  double? latitude,  double? longitude,  String? placeName)?  $default,) {final _that = this;
 switch (_that) {
 case _StepResponse() when $default != null:
-return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requiresPhoto,_that.isCompleted);case _:
+return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requiresPhoto,_that.isCompleted,_that.latitude,_that.longitude,_that.placeName);case _:
   return null;
 
 }
@@ -507,15 +513,18 @@ return $default(_that.id,_that.placeId,_that.stepOrder,_that.hint,_that.requires
 @JsonSerializable()
 
 class _StepResponse implements StepResponse {
-  const _StepResponse({required this.id, required this.placeId, required this.stepOrder, required this.hint, required this.requiresPhoto, required this.isCompleted});
+  const _StepResponse({required this.id, required this.placeId, required this.stepOrder, this.hint, required this.requiresPhoto, required this.isCompleted, this.latitude, this.longitude, this.placeName});
   factory _StepResponse.fromJson(Map<String, dynamic> json) => _$StepResponseFromJson(json);
 
 @override final  String id;
 @override final  String placeId;
 @override final  int stepOrder;
-@override final  String hint;
+@override final  String? hint;
 @override final  bool requiresPhoto;
 @override final  bool isCompleted;
+@override final  double? latitude;
+@override final  double? longitude;
+@override final  String? placeName;
 
 /// Create a copy of StepResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -530,16 +539,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StepResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stepOrder, stepOrder) || other.stepOrder == stepOrder)&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.requiresPhoto, requiresPhoto) || other.requiresPhoto == requiresPhoto)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StepResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.stepOrder, stepOrder) || other.stepOrder == stepOrder)&&(identical(other.hint, hint) || other.hint == hint)&&(identical(other.requiresPhoto, requiresPhoto) || other.requiresPhoto == requiresPhoto)&&(identical(other.isCompleted, isCompleted) || other.isCompleted == isCompleted)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.placeName, placeName) || other.placeName == placeName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,placeId,stepOrder,hint,requiresPhoto,isCompleted);
+int get hashCode => Object.hash(runtimeType,id,placeId,stepOrder,hint,requiresPhoto,isCompleted,latitude,longitude,placeName);
 
 @override
 String toString() {
-  return 'StepResponse(id: $id, placeId: $placeId, stepOrder: $stepOrder, hint: $hint, requiresPhoto: $requiresPhoto, isCompleted: $isCompleted)';
+  return 'StepResponse(id: $id, placeId: $placeId, stepOrder: $stepOrder, hint: $hint, requiresPhoto: $requiresPhoto, isCompleted: $isCompleted, latitude: $latitude, longitude: $longitude, placeName: $placeName)';
 }
 
 
@@ -550,7 +559,7 @@ abstract mixin class _$StepResponseCopyWith<$Res> implements $StepResponseCopyWi
   factory _$StepResponseCopyWith(_StepResponse value, $Res Function(_StepResponse) _then) = __$StepResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String placeId, int stepOrder, String hint, bool requiresPhoto, bool isCompleted
+ String id, String placeId, int stepOrder, String? hint, bool requiresPhoto, bool isCompleted, double? latitude, double? longitude, String? placeName
 });
 
 
@@ -567,15 +576,18 @@ class __$StepResponseCopyWithImpl<$Res>
 
 /// Create a copy of StepResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? placeId = null,Object? stepOrder = null,Object? hint = null,Object? requiresPhoto = null,Object? isCompleted = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? placeId = null,Object? stepOrder = null,Object? hint = freezed,Object? requiresPhoto = null,Object? isCompleted = null,Object? latitude = freezed,Object? longitude = freezed,Object? placeName = freezed,}) {
   return _then(_StepResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,placeId: null == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
 as String,stepOrder: null == stepOrder ? _self.stepOrder : stepOrder // ignore: cast_nullable_to_non_nullable
-as int,hint: null == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
-as String,requiresPhoto: null == requiresPhoto ? _self.requiresPhoto : requiresPhoto // ignore: cast_nullable_to_non_nullable
+as int,hint: freezed == hint ? _self.hint : hint // ignore: cast_nullable_to_non_nullable
+as String?,requiresPhoto: null == requiresPhoto ? _self.requiresPhoto : requiresPhoto // ignore: cast_nullable_to_non_nullable
 as bool,isCompleted: null == isCompleted ? _self.isCompleted : isCompleted // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,placeName: freezed == placeName ? _self.placeName : placeName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

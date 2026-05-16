@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PlaceDetailResponse {
 
- String get id; String? get name; String? get nameTr; String? get nameEn; String? get category; double? get latitude; double? get longitude; String? get description; String? get address; String? get phone; String? get website; String? get openingHours; String? get photoUrl; double? get avgRating; int? get reviewCount; bool? get isFavorited; int? get popularityScore; List<String>? get keywords;
+ String get id; String? get name; String? get nameTr; String? get nameEn; String? get category; double? get latitude; double? get longitude; String? get description; String? get address; String? get phone; String? get website; String? get openingHours; String? get photoUrl; List<PlaceImage>? get images; double? get avgRating; int? get reviewCount; bool? get isFavorited; int? get popularityScore; List<String>? get keywords; Map<int, int>? get ratingDistribution;
 /// Create a copy of PlaceDetailResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PlaceDetailResponseCopyWith<PlaceDetailResponse> get copyWith => _$PlaceDetailR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlaceDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameTr, nameTr) || other.nameTr == nameTr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.category, category) || other.category == category)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.website, website) || other.website == website)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.avgRating, avgRating) || other.avgRating == avgRating)&&(identical(other.reviewCount, reviewCount) || other.reviewCount == reviewCount)&&(identical(other.isFavorited, isFavorited) || other.isFavorited == isFavorited)&&(identical(other.popularityScore, popularityScore) || other.popularityScore == popularityScore)&&const DeepCollectionEquality().equals(other.keywords, keywords));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlaceDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameTr, nameTr) || other.nameTr == nameTr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.category, category) || other.category == category)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.website, website) || other.website == website)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other.images, images)&&(identical(other.avgRating, avgRating) || other.avgRating == avgRating)&&(identical(other.reviewCount, reviewCount) || other.reviewCount == reviewCount)&&(identical(other.isFavorited, isFavorited) || other.isFavorited == isFavorited)&&(identical(other.popularityScore, popularityScore) || other.popularityScore == popularityScore)&&const DeepCollectionEquality().equals(other.keywords, keywords)&&const DeepCollectionEquality().equals(other.ratingDistribution, ratingDistribution));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,nameTr,nameEn,category,latitude,longitude,description,address,phone,website,openingHours,photoUrl,avgRating,reviewCount,isFavorited,popularityScore,const DeepCollectionEquality().hash(keywords));
+int get hashCode => Object.hashAll([runtimeType,id,name,nameTr,nameEn,category,latitude,longitude,description,address,phone,website,openingHours,photoUrl,const DeepCollectionEquality().hash(images),avgRating,reviewCount,isFavorited,popularityScore,const DeepCollectionEquality().hash(keywords),const DeepCollectionEquality().hash(ratingDistribution)]);
 
 @override
 String toString() {
-  return 'PlaceDetailResponse(id: $id, name: $name, nameTr: $nameTr, nameEn: $nameEn, category: $category, latitude: $latitude, longitude: $longitude, description: $description, address: $address, phone: $phone, website: $website, openingHours: $openingHours, photoUrl: $photoUrl, avgRating: $avgRating, reviewCount: $reviewCount, isFavorited: $isFavorited, popularityScore: $popularityScore, keywords: $keywords)';
+  return 'PlaceDetailResponse(id: $id, name: $name, nameTr: $nameTr, nameEn: $nameEn, category: $category, latitude: $latitude, longitude: $longitude, description: $description, address: $address, phone: $phone, website: $website, openingHours: $openingHours, photoUrl: $photoUrl, images: $images, avgRating: $avgRating, reviewCount: $reviewCount, isFavorited: $isFavorited, popularityScore: $popularityScore, keywords: $keywords, ratingDistribution: $ratingDistribution)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PlaceDetailResponseCopyWith<$Res>  {
   factory $PlaceDetailResponseCopyWith(PlaceDetailResponse value, $Res Function(PlaceDetailResponse) _then) = _$PlaceDetailResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String? name, String? nameTr, String? nameEn, String? category, double? latitude, double? longitude, String? description, String? address, String? phone, String? website, String? openingHours, String? photoUrl, double? avgRating, int? reviewCount, bool? isFavorited, int? popularityScore, List<String>? keywords
+ String id, String? name, String? nameTr, String? nameEn, String? category, double? latitude, double? longitude, String? description, String? address, String? phone, String? website, String? openingHours, String? photoUrl, List<PlaceImage>? images, double? avgRating, int? reviewCount, bool? isFavorited, int? popularityScore, List<String>? keywords, Map<int, int>? ratingDistribution
 });
 
 
@@ -65,7 +65,7 @@ class _$PlaceDetailResponseCopyWithImpl<$Res>
 
 /// Create a copy of PlaceDetailResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = freezed,Object? nameTr = freezed,Object? nameEn = freezed,Object? category = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? description = freezed,Object? address = freezed,Object? phone = freezed,Object? website = freezed,Object? openingHours = freezed,Object? photoUrl = freezed,Object? avgRating = freezed,Object? reviewCount = freezed,Object? isFavorited = freezed,Object? popularityScore = freezed,Object? keywords = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = freezed,Object? nameTr = freezed,Object? nameEn = freezed,Object? category = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? description = freezed,Object? address = freezed,Object? phone = freezed,Object? website = freezed,Object? openingHours = freezed,Object? photoUrl = freezed,Object? images = freezed,Object? avgRating = freezed,Object? reviewCount = freezed,Object? isFavorited = freezed,Object? popularityScore = freezed,Object? keywords = freezed,Object? ratingDistribution = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -80,12 +80,14 @@ as String?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullabl
 as String?,website: freezed == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
 as String?,openingHours: freezed == openingHours ? _self.openingHours : openingHours // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,avgRating: freezed == avgRating ? _self.avgRating : avgRating // ignore: cast_nullable_to_non_nullable
+as String?,images: freezed == images ? _self.images : images // ignore: cast_nullable_to_non_nullable
+as List<PlaceImage>?,avgRating: freezed == avgRating ? _self.avgRating : avgRating // ignore: cast_nullable_to_non_nullable
 as double?,reviewCount: freezed == reviewCount ? _self.reviewCount : reviewCount // ignore: cast_nullable_to_non_nullable
 as int?,isFavorited: freezed == isFavorited ? _self.isFavorited : isFavorited // ignore: cast_nullable_to_non_nullable
 as bool?,popularityScore: freezed == popularityScore ? _self.popularityScore : popularityScore // ignore: cast_nullable_to_non_nullable
 as int?,keywords: freezed == keywords ? _self.keywords : keywords // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,ratingDistribution: freezed == ratingDistribution ? _self.ratingDistribution : ratingDistribution // ignore: cast_nullable_to_non_nullable
+as Map<int, int>?,
   ));
 }
 
@@ -170,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? name,  String? nameTr,  String? nameEn,  String? category,  double? latitude,  double? longitude,  String? description,  String? address,  String? phone,  String? website,  String? openingHours,  String? photoUrl,  double? avgRating,  int? reviewCount,  bool? isFavorited,  int? popularityScore,  List<String>? keywords)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? name,  String? nameTr,  String? nameEn,  String? category,  double? latitude,  double? longitude,  String? description,  String? address,  String? phone,  String? website,  String? openingHours,  String? photoUrl,  List<PlaceImage>? images,  double? avgRating,  int? reviewCount,  bool? isFavorited,  int? popularityScore,  List<String>? keywords,  Map<int, int>? ratingDistribution)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PlaceDetailResponse() when $default != null:
-return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_that.latitude,_that.longitude,_that.description,_that.address,_that.phone,_that.website,_that.openingHours,_that.photoUrl,_that.avgRating,_that.reviewCount,_that.isFavorited,_that.popularityScore,_that.keywords);case _:
+return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_that.latitude,_that.longitude,_that.description,_that.address,_that.phone,_that.website,_that.openingHours,_that.photoUrl,_that.images,_that.avgRating,_that.reviewCount,_that.isFavorited,_that.popularityScore,_that.keywords,_that.ratingDistribution);case _:
   return orElse();
 
 }
@@ -191,10 +193,10 @@ return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? name,  String? nameTr,  String? nameEn,  String? category,  double? latitude,  double? longitude,  String? description,  String? address,  String? phone,  String? website,  String? openingHours,  String? photoUrl,  double? avgRating,  int? reviewCount,  bool? isFavorited,  int? popularityScore,  List<String>? keywords)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? name,  String? nameTr,  String? nameEn,  String? category,  double? latitude,  double? longitude,  String? description,  String? address,  String? phone,  String? website,  String? openingHours,  String? photoUrl,  List<PlaceImage>? images,  double? avgRating,  int? reviewCount,  bool? isFavorited,  int? popularityScore,  List<String>? keywords,  Map<int, int>? ratingDistribution)  $default,) {final _that = this;
 switch (_that) {
 case _PlaceDetailResponse():
-return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_that.latitude,_that.longitude,_that.description,_that.address,_that.phone,_that.website,_that.openingHours,_that.photoUrl,_that.avgRating,_that.reviewCount,_that.isFavorited,_that.popularityScore,_that.keywords);case _:
+return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_that.latitude,_that.longitude,_that.description,_that.address,_that.phone,_that.website,_that.openingHours,_that.photoUrl,_that.images,_that.avgRating,_that.reviewCount,_that.isFavorited,_that.popularityScore,_that.keywords,_that.ratingDistribution);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +213,10 @@ return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? name,  String? nameTr,  String? nameEn,  String? category,  double? latitude,  double? longitude,  String? description,  String? address,  String? phone,  String? website,  String? openingHours,  String? photoUrl,  double? avgRating,  int? reviewCount,  bool? isFavorited,  int? popularityScore,  List<String>? keywords)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? name,  String? nameTr,  String? nameEn,  String? category,  double? latitude,  double? longitude,  String? description,  String? address,  String? phone,  String? website,  String? openingHours,  String? photoUrl,  List<PlaceImage>? images,  double? avgRating,  int? reviewCount,  bool? isFavorited,  int? popularityScore,  List<String>? keywords,  Map<int, int>? ratingDistribution)?  $default,) {final _that = this;
 switch (_that) {
 case _PlaceDetailResponse() when $default != null:
-return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_that.latitude,_that.longitude,_that.description,_that.address,_that.phone,_that.website,_that.openingHours,_that.photoUrl,_that.avgRating,_that.reviewCount,_that.isFavorited,_that.popularityScore,_that.keywords);case _:
+return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_that.latitude,_that.longitude,_that.description,_that.address,_that.phone,_that.website,_that.openingHours,_that.photoUrl,_that.images,_that.avgRating,_that.reviewCount,_that.isFavorited,_that.popularityScore,_that.keywords,_that.ratingDistribution);case _:
   return null;
 
 }
@@ -226,7 +228,7 @@ return $default(_that.id,_that.name,_that.nameTr,_that.nameEn,_that.category,_th
 @JsonSerializable()
 
 class _PlaceDetailResponse implements PlaceDetailResponse {
-  const _PlaceDetailResponse({required this.id, this.name, this.nameTr, this.nameEn, this.category, this.latitude, this.longitude, this.description, this.address, this.phone, this.website, this.openingHours, this.photoUrl, this.avgRating, this.reviewCount, this.isFavorited, this.popularityScore, final  List<String>? keywords}): _keywords = keywords;
+  const _PlaceDetailResponse({required this.id, this.name, this.nameTr, this.nameEn, this.category, this.latitude, this.longitude, this.description, this.address, this.phone, this.website, this.openingHours, this.photoUrl, final  List<PlaceImage>? images, this.avgRating, this.reviewCount, this.isFavorited, this.popularityScore, final  List<String>? keywords, final  Map<int, int>? ratingDistribution}): _images = images,_keywords = keywords,_ratingDistribution = ratingDistribution;
   factory _PlaceDetailResponse.fromJson(Map<String, dynamic> json) => _$PlaceDetailResponseFromJson(json);
 
 @override final  String id;
@@ -242,6 +244,15 @@ class _PlaceDetailResponse implements PlaceDetailResponse {
 @override final  String? website;
 @override final  String? openingHours;
 @override final  String? photoUrl;
+ final  List<PlaceImage>? _images;
+@override List<PlaceImage>? get images {
+  final value = _images;
+  if (value == null) return null;
+  if (_images is EqualUnmodifiableListView) return _images;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 @override final  double? avgRating;
 @override final  int? reviewCount;
 @override final  bool? isFavorited;
@@ -253,6 +264,15 @@ class _PlaceDetailResponse implements PlaceDetailResponse {
   if (_keywords is EqualUnmodifiableListView) return _keywords;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(value);
+}
+
+ final  Map<int, int>? _ratingDistribution;
+@override Map<int, int>? get ratingDistribution {
+  final value = _ratingDistribution;
+  if (value == null) return null;
+  if (_ratingDistribution is EqualUnmodifiableMapView) return _ratingDistribution;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
 }
 
 
@@ -269,16 +289,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlaceDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameTr, nameTr) || other.nameTr == nameTr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.category, category) || other.category == category)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.website, website) || other.website == website)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.avgRating, avgRating) || other.avgRating == avgRating)&&(identical(other.reviewCount, reviewCount) || other.reviewCount == reviewCount)&&(identical(other.isFavorited, isFavorited) || other.isFavorited == isFavorited)&&(identical(other.popularityScore, popularityScore) || other.popularityScore == popularityScore)&&const DeepCollectionEquality().equals(other._keywords, _keywords));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlaceDetailResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.nameTr, nameTr) || other.nameTr == nameTr)&&(identical(other.nameEn, nameEn) || other.nameEn == nameEn)&&(identical(other.category, category) || other.category == category)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.description, description) || other.description == description)&&(identical(other.address, address) || other.address == address)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.website, website) || other.website == website)&&(identical(other.openingHours, openingHours) || other.openingHours == openingHours)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&const DeepCollectionEquality().equals(other._images, _images)&&(identical(other.avgRating, avgRating) || other.avgRating == avgRating)&&(identical(other.reviewCount, reviewCount) || other.reviewCount == reviewCount)&&(identical(other.isFavorited, isFavorited) || other.isFavorited == isFavorited)&&(identical(other.popularityScore, popularityScore) || other.popularityScore == popularityScore)&&const DeepCollectionEquality().equals(other._keywords, _keywords)&&const DeepCollectionEquality().equals(other._ratingDistribution, _ratingDistribution));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,nameTr,nameEn,category,latitude,longitude,description,address,phone,website,openingHours,photoUrl,avgRating,reviewCount,isFavorited,popularityScore,const DeepCollectionEquality().hash(_keywords));
+int get hashCode => Object.hashAll([runtimeType,id,name,nameTr,nameEn,category,latitude,longitude,description,address,phone,website,openingHours,photoUrl,const DeepCollectionEquality().hash(_images),avgRating,reviewCount,isFavorited,popularityScore,const DeepCollectionEquality().hash(_keywords),const DeepCollectionEquality().hash(_ratingDistribution)]);
 
 @override
 String toString() {
-  return 'PlaceDetailResponse(id: $id, name: $name, nameTr: $nameTr, nameEn: $nameEn, category: $category, latitude: $latitude, longitude: $longitude, description: $description, address: $address, phone: $phone, website: $website, openingHours: $openingHours, photoUrl: $photoUrl, avgRating: $avgRating, reviewCount: $reviewCount, isFavorited: $isFavorited, popularityScore: $popularityScore, keywords: $keywords)';
+  return 'PlaceDetailResponse(id: $id, name: $name, nameTr: $nameTr, nameEn: $nameEn, category: $category, latitude: $latitude, longitude: $longitude, description: $description, address: $address, phone: $phone, website: $website, openingHours: $openingHours, photoUrl: $photoUrl, images: $images, avgRating: $avgRating, reviewCount: $reviewCount, isFavorited: $isFavorited, popularityScore: $popularityScore, keywords: $keywords, ratingDistribution: $ratingDistribution)';
 }
 
 
@@ -289,7 +309,7 @@ abstract mixin class _$PlaceDetailResponseCopyWith<$Res> implements $PlaceDetail
   factory _$PlaceDetailResponseCopyWith(_PlaceDetailResponse value, $Res Function(_PlaceDetailResponse) _then) = __$PlaceDetailResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String? name, String? nameTr, String? nameEn, String? category, double? latitude, double? longitude, String? description, String? address, String? phone, String? website, String? openingHours, String? photoUrl, double? avgRating, int? reviewCount, bool? isFavorited, int? popularityScore, List<String>? keywords
+ String id, String? name, String? nameTr, String? nameEn, String? category, double? latitude, double? longitude, String? description, String? address, String? phone, String? website, String? openingHours, String? photoUrl, List<PlaceImage>? images, double? avgRating, int? reviewCount, bool? isFavorited, int? popularityScore, List<String>? keywords, Map<int, int>? ratingDistribution
 });
 
 
@@ -306,7 +326,7 @@ class __$PlaceDetailResponseCopyWithImpl<$Res>
 
 /// Create a copy of PlaceDetailResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = freezed,Object? nameTr = freezed,Object? nameEn = freezed,Object? category = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? description = freezed,Object? address = freezed,Object? phone = freezed,Object? website = freezed,Object? openingHours = freezed,Object? photoUrl = freezed,Object? avgRating = freezed,Object? reviewCount = freezed,Object? isFavorited = freezed,Object? popularityScore = freezed,Object? keywords = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = freezed,Object? nameTr = freezed,Object? nameEn = freezed,Object? category = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? description = freezed,Object? address = freezed,Object? phone = freezed,Object? website = freezed,Object? openingHours = freezed,Object? photoUrl = freezed,Object? images = freezed,Object? avgRating = freezed,Object? reviewCount = freezed,Object? isFavorited = freezed,Object? popularityScore = freezed,Object? keywords = freezed,Object? ratingDistribution = freezed,}) {
   return _then(_PlaceDetailResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -321,12 +341,14 @@ as String?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullabl
 as String?,website: freezed == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
 as String?,openingHours: freezed == openingHours ? _self.openingHours : openingHours // ignore: cast_nullable_to_non_nullable
 as String?,photoUrl: freezed == photoUrl ? _self.photoUrl : photoUrl // ignore: cast_nullable_to_non_nullable
-as String?,avgRating: freezed == avgRating ? _self.avgRating : avgRating // ignore: cast_nullable_to_non_nullable
+as String?,images: freezed == images ? _self._images : images // ignore: cast_nullable_to_non_nullable
+as List<PlaceImage>?,avgRating: freezed == avgRating ? _self.avgRating : avgRating // ignore: cast_nullable_to_non_nullable
 as double?,reviewCount: freezed == reviewCount ? _self.reviewCount : reviewCount // ignore: cast_nullable_to_non_nullable
 as int?,isFavorited: freezed == isFavorited ? _self.isFavorited : isFavorited // ignore: cast_nullable_to_non_nullable
 as bool?,popularityScore: freezed == popularityScore ? _self.popularityScore : popularityScore // ignore: cast_nullable_to_non_nullable
 as int?,keywords: freezed == keywords ? _self._keywords : keywords // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,ratingDistribution: freezed == ratingDistribution ? _self._ratingDistribution : ratingDistribution // ignore: cast_nullable_to_non_nullable
+as Map<int, int>?,
   ));
 }
 

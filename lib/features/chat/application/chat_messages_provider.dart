@@ -5,12 +5,12 @@ import 'package:mobile/features/chat/data/dto/send_message_request.dart';
 
 class ChatMessagesNotifier
     extends FamilyAsyncNotifier<List<ChatResponse>, String> {
-  late ChatRepository _repository;
+  ChatRepository? _repository;
 
   @override
   Future<List<ChatResponse>> build(String sessionId) async {
-    _repository = ref.watch(chatRepositoryProvider);
-    return _repository.getMessages(sessionId);
+    _repository ??= ref.watch(chatRepositoryProvider);
+    return _repository!.getMessages(sessionId);
   }
 
   Future<void> sendMessage(String content) async {
@@ -26,7 +26,7 @@ class ChatMessagesNotifier
     state = AsyncValue.data([...state.value ?? [], optimisticMessage]);
 
     try {
-      final response = await _repository.sendMessage(
+      final response = await _repository!.sendMessage(
         sessionId,
         SendMessageRequest(content: content),
       );
@@ -40,7 +40,7 @@ class ChatMessagesNotifier
   Future<void> deleteSession() async {
     final sessionId = arg;
     try {
-      await _repository.deleteSession(sessionId);
+      await _repository!.deleteSession(sessionId);
       state = const AsyncValue.data([]);
     } catch (e, st) {
       state = AsyncValue.error(e, st);

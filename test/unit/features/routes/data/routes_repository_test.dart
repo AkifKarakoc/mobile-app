@@ -99,12 +99,14 @@ void main() {
         totalStops: 5,
         places: [
           RoutePlaceResponse(
+            id: 'rp1',
             placeId: 'p1',
             stopOrder: 1,
             estimatedMinutes: 30,
             notes: 'Start here',
           ),
           RoutePlaceResponse(
+            id: 'rp2',
             placeId: 'p2',
             stopOrder: 2,
             estimatedMinutes: 45,

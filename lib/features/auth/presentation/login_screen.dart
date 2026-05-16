@@ -2,15 +2,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/app/env/env_provider.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/core/network/api_exception.dart';
 import 'package:mobile/core/utils/validators.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/core/widgets/app_text_field.dart';
-import 'package:mobile/core/widgets/error_view.dart';
-import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/features/auth/application/auth_notifier.dart';
+import 'package:mobile/features/auth/presentation/google_sign_in_helper.dart';
 
 /// Login screen for user authentication.
 ///
@@ -28,6 +28,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   late final TextEditingController _passwordController;
   late final GlobalKey<FormState> _formKey;
   String? _errorMessage;
+  bool _isGoogleSigningIn = false;
 
   @override
   void initState() {
@@ -42,6 +43,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _errorMessage = null;
+      _isGoogleSigningIn = true;
+    });
+
+    try {
+      final googleClientId = ref.read(envProvider).googleClientId;
+      final helper = GoogleSignInHelper(serverClientId: googleClientId);
+      final idToken = await helper.signIn();
+
+      if (idToken == null) {
+        // User cancelled
+        setState(() => _isGoogleSigningIn = false);
+        return;
+      }
+
+      await ref
+          .read(authNotifierProvider.notifier)
+          .loginWithGoogle(idToken: idToken);
+
+      if (mounted) {
+        context.go(AppRoutes.home);
+      }
+    } on ApiException catch (e) {
+      setState(() => _errorMessage = _getErrorMessage(e));
+    } catch (e) {
+      setState(() => _errorMessage = 'error_generic'.tr());
+    } finally {
+      if (mounted) {
+        setState(() => _isGoogleSigningIn = false);
+      }
+    }
   }
 
   Future<void> _handleLogin() async {
@@ -90,18 +126,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('auth.login_title'.tr()), elevation: 0),
-      body: authState.when(
-        loading: () => const AppLoadingIndicator(),
-        error: (error, stackTrace) => ErrorView(
-          message: _getErrorMessage(
-            error is ApiException
-                ? error
-                : ApiException.unknown(error.toString()),
-          ),
-          onRetry: () => setState(() {}),
-        ),
-        data: (_) => _buildLoginForm(isLoading),
-      ),
+      body: _buildLoginForm(isLoading),
     );
   }
 
@@ -187,6 +212,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: isLoading ? null : _handleLogin,
               isLoading: isLoading,
               fullWidth: true,
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
+            // Divider with "or" text
+            Row(
+              children: [
+                const Expanded(child: Divider()),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  child: Text('auth.or'.tr()),
+                ),
+                const Expanded(child: Divider()),
+              ],
+            ),
+
+            const SizedBox(height: AppSpacing.md),
+
+            // Google Sign-In button
+            AppButton.secondary(
+              label: 'auth.continue_with_google'.tr(),
+              onPressed: _isGoogleSigningIn ? null : _handleGoogleSignIn,
+              isLoading: _isGoogleSigningIn,
+              fullWidth: true,
+              icon: Icons.login,
             ),
 
             const SizedBox(height: AppSpacing.md),

@@ -18,22 +18,22 @@ class FavoriteStatus {
 
 class FavoritesNotifier
     extends AutoDisposeAsyncNotifier<List<FavoriteResponse>> {
-  late final FavoritesRepository _repository;
+  FavoritesRepository? _repository;
 
   @override
   FutureOr<List<FavoriteResponse>> build() {
-    _repository = ref.watch(favoritesRepositoryProvider);
-    return _repository.getFavorites();
+    _repository ??= ref.watch(favoritesRepositoryProvider);
+    return _repository!.getFavorites();
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(_repository.getFavorites);
+    state = await AsyncValue.guard(_repository!.getFavorites);
   }
 
   Future<void> addFavorite(String placeId) async {
     try {
-      final favorite = await _repository.addFavorite(placeId);
+      final favorite = await _repository!.addFavorite(placeId);
       final currentFavorites = state.valueOrNull;
       if (currentFavorites == null) {
         await refresh();
@@ -52,7 +52,7 @@ class FavoritesNotifier
 
   Future<void> removeFavorite(String favoriteId) async {
     try {
-      await _repository.removeFavorite(favoriteId);
+      await _repository!.removeFavorite(favoriteId);
       final currentFavorites = state.valueOrNull;
       if (currentFavorites == null) {
         await refresh();

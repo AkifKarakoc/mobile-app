@@ -5,260 +5,286 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
-import 'package:mobile/core/widgets/app_button.dart';
+import 'package:mobile/core/utils/dialog_helper.dart';
 import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/core/widgets/error_view.dart';
+import 'package:mobile/core/widgets/hero_header.dart' show getRequiredExpForLevel, getExpRequiredToReachLevel;
 import 'package:mobile/features/auth/application/auth_notifier.dart';
 import 'package:mobile/features/user/application/profile_provider.dart';
 
-/// User profile screen
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileAsync = ref.watch(profileProvider);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: Text('profile.title').tr(), centerTitle: true),
+      backgroundColor: colorScheme.surface,
       body: profileAsync.when(
         loading: () => const Center(child: AppLoadingIndicator()),
         error: (e, _) => ErrorView(
           message: e.toString(),
           onRetry: () => ref.invalidate(profileProvider),
+          retryLabel: 'common.retry'.tr(),
         ),
         data: (user) {
           if (user == null) {
             return Center(child: Text('common.error_generic'.tr()));
           }
 
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                // Avatar section
-                Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Column(
-                    children: [
-                      // Profile photo circle
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerHighest,
-                        backgroundImage: user.profilePhotoUrl != null
-                            ? NetworkImage(user.profilePhotoUrl!)
-                            : null,
-                        child: user.profilePhotoUrl == null
-                            ? Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Theme.of(context).colorScheme.outline,
-                              )
-                            : null,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // User name
-                      Text(
-                        '${user.firstName} ${user.lastName}',
-                        style: AppTypography.headlineSmall,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-
-                      // Email
-                      Text(
-                        user.email,
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                      ),
-                    ],
-                  ),
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 220,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: _buildProfileHeader(context, user),
                 ),
-
-                // Level and XP section
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  ),
                   child: Column(
                     children: [
-                      // Level circle
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 3,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'profile.level'.tr(args: [user.level.toString()]),
-                            style: AppTypography.headlineSmall,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
+                      _buildLevelCard(context, user),
                       const SizedBox(height: AppSpacing.md),
-
-                      // XP bar
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'profile.xp_label'.tr(
-                              args: [user.expPoints.toString()],
-                            ),
-                            style: AppTypography.labelMedium,
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              minHeight: 8,
-                              value:
-                                  (user.expPoints % 1000) /
-                                  1000, // Simplified: 1000 XP per level
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.outline,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      _buildActionGrid(context),
+                      const SizedBox(height: AppSpacing.lg),
+                      _buildLogoutButton(context, ref),
+                      const SizedBox(height: AppSpacing.xl),
                     ],
                   ),
                 ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                // Action buttons
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
-                  child: Column(
-                    children: [
-                      // Edit profile button
-                      AppButton.primary(
-                        label: 'profile.edit'.tr(),
-                        onPressed: () => _navigateToEditProfile(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Quests button
-                      AppButton.secondary(
-                        label: 'profile.quests'.tr(),
-                        icon: Icons.flag_outlined,
-                        onPressed: () => _navigateToQuests(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Routes button
-                      AppButton.secondary(
-                        label: 'profile.routes'.tr(),
-                        icon: Icons.route_outlined,
-                        onPressed: () => _navigateToRoutes(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Favorites button
-                      AppButton.secondary(
-                        label: 'profile.favorites'.tr(),
-                        onPressed: () => _navigateToFavorites(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Todos button
-                      AppButton.secondary(
-                        label: 'profile.todos'.tr(),
-                        icon: Icons.checklist_outlined,
-                        onPressed: () => _navigateToTodos(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Badges button
-                      AppButton.secondary(
-                        label: 'profile.badges'.tr(),
-                        icon: Icons.emoji_events_outlined,
-                        onPressed: () => _navigateToBadges(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Settings button
-                      AppButton.secondary(
-                        label: 'settings.title'.tr(),
-                        onPressed: () => _navigateToSettings(context),
-                        fullWidth: true,
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      // Logout button
-                      AppButton.text(
-                        label: 'profile.logout'.tr(),
-                        onPressed: () => _handleLogout(context, ref),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
     );
   }
 
-  void _navigateToEditProfile(BuildContext context) {
-    context.push(AppRoutes.profileEdit);
+  Widget _buildProfileHeader(BuildContext context, dynamic user) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+                  colorScheme.primaryContainer.withValues(alpha: 0.4),
+                  colorScheme.surfaceContainerHighest,
+                ]
+              : [
+                  colorScheme.primary,
+                  colorScheme.primary.withValues(alpha: 0.7),
+                ],
+        ),
+      ),
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: AppSpacing.lg),
+            Hero(
+              tag: 'profile-avatar',
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(
+                  onTap: () => context.push(AppRoutes.profileEdit),
+                  borderRadius: BorderRadius.circular(60),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: isDark
+                        ? colorScheme.surfaceContainerHighest
+                        : Colors.white.withValues(alpha: 0.3),
+                    backgroundImage: user.profilePhotoUrl != null
+                        ? NetworkImage(user.profilePhotoUrl!)
+                        : null,
+                    child: user.profilePhotoUrl == null
+                        ? Icon(
+                            Icons.person,
+                            size: 50,
+                            color: isDark
+                                ? colorScheme.onSurfaceVariant
+                                : Colors.white,
+                          )
+                        : null,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              '${user.firstName} ${user.lastName}',
+              style: AppTypography.headlineSmall.copyWith(
+                color: isDark ? colorScheme.onSurface : Colors.white,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              user.email,
+              style: AppTypography.bodyMedium.copyWith(
+                color: isDark
+                    ? colorScheme.onSurfaceVariant
+                    : Colors.white.withValues(alpha: 0.8),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  void _navigateToFavorites(BuildContext context) {
-    context.push(AppRoutes.favoritesTab);
+  Widget _buildLevelCard(BuildContext context, dynamic user) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    // Calculate progress within current level using tiered system
+    final expForCurrentLevel = user.expPoints - getExpRequiredToReachLevel(user.level);
+    final requiredForNext = getRequiredExpForLevel(user.level);
+    final progress = requiredForNext > 0 ? expForCurrentLevel / requiredForNext : 0.0;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  colorScheme.primary,
+                  colorScheme.primaryContainer,
+                ],
+              ),
+            ),
+            child: Center(
+              child: Text(
+                '${user.level}',
+                style: AppTypography.headlineSmall.copyWith(
+                  color: colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'profile.level'.tr(namedArgs: {'level': user.level.toString()}),
+                  style: AppTypography.titleMedium,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'profile.xp_label'.tr(args: [user.expPoints.toString()]),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: progress),
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeInOut,
+                  builder: (context, value, _) => ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: value,
+                      minHeight: 6,
+                      backgroundColor: colorScheme.primary.withValues(alpha: 0.15),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  void _navigateToSettings(BuildContext context) {
-    context.push(AppRoutes.settings);
+  Widget _buildActionGrid(BuildContext context) {
+    final actions = [
+      (Icons.flag_outlined, 'profile.quests'.tr(), AppRoutes.userQuests),
+      (Icons.route_outlined, 'profile.routes'.tr(), AppRoutes.userRoutes),
+      (Icons.favorite_outline, 'profile.favorites'.tr(), AppRoutes.favoritesTab),
+      (Icons.checklist_outlined, 'profile.todos'.tr(), AppRoutes.todos),
+      (Icons.emoji_events_outlined, 'profile.badges'.tr(), AppRoutes.badges),
+      (Icons.settings_outlined, 'settings.title'.tr(), AppRoutes.settings),
+    ];
+
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      mainAxisSpacing: AppSpacing.sm,
+      crossAxisSpacing: AppSpacing.sm,
+      childAspectRatio: 1.1,
+      children: actions.map((action) {
+        return _ActionCard(
+          icon: action.$1,
+          label: action.$2,
+          onTap: () => context.push(action.$3),
+        );
+      }).toList(),
+    );
   }
 
-  void _navigateToRoutes(BuildContext context) {
-    context.push(AppRoutes.routesList);
-  }
+  Widget _buildLogoutButton(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
 
-  void _navigateToQuests(BuildContext context) {
-    context.push(AppRoutes.questsList);
-  }
-
-  void _navigateToBadges(BuildContext context) {
-    context.push(AppRoutes.badges);
-  }
-
-  void _navigateToTodos(BuildContext context) {
-    context.push(AppRoutes.todos);
+    return InkWell(
+      onTap: () => _handleLogout(context, ref),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: colorScheme.error.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(
+            color: colorScheme.error.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.logout, color: colorScheme.error, size: 20),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              'profile.logout'.tr(),
+              style: AppTypography.titleSmall.copyWith(
+                color: colorScheme.error,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _handleLogout(BuildContext context, WidgetRef ref) {
-    showDialog(
+    showAnimatedDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text('profile.logout'.tr()),
@@ -279,6 +305,57 @@ class ProfileScreen extends ConsumerWidget {
             child: Text('profile.logout'.tr()),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ActionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _ActionCard({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 28,
+              color: colorScheme.primary,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              label,
+              style: AppTypography.labelSmall.copyWith(
+                color: colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

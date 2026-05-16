@@ -29,9 +29,13 @@ class MessageBubble extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser) ...[
-            CircleAvatar(
-              radius: 14,
-              backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              ),
               child: Icon(
                 Icons.smart_toy_outlined,
                 size: 16,
@@ -53,17 +57,26 @@ class MessageBubble extends StatelessWidget {
                 color: isUser
                     ? theme.colorScheme.primary
                     : theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(AppSpacing.radiusMd),
+                  topRight: const Radius.circular(AppSpacing.radiusMd),
+                  bottomLeft: Radius.circular(
+                    isUser ? AppSpacing.radiusMd : AppSpacing.radiusSm,
+                  ),
+                  bottomRight: Radius.circular(
+                    isUser ? AppSpacing.radiusSm : AppSpacing.radiusMd,
+                  ),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  SelectableText(
                     message.content,
                     style: AppTypography.bodyMedium.copyWith(
                       color: isUser
                           ? Colors.white
-                          : theme.colorScheme.onSurfaceVariant,
+                          : theme.colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),

@@ -2,99 +2,132 @@ import 'package:flutter/material.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/app_typography.dart';
 
-/// Empty state display widget
-///
-/// Shows an icon, title, optional description, and optional action button
-/// when a list, grid, or section has no content.
-class EmptyState extends StatelessWidget {
-  /// Icon to display (IconData or custom Widget)
-  final dynamic icon;
-
-  /// Title text
+class EmptyState extends StatefulWidget {
+  final Widget? illustration;
+  final IconData? icon;
   final String title;
-
-  /// Optional description text below title
   final String? description;
-
-  /// Optional action button label
   final String? actionLabel;
-
-  /// Callback when action button is pressed
   final VoidCallback? onAction;
-
-  /// Icon color
-  final Color? iconColor;
-
-  /// Icon size (only used if icon is IconData)
-  final double iconSize;
+  final Duration animationDuration;
 
   const EmptyState({
     super.key,
-    required this.icon,
+    this.illustration,
+    this.icon,
     required this.title,
     this.description,
     this.actionLabel,
     this.onAction,
-    this.iconColor,
-    this.iconSize = 80,
+    this.animationDuration = const Duration(milliseconds: 400),
   });
 
   @override
+  State<EmptyState> createState() => _EmptyStateState();
+}
+
+class _EmptyStateState extends State<EmptyState>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: widget.animationDuration,
+      vsync: this,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOut,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.15),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.lg,
-            vertical: AppSpacing.xl,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Icon
-              if (icon is IconData)
-                Icon(
-                  icon as IconData,
-                  size: iconSize,
-                  color:
-                      iconColor ?? Theme.of(context).colorScheme.outlineVariant,
-                )
-              else if (icon is Widget)
-                SizedBox(
-                  width: iconSize,
-                  height: iconSize,
-                  child: icon as Widget,
-                ),
-              const SizedBox(height: AppSpacing.lg),
+    final colorScheme = Theme.of(context).colorScheme;
 
-              // Title
-              Text(
-                title,
-                style: AppTypography.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-
-              // Description
-              if (description != null) ...[
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  description!,
-                  style: AppTypography.bodyMedium.copyWith(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-
-              // Action button
-              if (actionLabel != null && onAction != null) ...[
+    return Semantics(
+      label: widget.title,
+      child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.xl,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildVisual(colorScheme),
                 const SizedBox(height: AppSpacing.lg),
-                ElevatedButton(onPressed: onAction, child: Text(actionLabel!)),
+                _buildTitle(colorScheme),
+                if (widget.description != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  _buildDescription(colorScheme),
+                ],
+                if (widget.actionLabel != null && widget.onAction != null) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildActionButton(),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildVisual(ColorScheme colorScheme) {
+    final iconWidget = widget.icon != null
+        ? Icon(
+            widget.icon,
+            size: widget.illustration != null ? 48 : 80,
+            color: colorScheme.outlineVariant,
+          )
+        : null;
+
+    final visual = widget.illustration ?? iconWidget;
+
+    return SlideTransition(
+      position: _slideAnimation,
+      child: FadeTransition(opacity: _fadeAnimation, child: visual),
+    );
+  }
+
+  Widget _buildTitle(ColorScheme colorScheme) {
+    return Text(
+      widget.title,
+      style: AppTypography.headlineSmall.copyWith(color: colorScheme.onSurface),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildDescription(ColorScheme colorScheme) {
+    return Text(
+      widget.description!,
+      style: AppTypography.bodyMedium.copyWith(color: colorScheme.outline),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildActionButton() {
+    return FilledButton.tonal(
+      onPressed: widget.onAction,
+      child: Text(widget.actionLabel!),
     );
   }
 }

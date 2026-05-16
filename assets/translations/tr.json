@@ -6,6 +6,8 @@
     "delete": "Sil",
     "edit": "Düzenle",
     "retry": "Tekrar Dene",
+    "continue": "Devam Et",
+    "see_all": "Tümünü Gör",
     "loading": "Yükleniyor",
     "error_generic": "Bir hata oluştu",
     "error_network": "Ağ bağlantısı yok",
@@ -27,7 +29,7 @@
     "email_label": "E-posta",
     "email_hint": "ornek@email.com",
     "password_label": "Şifre",
-    "password_hint": "En az 8 karakter",
+    "password_hint": "Min. 8 karakter, büyük/küçük harf ve rakam içermeli",
     "confirm_password_label": "Şifre Doğrula",
     "confirm_password_hint": "Şifreyi tekrar girin",
     "forgot_password": "Şifremi unuttum",
@@ -40,6 +42,11 @@
     "first_name_hint": "Adınız",
     "last_name_label": "Soyad",
     "last_name_hint": "Soyadınız",
+    "birth_date_label": "Doğum Tarihi",
+    "birth_date_hint": "Doğum tarihinizi seçin",
+    "country_code_label": "Kod",
+    "phone_label": "Telefon",
+    "phone_hint": "5XX XXX XX XX",
     "submit_login": "Giriş Yap",
     "submit_register": "Kayıt Ol",
     "validation_email_required": "E-posta gerekli",
@@ -52,12 +59,25 @@
     "validation_required": "Bu alan gerekli",
     "error_invalid_credentials": "E-posta veya şifre yanlış",
     "error_email_taken": "Bu e-posta zaten kayıtlı",
-    "coming_soon": "Bu özellik yakında eklenecek"
+    "error_password_requirements": "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir",
+    "coming_soon": "Bu özellik yakında eklenecek",
+    "or": "veya",
+    "continue_with_google": "Google ile devam et"
   },
   "home": {
     "title": "Ana Sayfa",
     "my_quests": "Questlerim",
     "my_routes": "Rotalarım",
+    "welcome": "Hoş geldin, {}",
+    "welcome_subtitle": "Ne keşfetmek istersin?",
+    "xp_to_next": "{} XP sonraki seviyeye",
+    "explore": "Keşfet",
+    "active_quest": "Aktif Quest",
+    "active_route": "Aktif Rota",
+    "no_active_quest": "Aktif maceran yok",
+    "start_exploring": "Yeni bir maceraya başla!",
+    "popular_nearby": "Popüler Yakınındakiler",
+    "unknown_route": "Bilinmeyen Rota",
     "quests_title": "Questler",
     "quests_subtitle": "Görevleri keşfet",
     "routes_title": "Rotalar",
@@ -114,11 +134,12 @@
     "title": "Profil",
     "edit": "Profili Düzenle",
     "favorites": "Favorilerim",
-    "routes": "Rotalar",
-    "quests": "Görevler",
+    "routes": "Rotalarım",
+    "quests": "Görevlerim",
     "badges": "Rozetlerim",
     "todos": "Yapılacaklar",
     "logout": "Çıkış Yap",
+    "logout_confirm": "Çıkış yapmak istediğinize emin misiniz?",
     "level": "Seviye {level}",
     "xp_label": "XP: {xp}"
   },
@@ -126,15 +147,15 @@
     "title": "Profili Düzenle",
     "first_name": "Ad",
     "last_name": "Soyad",
+    "country_code": "Kod",
     "phone": "Telefon",
-    "age_group": "Yaş Grubu",
+    "birth_date": "Doğum Tarihi",
+    "birth_date_hint": "Doğum tarihinizi seçin",
     "preferred_language": "Tercih Edilen Dil",
     "save": "Kaydet",
     "upload_photo": "Fotoğraf Yükle",
-    "age_group_18_25": "18-25",
-    "age_group_26_35": "26-35",
-    "age_group_36_50": "36-50",
-    "age_group_50_plus": "50+"
+    "photo_uploaded": "Fotoğraf başarıyla yüklendi",
+    "photo_upload_error": "Fotoğraf yüklenirken bir hata oluştu"
   },
   "favorites": {
     "title": "Favorilerim",
@@ -221,6 +242,7 @@
     "opening_hours": "Açılış Saatleri",
     "phone": "Telefon",
     "website": "Web Sitesi",
+    "description": "Açıklama",
     "rating": "Puan",
     "rating_value": "{rating} / 5 ({count} yorum)",
     "popularity": "Popülerlik",
@@ -228,6 +250,7 @@
     "keywords": "Anahtar Kelimeler",
     "directions": "Yol Tarifi",
     "directions_unavailable": "Yol tarifi entegrasyonu yakında eklenecek",
+    "share": "Paylaş",
     "add_favorite": "Favorilere ekle",
     "remove_favorite": "Favorilerden kaldır",
     "favorite_added": "Favorilere eklendi",
@@ -253,14 +276,17 @@
     "map_title": "Rota Haritası",
     "map_no_locations": "Bu rotada konum bilgisi bulunmuyor",
     "stop_order": "Durak",
-    "my_routes": "Rotalarım"
+    "my_routes": "Rotalarım",
+    "progress": "İlerleme"
   },
   "user_routes": {
     "title": "Rotalarım",
     "in_progress": "Devam Ediyor",
     "completed": "Tamamlandı",
     "no_routes": "Henüz route eklemediniz",
+    "no_completed_routes": "Henüz tamamlanmış rota yok",
     "accept_route": "Route'u Kabul Et",
+    "route_accepted": "Kabul Edildi",
     "view_map": "Haritada Gör",
     "total_stops": "Toplam Durak",
     "estimated_time": "Tahmini Süre"
@@ -294,7 +320,14 @@
     "hint": "İpucu",
     "requires_photo": "Fotoğraf Gerekli",
     "not_completed": "Tamamlanmadı",
-    "my_quests": "Görevlerim"
+    "my_quests": "Görevlerim",
+    "verify_step": "Doğrula",
+    "progress_title": "İlerleme",
+    "progress_subtitle": "{completed} / {total} adım tamamlandı",
+    "view_map": "Haritada Gör",
+    "map_title": "Görev Haritası",
+    "map_no_locations": "Bu görevde konum bilgisi bulunmuyor",
+    "step": "Adım"
   },
   "user_quests": {
     "title": "Questlerim",
@@ -302,6 +335,7 @@
     "completed": "Tamamlandı",
     "progress": "İlerleme",
     "no_quests": "Henüz quest başlatmadınız",
+    "no_completed_quests": "Henüz tamamlanmış quest yok",
     "start_quest": "Quest'i Başlat"
   },
   "chat": {
@@ -311,7 +345,19 @@
     "typing": "Yazıyor...",
     "delete_session": "Sohbeti Sil",
     "delete_confirm": "Bu sohbet silinsin mi?",
-    "send_error": "Mesaj gönderilemedi"
+    "send_error": "Mesaj gönderilemedi",
+    "sessions_title": "Sohbetler",
+    "new_session": "Yeni Sohbet",
+    "empty_title": "Henüz sohbet yok",
+    "empty_description": "Yeni bir sohbet başlatarak yapay zeka rehberinizle konuşmaya başlayın",
+    "start_chat": "Sohbet Başlat",
+    "deleted": "Sohbet silindi",
+    "language_tr": "Türkçe Sohbet",
+    "language_en": "English Chat",
+    "language_de": "Deutsch Chat",
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "time_ago": "{time} önce"
   },
   "quest_verify": {
     "title": "Adım Doğrula",
@@ -334,7 +380,11 @@
     "ok": "Tamam",
     "retry": "Tekrar Dene",
     "gps_error": "Konum alınamadı",
-    "gps_accuracy_error": "Konum hassasiyeti yetersiz"
+    "gps_accuracy_error": "Konum hassasiyeti yetersiz",
+    "location_acquired": "Konum alındı",
+    "target_place": "Hedef: {place}",
+    "distance_meters": "Hedefe uzaklık: {distance}m",
+    "distance_kilometers": "Hedefe uzaklık: {distance}km"
   },
   "todos": {
     "title": "Yapılacaklar",
@@ -353,7 +403,9 @@
     "place_link": "Yere git",
     "error_add": "Yapılacak eklenemedi",
     "error_update": "Yapılacak güncellenemedi",
-    "error_delete": "Yapılacak silinemedi"
+    "error_delete": "Yapılacak silinemedi",
+    "swipe_complete": "Tamamla",
+    "swipe_delete": "Sil"
   },
   "notifications": {
     "title": "Bildirimler",
@@ -364,5 +416,38 @@
     "minutes_ago": "{count} dakika önce",
     "hours_ago": "{count} saat önce",
     "days_ago": "{count} gün önce"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "nearby": "Yakınımdakiler",
+    "chat": "Sohbet",
+    "profile": "Profilim"
+  },
+  "route_stop": {
+    "title": "Durak Tamamla",
+    "location_permission": "Konum izni gerekli",
+    "location_acquired": "Konum alındı",
+    "complete": "Tamamla",
+    "stop_completed": "Durak tamamlandı! +{0} XP",
+    "route_completed": "Rota tamamlandı!",
+    "instructions": "Bu durağı tamamlamak için konumunuzu doğrulayın",
+    "gps_error": "Konum alınamadı",
+    "gps_accuracy_error": "Konum hassasiyeti yetersiz",
+    "distance_meters": "Hedefe uzaklık: {distance}m",
+    "distance_kilometers": "Hedefe uzaklık: {distance}km"
+  },
+  "image_identify": {
+    "title": "Görsel Tanımla",
+    "camera_permission": "Kamera izni gerekli",
+    "location_permission": "Konum izni gerekli",
+    "no_photo": "Fotoğraf çekilmedi",
+    "gps_error": "Konum alınamadı",
+    "identify": "Tanımla",
+    "take_photo": "Fotoğraf Çek",
+    "choose_gallery": "Galeriden Seç",
+    "result_title": "Tanımlama Sonucu",
+    "confidence": "Güven",
+    "low_confidence": "Düşük güven oranı",
+    "description": "Yapay zeka bu görseli tanımladı"
   }
 }

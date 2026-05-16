@@ -48,7 +48,10 @@ class XPProgressBar extends StatelessWidget {
         if (showLabel) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'common.xp_progress'.tr(args: [currentXP.toString(), requiredXP.toString()]),
+            'common.xp_progress'.tr(namedArgs: {
+              'current': currentXP.toString(),
+              'required': requiredXP.toString(),
+            }),
             style: AppTypography.labelSmall.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),

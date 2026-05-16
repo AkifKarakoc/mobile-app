@@ -5,16 +5,16 @@ import 'package:mobile/features/notifications/data/dto/notification_response.dar
 import 'package:mobile/features/notifications/data/notifications_repository.dart';
 
 class NotificationsNotifier extends AutoDisposeAsyncNotifier<List<NotificationResponse>> {
-  late final NotificationsRepository _repository;
+  NotificationsRepository? _repository;
 
   @override
   FutureOr<List<NotificationResponse>> build() {
-    _repository = ref.watch(notificationsRepositoryProvider);
+    _repository ??= ref.watch(notificationsRepositoryProvider);
     return _loadNotifications();
   }
 
   Future<List<NotificationResponse>> _loadNotifications() async {
-    return _repository.getNotifications();
+    return _repository!.getNotifications();
   }
 
   Future<void> refresh() async {
@@ -23,12 +23,12 @@ class NotificationsNotifier extends AutoDisposeAsyncNotifier<List<NotificationRe
   }
 
   Future<void> markAsRead(String id) async {
-    await _repository.markAsRead(id);
+    await _repository!.markAsRead(id);
     await refresh();
   }
 
   Future<void> markAllAsRead() async {
-    await _repository.markAllAsRead();
+    await _repository!.markAllAsRead();
     await refresh();
   }
 }

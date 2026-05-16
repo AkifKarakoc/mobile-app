@@ -13,6 +13,7 @@ abstract class QuestDetailResponse with _$QuestDetailResponse {
     required String region,
     String? thumbnailUrl,
     String? badgeId,
+    @Default(200) int gpsThresholdMeters,
     required List<StepResponse> steps,
     String? userStatus,
   }) = _QuestDetailResponse;
@@ -27,9 +28,12 @@ abstract class StepResponse with _$StepResponse {
     required String id,
     required String placeId,
     required int stepOrder,
-    required String hint,
+    String? hint,
     required bool requiresPhoto,
     required bool isCompleted,
+    double? latitude,
+    double? longitude,
+    String? placeName,
   }) = _StepResponse;
 
   factory StepResponse.fromJson(Map<String, dynamic> json) =>

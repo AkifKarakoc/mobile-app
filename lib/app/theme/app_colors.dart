@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 /// Smart Tourism Guide renk paleti
-/// Light ve dark tema renkleri
+/// Light ve dark tema renkleri — Travel App (Sky Blue + Ocean)
 abstract final class AppColors {
   // Light tema — Primary
-  /// Turkuaz/Teal — Tourism teması için uygun, doğanın rengi
-  static const Color primaryLight = Color(0xFF0D9488);
+  /// Sky Blue — Gökyüzü, deniz, güven hissi (Travel App paleti)
+  static const Color primaryLight = Color(0xFF0369A1);
 
-  /// Turkuazın koyu varyasyonu
-  static const Color primaryDarkLight = Color(0xFF086659);
+  /// Sky Blue koyu varyasyonu
+  static const Color primaryDarkLight = Color(0xFF075985);
 
   // Light tema — Secondary
-  /// Turuncu/Amber — İzmir güneşinin ısıltısı
-  static const Color secondaryLight = Color(0xFFF59E0B);
+  /// Ocean Blue — Deniz mavisi, macera hissi
+  static const Color secondaryLight = Color(0xFF0EA5E9);
 
-  /// Turuncu/Amber koyu varyasyonu
-  static const Color secondaryDarkLight = Color(0xFFDC2626);
+  /// Ocean Blue koyu varyasyonu
+  static const Color secondaryDarkLight = Color(0xFF0284C7);
 
   // Light tema — Surface & Background
   /// Hafif gri arka plan
@@ -41,7 +41,7 @@ abstract final class AppColors {
   /// Başarı/onay rengi
   static const Color successLight = Color(0xFF10B981);
 
-  /// Uyarı rengi
+  /// Uyarı rengi — Amber (güneş/gündoğumu)
   static const Color warningLight = Color(0xFFF59E0B);
 
   /// Hata/kırmızı
@@ -54,15 +54,15 @@ abstract final class AppColors {
   static const Color dividerLight = Color(0xFFE5E7EB);
 
   // Dark tema — Primary
-  /// Turkuaz/Teal dark versiyonu
-  static const Color primaryDark = Color(0xFF14B8A6);
+  /// Sky Blue dark versiyonu (daha açık)
+  static const Color primaryDark = Color(0xFF38BDF8);
 
-  /// Turkuazın daha açık varyasyonu (dark'ta)
-  static const Color primaryVariantDark = Color(0xFF2DD4BF);
+  /// Sky Blue daha açık varyasyonu (dark'ta)
+  static const Color primaryVariantDark = Color(0xFF7DD3FC);
 
   // Dark tema — Secondary
-  /// Turuncu dark versiyonu
-  static const Color secondaryDark = Color(0xFFFCD34D);
+  /// Ocean Blue dark versiyonu
+  static const Color secondaryDark = Color(0xFF7DD3FC);
 
   // Dark tema — Surface & Background
   /// Dark arka plan (very dark)

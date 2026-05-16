@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserResponse {
 
- String get id; String get email; String get firstName; String get lastName; String? get phoneNumber; String? get profilePhotoUrl; String get preferredLanguage; String? get ageGroup; String get role; int get expPoints; int get level;
+ String get id; String get email; String get firstName; String get lastName; String? get phoneCountryCode; String? get phoneNumber; String? get profilePhotoUrl; String get preferredLanguage; DateTime? get birthDate; String get role; int get expPoints; int get level;
 /// Create a copy of UserResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserResponseCopyWith<UserResponse> get copyWith => _$UserResponseCopyWithImpl<U
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.profilePhotoUrl, profilePhotoUrl) || other.profilePhotoUrl == profilePhotoUrl)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.role, role) || other.role == role)&&(identical(other.expPoints, expPoints) || other.expPoints == expPoints)&&(identical(other.level, level) || other.level == level));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneCountryCode, phoneCountryCode) || other.phoneCountryCode == phoneCountryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.profilePhotoUrl, profilePhotoUrl) || other.profilePhotoUrl == profilePhotoUrl)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.role, role) || other.role == role)&&(identical(other.expPoints, expPoints) || other.expPoints == expPoints)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,email,firstName,lastName,phoneNumber,profilePhotoUrl,preferredLanguage,ageGroup,role,expPoints,level);
+int get hashCode => Object.hash(runtimeType,id,email,firstName,lastName,phoneCountryCode,phoneNumber,profilePhotoUrl,preferredLanguage,birthDate,role,expPoints,level);
 
 @override
 String toString() {
-  return 'UserResponse(id: $id, email: $email, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, profilePhotoUrl: $profilePhotoUrl, preferredLanguage: $preferredLanguage, ageGroup: $ageGroup, role: $role, expPoints: $expPoints, level: $level)';
+  return 'UserResponse(id: $id, email: $email, firstName: $firstName, lastName: $lastName, phoneCountryCode: $phoneCountryCode, phoneNumber: $phoneNumber, profilePhotoUrl: $profilePhotoUrl, preferredLanguage: $preferredLanguage, birthDate: $birthDate, role: $role, expPoints: $expPoints, level: $level)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserResponseCopyWith<$Res>  {
   factory $UserResponseCopyWith(UserResponse value, $Res Function(UserResponse) _then) = _$UserResponseCopyWithImpl;
 @useResult
 $Res call({
- String id, String email, String firstName, String lastName, String? phoneNumber, String? profilePhotoUrl, String preferredLanguage, String? ageGroup, String role, int expPoints, int level
+ String id, String email, String firstName, String lastName, String? phoneCountryCode, String? phoneNumber, String? profilePhotoUrl, String preferredLanguage, DateTime? birthDate, String role, int expPoints, int level
 });
 
 
@@ -65,17 +65,18 @@ class _$UserResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? phoneNumber = freezed,Object? profilePhotoUrl = freezed,Object? preferredLanguage = null,Object? ageGroup = freezed,Object? role = null,Object? expPoints = null,Object? level = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? phoneCountryCode = freezed,Object? phoneNumber = freezed,Object? profilePhotoUrl = freezed,Object? preferredLanguage = null,Object? birthDate = freezed,Object? role = null,Object? expPoints = null,Object? level = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
-as String,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,phoneCountryCode: freezed == phoneCountryCode ? _self.phoneCountryCode : phoneCountryCode // ignore: cast_nullable_to_non_nullable
+as String?,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
 as String?,profilePhotoUrl: freezed == profilePhotoUrl ? _self.profilePhotoUrl : profilePhotoUrl // ignore: cast_nullable_to_non_nullable
 as String?,preferredLanguage: null == preferredLanguage ? _self.preferredLanguage : preferredLanguage // ignore: cast_nullable_to_non_nullable
-as String,ageGroup: freezed == ageGroup ? _self.ageGroup : ageGroup // ignore: cast_nullable_to_non_nullable
-as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,expPoints: null == expPoints ? _self.expPoints : expPoints // ignore: cast_nullable_to_non_nullable
 as int,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as int,
@@ -163,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String email,  String firstName,  String lastName,  String? phoneNumber,  String? profilePhotoUrl,  String preferredLanguage,  String? ageGroup,  String role,  int expPoints,  int level)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String email,  String firstName,  String lastName,  String? phoneCountryCode,  String? phoneNumber,  String? profilePhotoUrl,  String preferredLanguage,  DateTime? birthDate,  String role,  int expPoints,  int level)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserResponse() when $default != null:
-return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneNumber,_that.profilePhotoUrl,_that.preferredLanguage,_that.ageGroup,_that.role,_that.expPoints,_that.level);case _:
+return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneCountryCode,_that.phoneNumber,_that.profilePhotoUrl,_that.preferredLanguage,_that.birthDate,_that.role,_that.expPoints,_that.level);case _:
   return orElse();
 
 }
@@ -184,10 +185,10 @@ return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneN
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String email,  String firstName,  String lastName,  String? phoneNumber,  String? profilePhotoUrl,  String preferredLanguage,  String? ageGroup,  String role,  int expPoints,  int level)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String email,  String firstName,  String lastName,  String? phoneCountryCode,  String? phoneNumber,  String? profilePhotoUrl,  String preferredLanguage,  DateTime? birthDate,  String role,  int expPoints,  int level)  $default,) {final _that = this;
 switch (_that) {
 case _UserResponse():
-return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneNumber,_that.profilePhotoUrl,_that.preferredLanguage,_that.ageGroup,_that.role,_that.expPoints,_that.level);case _:
+return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneCountryCode,_that.phoneNumber,_that.profilePhotoUrl,_that.preferredLanguage,_that.birthDate,_that.role,_that.expPoints,_that.level);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +205,10 @@ return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneN
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String email,  String firstName,  String lastName,  String? phoneNumber,  String? profilePhotoUrl,  String preferredLanguage,  String? ageGroup,  String role,  int expPoints,  int level)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String email,  String firstName,  String lastName,  String? phoneCountryCode,  String? phoneNumber,  String? profilePhotoUrl,  String preferredLanguage,  DateTime? birthDate,  String role,  int expPoints,  int level)?  $default,) {final _that = this;
 switch (_that) {
 case _UserResponse() when $default != null:
-return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneNumber,_that.profilePhotoUrl,_that.preferredLanguage,_that.ageGroup,_that.role,_that.expPoints,_that.level);case _:
+return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneCountryCode,_that.phoneNumber,_that.profilePhotoUrl,_that.preferredLanguage,_that.birthDate,_that.role,_that.expPoints,_that.level);case _:
   return null;
 
 }
@@ -219,17 +220,18 @@ return $default(_that.id,_that.email,_that.firstName,_that.lastName,_that.phoneN
 @JsonSerializable()
 
 class _UserResponse implements UserResponse {
-  const _UserResponse({required this.id, required this.email, required this.firstName, required this.lastName, this.phoneNumber, this.profilePhotoUrl, required this.preferredLanguage, this.ageGroup, required this.role, required this.expPoints, required this.level});
+  const _UserResponse({required this.id, required this.email, required this.firstName, required this.lastName, this.phoneCountryCode, this.phoneNumber, this.profilePhotoUrl, required this.preferredLanguage, this.birthDate, required this.role, required this.expPoints, required this.level});
   factory _UserResponse.fromJson(Map<String, dynamic> json) => _$UserResponseFromJson(json);
 
 @override final  String id;
 @override final  String email;
 @override final  String firstName;
 @override final  String lastName;
+@override final  String? phoneCountryCode;
 @override final  String? phoneNumber;
 @override final  String? profilePhotoUrl;
 @override final  String preferredLanguage;
-@override final  String? ageGroup;
+@override final  DateTime? birthDate;
 @override final  String role;
 @override final  int expPoints;
 @override final  int level;
@@ -247,16 +249,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.profilePhotoUrl, profilePhotoUrl) || other.profilePhotoUrl == profilePhotoUrl)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.ageGroup, ageGroup) || other.ageGroup == ageGroup)&&(identical(other.role, role) || other.role == role)&&(identical(other.expPoints, expPoints) || other.expPoints == expPoints)&&(identical(other.level, level) || other.level == level));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserResponse&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phoneCountryCode, phoneCountryCode) || other.phoneCountryCode == phoneCountryCode)&&(identical(other.phoneNumber, phoneNumber) || other.phoneNumber == phoneNumber)&&(identical(other.profilePhotoUrl, profilePhotoUrl) || other.profilePhotoUrl == profilePhotoUrl)&&(identical(other.preferredLanguage, preferredLanguage) || other.preferredLanguage == preferredLanguage)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.role, role) || other.role == role)&&(identical(other.expPoints, expPoints) || other.expPoints == expPoints)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,email,firstName,lastName,phoneNumber,profilePhotoUrl,preferredLanguage,ageGroup,role,expPoints,level);
+int get hashCode => Object.hash(runtimeType,id,email,firstName,lastName,phoneCountryCode,phoneNumber,profilePhotoUrl,preferredLanguage,birthDate,role,expPoints,level);
 
 @override
 String toString() {
-  return 'UserResponse(id: $id, email: $email, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, profilePhotoUrl: $profilePhotoUrl, preferredLanguage: $preferredLanguage, ageGroup: $ageGroup, role: $role, expPoints: $expPoints, level: $level)';
+  return 'UserResponse(id: $id, email: $email, firstName: $firstName, lastName: $lastName, phoneCountryCode: $phoneCountryCode, phoneNumber: $phoneNumber, profilePhotoUrl: $profilePhotoUrl, preferredLanguage: $preferredLanguage, birthDate: $birthDate, role: $role, expPoints: $expPoints, level: $level)';
 }
 
 
@@ -267,7 +269,7 @@ abstract mixin class _$UserResponseCopyWith<$Res> implements $UserResponseCopyWi
   factory _$UserResponseCopyWith(_UserResponse value, $Res Function(_UserResponse) _then) = __$UserResponseCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String email, String firstName, String lastName, String? phoneNumber, String? profilePhotoUrl, String preferredLanguage, String? ageGroup, String role, int expPoints, int level
+ String id, String email, String firstName, String lastName, String? phoneCountryCode, String? phoneNumber, String? profilePhotoUrl, String preferredLanguage, DateTime? birthDate, String role, int expPoints, int level
 });
 
 
@@ -284,17 +286,18 @@ class __$UserResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? phoneNumber = freezed,Object? profilePhotoUrl = freezed,Object? preferredLanguage = null,Object? ageGroup = freezed,Object? role = null,Object? expPoints = null,Object? level = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? email = null,Object? firstName = null,Object? lastName = null,Object? phoneCountryCode = freezed,Object? phoneNumber = freezed,Object? profilePhotoUrl = freezed,Object? preferredLanguage = null,Object? birthDate = freezed,Object? role = null,Object? expPoints = null,Object? level = null,}) {
   return _then(_UserResponse(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
-as String,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
+as String,phoneCountryCode: freezed == phoneCountryCode ? _self.phoneCountryCode : phoneCountryCode // ignore: cast_nullable_to_non_nullable
+as String?,phoneNumber: freezed == phoneNumber ? _self.phoneNumber : phoneNumber // ignore: cast_nullable_to_non_nullable
 as String?,profilePhotoUrl: freezed == profilePhotoUrl ? _self.profilePhotoUrl : profilePhotoUrl // ignore: cast_nullable_to_non_nullable
 as String?,preferredLanguage: null == preferredLanguage ? _self.preferredLanguage : preferredLanguage // ignore: cast_nullable_to_non_nullable
-as String,ageGroup: freezed == ageGroup ? _self.ageGroup : ageGroup // ignore: cast_nullable_to_non_nullable
-as String?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
+as DateTime?,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,expPoints: null == expPoints ? _self.expPoints : expPoints // ignore: cast_nullable_to_non_nullable
 as int,level: null == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
 as int,

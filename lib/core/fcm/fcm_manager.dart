@@ -27,17 +27,16 @@ class FCMManager {
     if (_initialized) return;
     _initialized = true;
 
+    // Firebase is already initialized in main.dart
+    // Check if Firebase is ready before proceeding
     try {
-      await Firebase.initializeApp();
+      await _initLocalNotifications();
+      await _requestPermission();
+      await _setupForegroundHandler();
+      await _registerToken();
     } catch (e) {
-      debugPrint('Firebase initialization failed: $e');
-      return;
+      debugPrint('FCM setup failed: $e');
     }
-
-    await _initLocalNotifications();
-    await _requestPermission();
-    await _setupForegroundHandler();
-    await _registerToken();
   }
 
   Future<void> _initLocalNotifications() async {

@@ -8,6 +8,8 @@ abstract class ReviewResponse with _$ReviewResponse {
   const factory ReviewResponse({
     required String id,
     required String userId,
+    String? userFirstName,
+    String? userLastName,
     required String placeId,
     required int rating,
     String? comment,

@@ -5,16 +5,16 @@ import 'package:mobile/features/chat/data/chat_repository.dart';
 import 'package:mobile/features/chat/data/dto/chat_session_response.dart';
 
 class ChatSessionsNotifier extends AutoDisposeAsyncNotifier<List<ChatSessionResponse>> {
-  late final ChatRepository _repository;
+  ChatRepository? _repository;
 
   @override
   FutureOr<List<ChatSessionResponse>> build() {
-    _repository = ref.watch(chatRepositoryProvider);
+    _repository ??= ref.watch(chatRepositoryProvider);
     return _loadSessions();
   }
 
   Future<List<ChatSessionResponse>> _loadSessions() {
-    return _repository.getSessions();
+    return _repository!.getSessions();
   }
 
   Future<void> refresh() async {
@@ -25,7 +25,7 @@ class ChatSessionsNotifier extends AutoDisposeAsyncNotifier<List<ChatSessionResp
   Future<void> createSession({String? language}) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final session = await _repository.createSession(language: language);
+      final session = await _repository!.createSession(language: language);
       final current = await _loadSessions();
       return [session, ...current];
     });
@@ -34,7 +34,7 @@ class ChatSessionsNotifier extends AutoDisposeAsyncNotifier<List<ChatSessionResp
   Future<void> deleteSession(String sessionId) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      await _repository.deleteSession(sessionId);
+      await _repository!.deleteSession(sessionId);
       final current = await _loadSessions();
       return current.where((s) => s.sessionId != sessionId).toList();
     });

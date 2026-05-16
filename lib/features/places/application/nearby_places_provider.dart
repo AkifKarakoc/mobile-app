@@ -34,23 +34,24 @@ NearbyPlacesQuery nearbyPlacesQuery({
 class NearbyPlacesNotifier
     extends
         AutoDisposeFamilyAsyncNotifier<List<PlaceResponse>, NearbyPlacesQuery> {
-  late final PlacesRepository _repository;
-  late NearbyPlacesQuery _query;
+  PlacesRepository? _repository;
+  NearbyPlacesQuery? _query;
 
   @override
   FutureOr<List<PlaceResponse>> build(NearbyPlacesQuery arg) {
-    _repository = ref.watch(placesRepositoryProvider);
+    _repository ??= ref.watch(placesRepositoryProvider);
     _query = arg;
+    ref.keepAlive();
     return _loadPlaces(arg);
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _loadPlaces(_query));
+    state = await AsyncValue.guard(() => _loadPlaces(_query!));
   }
 
   Future<List<PlaceResponse>> _loadPlaces(NearbyPlacesQuery query) {
-    return _repository.getNearby(
+    return _repository!.getNearby(
       latitude: query.latitude,
       longitude: query.longitude,
       radius: query.radius,
