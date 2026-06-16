@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_colors.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
 import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/core/widgets/app_button.dart';
-import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
 import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/features/image_identify/application/image_identify_provider.dart';
@@ -213,15 +213,16 @@ class _ImageIdentifyScreenState extends ConsumerState<ImageIdentifyScreen> {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.lg),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: [
             FilledButton.icon(
               onPressed: _takePhoto,
               icon: const Icon(Icons.camera_alt),
               label: Text('image_identify.take_photo'.tr()),
             ),
-            const SizedBox(width: AppSpacing.sm),
             OutlinedButton.icon(
               onPressed: _pickFromGallery,
               icon: const Icon(Icons.photo_library),
@@ -368,6 +369,15 @@ class _ResultCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(result.description, style: AppTypography.bodyMedium),
+            if (result.placeId != null && result.placeId!.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.md),
+              AppButton.primary(
+                label: 'image_identify.see_place_details'.tr(),
+                icon: Icons.arrow_forward,
+                onPressed: () => context.go(AppRoutes.placeDetailPath(result.placeId!)),
+                fullWidth: true,
+              ),
+            ],
             if (result.imageUrl.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
               ClipRRect(

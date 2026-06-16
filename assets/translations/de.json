@@ -407,5 +407,20 @@
     "gps_accuracy_error": "Standortgenauigkeit unzureichend",
     "distance_meters": "Entfernung zum Ziel: {distance}m",
     "distance_kilometers": "Entfernung zum Ziel: {distance}km"
+  },
+  "image_identify": {
+    "title": "Ort erkennen",
+    "camera_permission": "Kameraberechtigung erforderlich",
+    "location_permission": "Standort wird ermittelt...",
+    "no_photo": "Bitte wählen Sie ein Foto aus",
+    "gps_error": "Standort konnte nicht ermittelt werden",
+    "identify": "Erkennen",
+    "take_photo": "Foto aufnehmen",
+    "choose_gallery": "Aus Galerie auswählen",
+    "result_title": "Ergebnis",
+    "confidence": "Konfidenz",
+    "low_confidence": "Unsicheres Ergebnis",
+    "description": "KI hat dieses Bild erkannt",
+    "see_place_details": "Mehr über diesen Ort"
   }
 }
