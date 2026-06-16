@@ -14,7 +14,7 @@ final fcmManagerProvider = Provider<FCMManager>((ref) {
 });
 
 class FCMManager {
-  FCMManager(this._ref);
+  FCMManager(this._ref );
 
   final Ref _ref;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;

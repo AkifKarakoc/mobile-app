@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/network/api_exception.dart';
 import 'package:mobile/core/utils/dialog_helper.dart';
 import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/chat/application/chat_messages_provider.dart';
 import 'package:mobile/features/chat/data/dto/chat_response.dart';
 import 'package:mobile/features/chat/presentation/widgets/message_bubble.dart';
+import 'package:mobile/features/chat/presentation/widgets/typing_indicator.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String sessionId;
@@ -47,13 +49,33 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     _controller.clear();
     _scrollToBottom();
 
-    await ref
-        .read(chatMessagesProvider(widget.sessionId).notifier)
-        .sendMessage(content);
+    try {
+      await ref
+          .read(chatMessagesProvider(widget.sessionId).notifier)
+          .sendMessage(content);
+    } catch (error) {
+      if (!mounted) return;
+
+      _controller.text = content;
+      _controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: _controller.text.length),
+      );
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_messageForSendError(error))));
+    }
 
     if (mounted) {
       _scrollToBottom();
     }
+  }
+
+  String _messageForSendError(Object error) {
+    if (error is NetworkException) {
+      return 'common.error_network'.tr();
+    }
+    return 'common.error_generic'.tr();
   }
 
   Future<void> _deleteSession() async {
@@ -180,13 +202,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       controller: _scrollController,
       padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
       itemCount: messages.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.xs),
+      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
       itemBuilder: (context, index) {
         final message = messages[index];
-        return MessageBubble(
-          message: message,
-          isUser: message.role == 'user',
-        );
+        if (message.role == ChatMessagesNotifier.typingRole) {
+          return const TypingIndicator();
+        }
+        return MessageBubble(message: message, isUser: message.role == 'user');
       },
     );
   }
@@ -195,7 +217,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return ListView.separated(
       padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: AppSpacing.xs),
       itemCount: 5,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) => Padding(
         padding: EdgeInsets.only(
           left: index % 2 == 0 ? AppSpacing.md : 60.0,
@@ -211,7 +233,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   Widget _buildInputArea() {
     final messagesAsync = ref.watch(chatMessagesProvider(widget.sessionId));
-    final isSending = messagesAsync.isLoading;
+    final isSending = messagesAsync.isLoading || _isWaitingForAssistant();
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -266,10 +288,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               height: 48,
               width: 48,
               child: FilledButton(
-                onPressed:
-                    _controller.text.trim().isNotEmpty && !isSending
-                        ? _sendMessage
-                        : null,
+                onPressed: _controller.text.trim().isNotEmpty && !isSending
+                    ? _sendMessage
+                    : null,
                 style: FilledButton.styleFrom(
                   shape: const CircleBorder(),
                   padding: EdgeInsets.zero,
@@ -287,5 +308,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         ),
       ),
     );
+  }
+
+  bool _isWaitingForAssistant() {
+    final messages = ref.watch(chatMessagesProvider(widget.sessionId)).value;
+    return messages?.any(
+          (message) => message.role == ChatMessagesNotifier.typingRole,
+        ) ??
+        false;
   }
 }

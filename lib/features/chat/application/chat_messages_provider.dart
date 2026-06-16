@@ -5,7 +5,12 @@ import 'package:mobile/features/chat/data/dto/send_message_request.dart';
 
 class ChatMessagesNotifier
     extends FamilyAsyncNotifier<List<ChatResponse>, String> {
+  static const typingRole = 'assistant_typing';
+
   ChatRepository? _repository;
+  Object? _lastSendError;
+
+  Object? get lastSendError => _lastSendError;
 
   @override
   Future<List<ChatResponse>> build(String sessionId) async {
@@ -16,14 +21,25 @@ class ChatMessagesNotifier
   Future<void> sendMessage(String content) async {
     final sessionId = arg;
     if (content.trim().isEmpty) return;
+    _lastSendError = null;
 
     final optimisticMessage = ChatResponse(
       role: 'user',
       content: content,
       sentAt: DateTime.now().toIso8601String(),
     );
+    final typingMessage = ChatResponse(
+      role: typingRole,
+      content: '',
+      sentAt: DateTime.now().toIso8601String(),
+    );
 
-    state = AsyncValue.data([...state.value ?? [], optimisticMessage]);
+    final previousMessages = state.value ?? [];
+    state = AsyncValue.data([
+      ...previousMessages,
+      optimisticMessage,
+      typingMessage,
+    ]);
 
     try {
       final response = await _repository!.sendMessage(
@@ -31,9 +47,14 @@ class ChatMessagesNotifier
         SendMessageRequest(content: content),
       );
       final currentMessages = state.value ?? [];
-      state = AsyncValue.data([...currentMessages, response]);
+      state = AsyncValue.data([
+        ...currentMessages.where((message) => message.role != typingRole),
+        response,
+      ]);
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      _lastSendError = e;
+      state = AsyncValue.data(previousMessages);
+      Error.throwWithStackTrace(e, st);
     }
   }
 
@@ -48,7 +69,9 @@ class ChatMessagesNotifier
   }
 }
 
-final chatMessagesProvider = AsyncNotifierProvider.family<
-    ChatMessagesNotifier, List<ChatResponse>, String>(
-  ChatMessagesNotifier.new,
-);
+final chatMessagesProvider =
+    AsyncNotifierProvider.family<
+      ChatMessagesNotifier,
+      List<ChatResponse>,
+      String
+    >(ChatMessagesNotifier.new);

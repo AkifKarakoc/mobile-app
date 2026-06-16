@@ -11,7 +11,7 @@ import 'package:mobile/core/storage/secure_storage.dart';
 ///
 /// Creates and configures a [Dio] instance with:
 /// - Base URL from environment configuration ([envProvider])
-/// - Standard timeouts (30s connect, 30s receive)
+/// - Standard timeouts (30s connect, 120s receive)
 /// - Interceptor chain: log → auth → refresh → error
 final dioClientProvider = Provider<Dio>((ref) {
   final env = ref.watch(envProvider);
@@ -26,7 +26,7 @@ Dio _createDioClient(String baseUrl, SecureStorage secureStorage) {
     BaseOptions(
       baseUrl: baseUrl,
       connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 120),
       contentType: 'application/json',
     ),
   );
