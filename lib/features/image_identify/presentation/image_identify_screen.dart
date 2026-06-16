@@ -374,7 +374,7 @@ class _ResultCard extends StatelessWidget {
               AppButton.primary(
                 label: 'image_identify.see_place_details'.tr(),
                 icon: Icons.arrow_forward,
-                onPressed: () => context.push(AppRoutes.placeDetailPath(result.placeId!)),
+                onPressed: () => context.go(AppRoutes.placeDetailPath(result.placeId!)),
                 fullWidth: true,
               ),
             ],
