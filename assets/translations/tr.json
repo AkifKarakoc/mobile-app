@@ -448,6 +448,7 @@
     "result_title": "Tanımlama Sonucu",
     "confidence": "Güven",
     "low_confidence": "Düşük güven oranı",
-    "description": "Yapay zeka bu görseli tanımladı"
+    "description": "Yapay zeka bu görseli tanımladı",
+    "see_place_details": "Bu yer hakkında daha fazla bilgi"
   }
 }

@@ -407,5 +407,20 @@
     "gps_accuracy_error": "Location accuracy insufficient",
     "distance_meters": "Distance to target: {distance}m",
     "distance_kilometers": "Distance to target: {distance}km"
+  },
+  "image_identify": {
+    "title": "Identify Place",
+    "camera_permission": "Camera permission is required",
+    "location_permission": "Getting location...",
+    "no_photo": "Please select a photo",
+    "gps_error": "Could not get location",
+    "identify": "Identify",
+    "take_photo": "Take Photo",
+    "choose_gallery": "Choose from Gallery",
+    "result_title": "Result",
+    "confidence": "Confidence",
+    "low_confidence": "Low confidence result",
+    "description": "AI identified this image",
+    "see_place_details": "More about this place"
   }
 }

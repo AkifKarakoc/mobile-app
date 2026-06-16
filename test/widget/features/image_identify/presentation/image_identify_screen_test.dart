@@ -117,7 +117,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('Bu yer hakkında daha fazla bilgi'), findsOneWidget);
+      expect(find.text('image_identify.see_place_details'.tr()), findsOneWidget);
       expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
       expect(find.byType(AppButton), findsWidgets);
     });
@@ -141,7 +141,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.text('Bu yer hakkında daha fazla bilgi'), findsNothing);
+      expect(find.text('image_identify.see_place_details'.tr()), findsNothing);
     });
   });
 }

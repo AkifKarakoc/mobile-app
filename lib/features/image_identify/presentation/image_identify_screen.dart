@@ -372,7 +372,7 @@ class _ResultCard extends StatelessWidget {
             if (result.placeId != null && result.placeId!.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
               AppButton.primary(
-                label: 'Bu yer hakkında daha fazla bilgi',
+                label: 'image_identify.see_place_details'.tr(),
                 icon: Icons.arrow_forward,
                 onPressed: () => context.push(AppRoutes.placeDetailPath(result.placeId!)),
                 fullWidth: true,
