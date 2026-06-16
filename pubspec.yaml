@@ -89,6 +89,5 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
-    - assets/models/
     - .env.dev
     - .env.prod
