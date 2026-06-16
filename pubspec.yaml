@@ -43,10 +43,6 @@ dependencies:
   # Media (Sprint 1+: profil foto + Sprint 5 quest verify)
   image_picker: ^1.1.2
   image_cropper: ^8.0.2
-  
-  # TFLite (Sprint 9: Image Identify)
-  tflite_flutter: ^0.11.0
-  image: ^4.1.7
 
   # Maps & location (ADR-009)
   google_maps_flutter: ^2.9.0
@@ -93,5 +89,4 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
-    - assets/models/
     - .env.dev
