@@ -27,6 +27,11 @@ class NearbyScreen extends ConsumerWidget {
         title: Text('nearby.title'.tr()),
         actions: [
           IconButton(
+            tooltip: 'places.map.recenter_action'.tr(),
+            onPressed: () => refreshCurrentLocationForQuery(ref),
+            icon: const Icon(Icons.my_location),
+          ),
+          IconButton(
             tooltip: 'places.map.search_action'.tr(),
             onPressed: () => context.push(AppRoutes.placeSearch),
             icon: const Icon(Icons.search),
@@ -122,8 +127,7 @@ class _NearbyBody extends ConsumerWidget {
                 error: (error, stackTrace) => ErrorView(
                   message: 'common.error_generic'.tr(),
                   retryLabel: 'common.retry'.tr(),
-                  onRetry: () =>
-                      ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+                  onRetry: () => refreshLocationAndNearbyPlaces(ref, query),
                 ),
                 data: (places) {
                   if (places.isEmpty) {
@@ -133,22 +137,30 @@ class _NearbyBody extends ConsumerWidget {
                       description: 'places.map.empty_description'.tr(),
                       actionLabel: 'common.retry'.tr(),
                       onAction: () =>
-                          ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+                          refreshLocationAndNearbyPlaces(ref, query),
                     );
                   }
 
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                    itemCount: places.length,
-                    itemBuilder: (context, index) {
-                      final place = places[index];
-                      return PlaceSearchResultTile(
-                        place: place,
-                        onTap: () =>
-                            context.push(AppRoutes.placeDetailPath(place.id)),
-                        heroTag: 'place-image-${place.id}',
-                      );
-                    },
+                  return RefreshIndicator(
+                    onRefresh: () =>
+                        refreshLocationAndNearbyPlaces(ref, query),
+                    child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
+                      itemCount: places.length,
+                      itemBuilder: (context, index) {
+                        final place = places[index];
+                        return PlaceSearchResultTile(
+                          place: place,
+                          onTap: () => context.push(
+                            AppRoutes.placeDetailPath(place.id),
+                          ),
+                          heroTag: 'place-image-${place.id}',
+                        );
+                      },
+                    ),
                   );
                 },
               );

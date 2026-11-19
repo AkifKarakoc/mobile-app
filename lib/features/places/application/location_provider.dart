@@ -80,8 +80,11 @@ final locationClientProvider = Provider<LocationClient>((ref) {
   return const GeolocatorLocationClient();
 });
 
+final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+
 class LocationNotifier extends AutoDisposeAsyncNotifier<LocationState> {
   late final LocationClient _client;
+  DateTime Function() _now = DateTime.now;
   Position? _lastKnownPosition;
   DateTime? _lastFetchTime;
   
@@ -89,29 +92,39 @@ class LocationNotifier extends AutoDisposeAsyncNotifier<LocationState> {
   Position? _lastQueryPosition;
   DateTime? _lastQueryTime;
   
-  static const _cacheDuration = Duration(minutes: 5);
+  static const _cacheDuration = Duration(seconds: 2);
   static const _queryCacheDistanceMeters = 25.0;
   static const _queryCacheDuration = Duration(minutes: 15);
 
   @override
   FutureOr<LocationState> build() {
     _client = ref.watch(locationClientProvider);
+    _now = ref.watch(clockProvider);
     ref.keepAlive(); // Keep state alive across navigation
     return _resolveLocation(requestIfDenied: true);
   }
 
   Future<void> refreshLocation() async {
+    _clearCache();
     state = const AsyncLoading();
     state = await AsyncValue.guard(
-      () => _resolveLocation(requestIfDenied: false),
+      () => _resolveLocation(requestIfDenied: false, forceRefresh: true),
     );
   }
 
   Future<void> requestCurrentLocation() async {
+    _clearCache();
     state = const AsyncLoading();
     state = await AsyncValue.guard(
-      () => _resolveLocation(requestIfDenied: true),
+      () => _resolveLocation(requestIfDenied: true, forceRefresh: true),
     );
+  }
+
+  void _clearCache() {
+    _lastKnownPosition = null;
+    _lastFetchTime = null;
+    _lastQueryPosition = null;
+    _lastQueryTime = null;
   }
 
   Future<bool> openAppSettings() {
@@ -126,22 +139,29 @@ class LocationNotifier extends AutoDisposeAsyncNotifier<LocationState> {
     if (_lastKnownPosition == null || _lastFetchTime == null) {
       return false;
     }
-    return DateTime.now().difference(_lastFetchTime!) < _cacheDuration;
+    return _now().difference(_lastFetchTime!) < _cacheDuration;
   }
 
   /// Checks if a new API query is needed based on distance and time.
   /// Returns the position to use for the query (either cached or new).
   Future<Position> getQueryPosition() async {
-    // If we have a valid query cache, return it
+    final resolved = await _resolveLocation(requestIfDenied: true);
+    if (resolved is! LocationReady) {
+      throw Exception('Location not available');
+    }
+
+    final current = resolved.position;
+    final now = _now();
+
+    // Reuse stabilized query coordinates only when live GPS moved <= 25m within 15m.
     if (_lastQueryPosition != null && _lastQueryTime != null) {
-      final now = DateTime.now();
       final timeDiff = now.difference(_lastQueryTime!);
       if (timeDiff < _queryCacheDuration) {
         final distance = Geolocator.distanceBetween(
           _lastQueryPosition!.latitude,
           _lastQueryPosition!.longitude,
-          _lastKnownPosition?.latitude ?? _lastQueryPosition!.latitude,
-          _lastKnownPosition?.longitude ?? _lastQueryPosition!.longitude,
+          current.latitude,
+          current.longitude,
         );
         if (distance <= _queryCacheDistanceMeters) {
           return _lastQueryPosition!;
@@ -149,21 +169,16 @@ class LocationNotifier extends AutoDisposeAsyncNotifier<LocationState> {
       }
     }
 
-    // Need fresh location for query
-    final state = await _resolveLocation(requestIfDenied: true);
-    if (state is LocationReady) {
-      _lastQueryPosition = state.position;
-      _lastQueryTime = DateTime.now();
-      return state.position;
-    }
-    
-    throw Exception('Location not available');
+    _lastQueryPosition = current;
+    _lastQueryTime = now;
+    return current;
   }
 
   Future<LocationState> _resolveLocation({
     required bool requestIfDenied,
+    bool forceRefresh = false,
   }) async {
-    if (_isCacheValid()) {
+    if (!forceRefresh && _isCacheValid()) {
       return LocationReady(_lastKnownPosition!);
     }
 
@@ -188,7 +203,7 @@ class LocationNotifier extends AutoDisposeAsyncNotifier<LocationState> {
 
     if (result is LocationReady) {
       _lastKnownPosition = result.position;
-      _lastFetchTime = DateTime.now();
+      _lastFetchTime = _now();
     }
 
     return result;

@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/features/places/application/location_provider.dart';
 import 'package:mobile/features/places/data/dto/place_response.dart';
 import 'package:mobile/features/places/data/places_repository.dart';
 
-const nearbyPlacesDefaultRadiusMeters = 5000;
+const nearbyPlacesDefaultRadiusMeters = 15000;
 const nearbyPlacesDefaultLimit = 50;
 
 typedef NearbyPlacesQuery = ({
@@ -65,3 +66,20 @@ final nearbyPlacesProvider = AsyncNotifierProvider.autoDispose
     .family<NearbyPlacesNotifier, List<PlaceResponse>, NearbyPlacesQuery>(
       NearbyPlacesNotifier.new,
     );
+
+/// Refreshes live GPS coordinates and invalidates the active query position.
+Future<void> refreshCurrentLocationForQuery(WidgetRef ref) async {
+  await ref.read(currentLocationProvider.notifier).refreshLocation();
+  if (!ref.context.mounted) return;
+  ref.invalidate(queryPositionProvider);
+}
+
+/// Refreshes live GPS coordinates and reloads nearby places for [query].
+Future<void> refreshLocationAndNearbyPlaces(
+  WidgetRef ref,
+  NearbyPlacesQuery query,
+) async {
+  await refreshCurrentLocationForQuery(ref);
+  if (!ref.context.mounted) return;
+  ref.invalidate(nearbyPlacesProvider(query));
+}

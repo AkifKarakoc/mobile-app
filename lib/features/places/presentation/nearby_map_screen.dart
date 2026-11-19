@@ -193,7 +193,7 @@ class _NearbyPlacesContent extends ConsumerWidget {
           error: (error, stackTrace) => ErrorView(
             message: 'common.error_generic'.tr(),
             retryLabel: 'common.retry'.tr(),
-            onRetry: () => ref.read(nearbyPlacesProvider(query).notifier).refresh(),
+            onRetry: () => refreshLocationAndNearbyPlaces(ref, query),
           ),
           data: (places) {
             final mappedPlaces = places
@@ -206,9 +206,7 @@ class _NearbyPlacesContent extends ConsumerWidget {
                 title: 'places.map.empty_title'.tr(),
                 description: 'places.map.empty_description'.tr(),
                 actionLabel: 'common.retry'.tr(),
-                onAction: () {
-                  ref.read(nearbyPlacesProvider(query).notifier).refresh();
-                },
+                onAction: () => refreshLocationAndNearbyPlaces(ref, query),
               );
             }
 
