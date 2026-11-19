@@ -23,6 +23,15 @@ class TestLocationNotifier extends LocationNotifier {
   FutureOr<LocationState> build() => locationBuilder();
 
   @override
+  Future<Position> getQueryPosition() async {
+    final resolved = await locationBuilder();
+    if (resolved is LocationReady) {
+      return resolved.position;
+    }
+    throw Exception('Location not available');
+  }
+
+  @override
   Future<void> requestCurrentLocation() async {
     state = AsyncData(await locationBuilder());
   }

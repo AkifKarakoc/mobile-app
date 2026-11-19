@@ -179,7 +179,7 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
   }
 
   Future<void> _submitVerification() async {
-    if (_photo == null || _position == null) return;
+    if (_position == null) return;
 
     setState(() {
       _isSubmitting = true;
@@ -187,10 +187,13 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
     });
 
     try {
-      final multipartFile = await MultipartFile.fromFile(
-        _photo!.path,
-        filename: 'quest_verification.jpg',
-      );
+      MultipartFile? multipartFile;
+      if (_photo != null) {
+        multipartFile = await MultipartFile.fromFile(
+          _photo!.path,
+          filename: 'quest_verification.jpg',
+        );
+      }
 
       final result = await ref.read(questDetailProvider(widget.questId).notifier)
           .verifyStep(
@@ -440,7 +443,7 @@ class _QuestStepVerifyScreenState extends ConsumerState<QuestStepVerifyScreen> {
             child: AppButton(
               label: 'quest_verify.submit'.tr(),
               variant: AppButtonVariant.primary,
-              onPressed: (_photo != null && _position != null && !_isSubmitting)
+              onPressed: (_position != null && !_isSubmitting)
                   ? _submitVerification
                   : null,
               isLoading: _isSubmitting,

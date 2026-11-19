@@ -21,7 +21,7 @@ class App extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeMode,
-      title: 'Smart Tourism Guide',
+      title: 'TouDo',
       debugShowCheckedModeBanner: false,
     );
   }

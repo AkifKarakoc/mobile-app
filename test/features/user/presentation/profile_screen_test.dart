@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/features/user/application/profile_provider.dart';
 import 'package:mobile/features/user/data/dto/user_response.dart';
 import 'package:mobile/features/user/presentation/profile_screen.dart';
@@ -100,7 +99,11 @@ void main() {
         ],
       );
 
-      expect(find.byType(AppButton), findsWidgets);
+      expect(find.byIcon(Icons.flag_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.route_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.favorite_outline), findsOneWidget);
+      expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+      expect(find.byIcon(Icons.logout), findsOneWidget);
     });
   });
 }

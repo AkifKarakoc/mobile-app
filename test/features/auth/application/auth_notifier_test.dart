@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -13,6 +15,13 @@ class MockAuthRepository extends Mock implements AuthRepository {}
 
 class MockSecureStorage extends Mock implements SecureStorage {}
 
+String _validJwt() {
+  final header = base64Url.encode(utf8.encode(jsonEncode({'alg': 'HS256', 'typ': 'JWT'})));
+  final exp = DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000;
+  final payload = base64Url.encode(utf8.encode(jsonEncode({'sub': 'user-1', 'exp': exp})));
+  return '$header.$payload.signature';
+}
+
 void main() {
   group('AuthNotifier', () {
     late MockAuthRepository mockAuthRepository;
@@ -25,6 +34,12 @@ void main() {
       when(
         () => mockSecureStorage.getAccessToken(),
       ).thenAnswer((_) async => null);
+      when(
+        () => mockSecureStorage.onTokenCleared,
+      ).thenAnswer((_) => const Stream<void>.empty());
+      when(
+        () => mockSecureStorage.clearTokens(),
+      ).thenAnswer((_) async {});
 
       container = ProviderContainer(
         overrides: [
@@ -41,7 +56,7 @@ void main() {
     test('build returns true if access token exists', () async {
       when(
         () => mockSecureStorage.getAccessToken(),
-      ).thenAnswer((_) async => 'valid_token');
+      ).thenAnswer((_) async => _validJwt());
 
       final result = await container.read(authNotifierProvider.future);
 
@@ -115,6 +130,7 @@ void main() {
           password: any(named: 'password'),
           firstName: any(named: 'firstName'),
           lastName: any(named: 'lastName'),
+          phoneCountryCode: any(named: 'phoneCountryCode'),
           phoneNumber: any(named: 'phoneNumber'),
           preferredLanguage: any(named: 'preferredLanguage'),
           birthDate: any(named: 'birthDate'),
@@ -155,6 +171,7 @@ void main() {
           password: any(named: 'password'),
           firstName: any(named: 'firstName'),
           lastName: any(named: 'lastName'),
+          phoneCountryCode: any(named: 'phoneCountryCode'),
           phoneNumber: any(named: 'phoneNumber'),
           preferredLanguage: any(named: 'preferredLanguage'),
           birthDate: any(named: 'birthDate'),
@@ -229,7 +246,7 @@ void main() {
     test('isAuthenticatedProvider returns true when authenticated', () async {
       when(
         () => mockSecureStorage.getAccessToken(),
-      ).thenAnswer((_) async => 'token');
+      ).thenAnswer((_) async => _validJwt());
 
       await container.read(authNotifierProvider.future);
 

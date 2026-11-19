@@ -14,21 +14,25 @@ final fcmManagerProvider = Provider<FCMManager>((ref) {
 });
 
 class FCMManager {
-  FCMManager(this._ref );
+  FCMManager(this._ref);
 
   final Ref _ref;
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
 
+  FirebaseMessaging get _messaging => FirebaseMessaging.instance;
+
   Future<void> initialize() async {
     if (_initialized) return;
     _initialized = true;
 
-    // Firebase is already initialized in main.dart
-    // Check if Firebase is ready before proceeding
+    if (Firebase.apps.isEmpty) {
+      debugPrint('Firebase is not initialized; skipping FCM setup');
+      return;
+    }
+
     try {
       await _initLocalNotifications();
       await _requestPermission();
@@ -123,6 +127,8 @@ class FCMManager {
   }
 
   Future<void> deleteToken() async {
+    if (Firebase.apps.isEmpty) return;
+
     try {
       await _messaging.deleteToken();
     } catch (e) {

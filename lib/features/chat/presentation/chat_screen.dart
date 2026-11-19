@@ -11,6 +11,7 @@ import 'package:mobile/features/chat/application/chat_messages_provider.dart';
 import 'package:mobile/features/chat/data/dto/chat_response.dart';
 import 'package:mobile/features/chat/presentation/widgets/message_bubble.dart';
 import 'package:mobile/features/chat/presentation/widgets/typing_indicator.dart';
+import 'package:mobile/features/places/application/location_provider.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String sessionId;
@@ -49,10 +50,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     _controller.clear();
     _scrollToBottom();
 
+    double? latitude;
+    double? longitude;
+
+    try {
+      final position = await ref.read(queryPositionProvider.future);
+      latitude = position.latitude;
+      longitude = position.longitude;
+    } catch (_) {
+      // Location not available; send without coordinates
+    }
+
     try {
       await ref
           .read(chatMessagesProvider(widget.sessionId).notifier)
-          .sendMessage(content);
+          .sendMessage(
+            content,
+            latitude: latitude,
+            longitude: longitude,
+          );
     } catch (error) {
       if (!mounted) return;
 
@@ -311,7 +327,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   bool _isWaitingForAssistant() {
-    final messages = ref.watch(chatMessagesProvider(widget.sessionId)).value;
+    final messages = ref.watch(chatMessagesProvider(widget.sessionId)).valueOrNull;
     return messages?.any(
           (message) => message.role == ChatMessagesNotifier.typingRole,
         ) ??

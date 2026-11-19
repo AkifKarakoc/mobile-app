@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/badges/data/badges_repository.dart';
 import 'package:mobile/features/badges/data/dto/badge_response.dart';
 import 'package:mobile/features/badges/presentation/badges_gallery_screen.dart';
@@ -49,7 +50,7 @@ void main() {
         settle: false,
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(ShimmerPlaceholder), findsWidgets);
       completer.complete([]);
       await tester.pump();
     });

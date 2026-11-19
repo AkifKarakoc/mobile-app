@@ -53,7 +53,7 @@ void main() {
       expect(find.text('Historic Izmir Tour'), findsOneWidget);
       expect(find.textContaining('routes.stops'), findsOneWidget);
       expect(find.textContaining('routes.minutes'), findsOneWidget);
-      expect(find.textContaining('routes.xp_reward'), findsOneWidget);
+      expect(find.text('150 XP'), findsOneWidget);
     });
 
     testWidgets('shows empty state when no routes', (tester) async {

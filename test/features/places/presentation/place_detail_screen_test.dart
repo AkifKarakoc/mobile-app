@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 import 'package:mobile/features/favorites/data/dto/favorite_response.dart';
 import 'package:mobile/features/favorites/data/favorites_repository.dart';
 import 'package:mobile/features/places/data/dto/place_detail_response.dart';
@@ -56,7 +57,7 @@ void main() {
         settle: false,
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(DetailShimmer), findsOneWidget);
       completer.complete(_placeDetail());
       await tester.pump();
     });

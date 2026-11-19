@@ -18,8 +18,10 @@ abstract class ChatRepository {
 
   Future<ChatResponse> sendMessage(
     String sessionId,
-    SendMessageRequest request,
-  );
+    String content, {
+    double? latitude,
+    double? longitude,
+  });
 
   Future<void> deleteSession(String sessionId);
 }
@@ -61,12 +63,18 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<ChatResponse> sendMessage(
     String sessionId,
-    SendMessageRequest request,
-  ) async {
+    String content, {
+    double? latitude,
+    double? longitude,
+  }) async {
     try {
       return await _api.sendMessage(
         sessionId: sessionId,
-        request: request,
+        request: SendMessageRequest(
+          content: content,
+          latitude: latitude,
+          longitude: longitude,
+        ),
       );
     } on DioException catch (e) {
       throw _toApiException(e);

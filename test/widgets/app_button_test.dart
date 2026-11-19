@@ -86,7 +86,9 @@ void main() {
       );
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.text('Loading'), findsNothing);
+      expect(find.text('Loading'), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.onPressed, isNull);
     });
 
     testWidgets('AppButton with icon renders icon and label', (

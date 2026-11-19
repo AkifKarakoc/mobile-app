@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/chat/data/chat_repository.dart';
 import 'package:mobile/features/chat/data/dto/chat_response.dart';
-import 'package:mobile/features/chat/data/dto/send_message_request.dart';
 
 class ChatMessagesNotifier
     extends FamilyAsyncNotifier<List<ChatResponse>, String> {
@@ -18,7 +17,11 @@ class ChatMessagesNotifier
     return _repository!.getMessages(sessionId);
   }
 
-  Future<void> sendMessage(String content) async {
+  Future<void> sendMessage(
+    String content, {
+    double? latitude,
+    double? longitude,
+  }) async {
     final sessionId = arg;
     if (content.trim().isEmpty) return;
     _lastSendError = null;
@@ -34,7 +37,7 @@ class ChatMessagesNotifier
       sentAt: DateTime.now().toIso8601String(),
     );
 
-    final previousMessages = state.value ?? [];
+    final previousMessages = state.valueOrNull ?? [];
     state = AsyncValue.data([
       ...previousMessages,
       optimisticMessage,
@@ -44,9 +47,11 @@ class ChatMessagesNotifier
     try {
       final response = await _repository!.sendMessage(
         sessionId,
-        SendMessageRequest(content: content),
+        content,
+        latitude: latitude,
+        longitude: longitude,
       );
-      final currentMessages = state.value ?? [];
+      final currentMessages = state.valueOrNull ?? [];
       state = AsyncValue.data([
         ...currentMessages.where((message) => message.role != typingRole),
         response,

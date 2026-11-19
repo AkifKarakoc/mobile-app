@@ -23,6 +23,10 @@ class MainShell extends StatelessWidget {
     return false;
   }
 
+  bool _showFab(String path) {
+    return !path.startsWith(AppRoutes.chatTab);
+  }
+
   int _selectedIndex(String path) {
     if (path.startsWith('/home/chat')) return 2;
     if (path.startsWith('/home/profile')) return 3;
@@ -47,6 +51,7 @@ class MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
     final showNav = _showBottomNav(location);
+    final showFab = _showFab(location);
     final selectedIndex = _selectedIndex(location);
     final primaryColor = Theme.of(context).colorScheme.primary;
     final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
@@ -54,7 +59,7 @@ class MainShell extends StatelessWidget {
     return Scaffold(
       body: child,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: showNav
+      floatingActionButton: showFab
           ? FloatingActionButton(
               onPressed: () => context.push('/image-identify'),
               backgroundColor: primaryColor,

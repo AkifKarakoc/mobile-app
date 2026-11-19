@@ -72,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } on ApiException catch (e) {
       setState(() => _errorMessage = _getErrorMessage(e));
     } catch (e) {
-      setState(() => _errorMessage = 'error_generic'.tr());
+      setState(() => _errorMessage = 'common.error_generic'.tr());
     } finally {
       if (mounted) {
         setState(() => _isGoogleSigningIn = false);
@@ -106,7 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       String errorMsg = _getErrorMessage(e);
       setState(() => _errorMessage = errorMsg);
     } catch (e) {
-      setState(() => _errorMessage = 'error_generic'.tr());
+      setState(() => _errorMessage = 'common.error_generic'.tr());
     }
   }
 

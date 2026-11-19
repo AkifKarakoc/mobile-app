@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:mobile/core/widgets/app_button.dart';
-import 'package:mobile/core/widgets/app_text_field.dart';
 import 'package:mobile/features/chat/data/chat_repository.dart';
 import 'package:mobile/features/chat/data/dto/chat_response.dart';
 import 'package:mobile/features/chat/presentation/chat_screen.dart';
@@ -51,11 +49,11 @@ void main() {
       );
 
       expect(find.byType(AppBar), findsOneWidget);
-      expect(find.byType(AppTextField), findsOneWidget);
-      expect(find.byType(AppButton), findsOneWidget);
+      expect(find.byType(TextField), findsOneWidget);
+      expect(find.byType(FilledButton), findsOneWidget);
     });
 
-    testWidgets('renders empty message list when no messages', (
+    testWidgets('renders empty state when no messages', (
       WidgetTester tester,
     ) async {
       when(
@@ -69,7 +67,7 @@ void main() {
       );
 
       expect(find.byType(MessageBubble), findsNothing);
-      expect(find.byType(ListView), findsOneWidget);
+      expect(find.byIcon(Icons.chat_bubble_outline), findsOneWidget);
     });
 
     testWidgets('renders user and AI message bubbles', (
@@ -116,7 +114,8 @@ void main() {
         overrides: overrides(),
       );
 
-      expect(find.byType(AppButton), findsAtLeast(1));
+      expect(find.byIcon(Icons.error_outline), findsOneWidget);
+      expect(find.byIcon(Icons.refresh), findsOneWidget);
     });
 
     testWidgets('send button is disabled when input is empty', (
@@ -132,7 +131,7 @@ void main() {
         overrides: overrides(),
       );
 
-      final button = tester.widget<AppButton>(find.byType(AppButton));
+      final button = tester.widget<FilledButton>(find.byType(FilledButton));
       expect(button.onPressed, isNull);
     });
   });

@@ -304,9 +304,12 @@ class _AppButtonState extends State<AppButton>
           ),
           if (widget.label.isNotEmpty) ...[
             const SizedBox(width: AppSpacing.sm),
-            Text(
-              widget.label,
-              style: AppTypography.labelLarge.copyWith(color: textColor),
+            Flexible(
+              child: Text(
+                widget.label,
+                style: AppTypography.labelLarge.copyWith(color: textColor),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ],
