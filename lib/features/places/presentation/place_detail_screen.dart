@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/utils/snackbar_helper.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
@@ -65,6 +66,7 @@ class PlaceDetailScreen extends ConsumerWidget {
                         place.photoUrl != null && place.photoUrl!.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: place.photoUrl!,
+                                httpHeaders: kNetworkImageHeaders,
                                 fit: BoxFit.cover,
                                 placeholder: (_, __) => Container(
                                   color: colorScheme.surfaceContainerHighest,
@@ -145,7 +147,9 @@ class PlaceDetailScreen extends ConsumerWidget {
                                       place.category!.trim().isNotEmpty)
                                     _InfoPill(
                                       icon: Icons.category_outlined,
-                                      label: place.category!,
+                                      label: formatPlaceCategoryLabel(
+                                        place.category,
+                                      ),
                                     ),
                                   if (place.avgRating != null)
                                     _InfoPill(

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/features/places/data/dto/place_response.dart';
 
 class PlaceSearchResultTile extends StatelessWidget {
@@ -15,21 +16,6 @@ class PlaceSearchResultTile extends StatelessWidget {
   final PlaceResponse place;
   final VoidCallback onTap;
   final String heroTag;
-
-  static const _categoryKeys = <String, String>{
-    'LANDMARK': 'places.categories.landmark',
-    'MUSEUM': 'places.categories.museum',
-    'RESTAURANT': 'places.categories.restaurant',
-    'CAFE': 'places.categories.cafe',
-    'PARK': 'places.categories.park',
-    'BEACH': 'places.categories.beach',
-    'HISTORICAL': 'places.categories.historical',
-    'NATURE': 'places.categories.nature',
-    'SHOPPING': 'places.categories.shopping',
-    'RELIGIOUS': 'places.categories.religious',
-    'ENTERTAINMENT': 'places.categories.entertainment',
-    'OTHER': 'places.categories.other',
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +116,7 @@ class PlaceSearchResultTile extends StatelessWidget {
 
     return Image.network(
       place.photoUrl!,
+      headers: kNetworkImageHeaders,
       width: 80,
       height: 80,
       fit: BoxFit.cover,
@@ -183,12 +170,7 @@ class PlaceSearchResultTile extends StatelessWidget {
       return 'places.search.unknown_category'.tr();
     }
 
-    final key = _categoryKeys[category.trim().toUpperCase()];
-    if (key == null) {
-      return category;
-    }
-
-    return key.tr();
+    return formatPlaceCategoryLabel(category);
   }
 
   String _ratingLabel(double? rating) {

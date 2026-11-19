@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/app_button.dart';
 import 'package:mobile/features/places/data/dto/place_response.dart';
 
@@ -21,7 +22,7 @@ class PlaceSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final subtitleItems = [
-      _categoryLabel(place.category),
+      formatPlaceCategoryLabel(place.category),
       if (place.avgRating != null)
         'places.map.rating_label'.tr(
           args: [place.avgRating!.toStringAsFixed(1)],
@@ -46,19 +47,22 @@ class PlaceSummaryCard extends StatelessWidget {
                     tag: 'place-image-${place.id}',
                     child: Material(
                       type: MaterialType.transparency,
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radiusSm,
-                          ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusSm,
                         ),
-                        child: Icon(
-                          Icons.place_outlined,
-                          color: theme.colorScheme.onPrimaryContainer,
-                        ),
+                        child: place.photoUrl != null &&
+                                place.photoUrl!.isNotEmpty
+                            ? Image.network(
+                                place.photoUrl!,
+                                headers: kNetworkImageHeaders,
+                                width: 44,
+                                height: 44,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    _placeholderThumb(theme),
+                              )
+                            : _placeholderThumb(theme),
                       ),
                     ),
                   ),
@@ -121,23 +125,16 @@ class PlaceSummaryCard extends StatelessWidget {
     return trimmedName;
   }
 
-  String _categoryLabel(String? category) {
-    final normalized = category?.trim().toLowerCase();
-    final key = switch (normalized) {
-      'landmark' => 'places.categories.landmark',
-      'museum' => 'places.categories.museum',
-      'restaurant' => 'places.categories.restaurant',
-      'cafe' => 'places.categories.cafe',
-      'park' => 'places.categories.park',
-      'beach' => 'places.categories.beach',
-      'historical' || 'historic' => 'places.categories.historical',
-      'nature' => 'places.categories.nature',
-      'shopping' => 'places.categories.shopping',
-      'religious' => 'places.categories.religious',
-      _ => 'places.categories.other',
-    };
-
-    return key.tr();
+  Widget _placeholderThumb(ThemeData theme) {
+    return Container(
+      width: 44,
+      height: 44,
+      color: theme.colorScheme.primaryContainer,
+      child: Icon(
+        Icons.place_outlined,
+        color: theme.colorScheme.onPrimaryContainer,
+      ),
+    );
   }
 
   String _formatDistance(double meters) {

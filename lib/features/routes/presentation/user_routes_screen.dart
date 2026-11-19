@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/app_loading_indicator.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
@@ -205,6 +206,7 @@ class _UserRouteCard extends StatelessWidget {
         children: [
           Image.network(
             route.routeThumbnailUrl!,
+            headers: kNetworkImageHeaders,
             height: 140,
             width: double.infinity,
             fit: BoxFit.cover,

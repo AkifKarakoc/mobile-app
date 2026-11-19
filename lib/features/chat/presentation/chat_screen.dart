@@ -300,25 +300,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            SizedBox(
-              height: 48,
-              width: 48,
-              child: FilledButton(
-                onPressed: _controller.text.trim().isNotEmpty && !isSending
-                    ? _sendMessage
-                    : null,
-                style: FilledButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: EdgeInsets.zero,
-                ),
-                child: isSending
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.send, size: 20),
-              ),
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _controller,
+              builder: (context, value, _) {
+                return SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: FilledButton(
+                    onPressed: value.text.trim().isNotEmpty && !isSending
+                        ? _sendMessage
+                        : null,
+                    style: FilledButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: isSending
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.send, size: 20),
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import 'package:mobile/app/theme/app_typography.dart';
 import 'package:mobile/features/places/application/location_provider.dart';
 import 'package:mobile/features/places/application/nearby_places_provider.dart';
 import 'package:mobile/features/places/data/dto/place_response.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/shimmer_placeholder.dart';
 
 /// Horizontal scroll of nearby popular places.
@@ -141,6 +142,7 @@ class _PlaceCard extends StatelessWidget {
                     child: place.photoUrl != null
                         ? Image.network(
                             place.photoUrl!,
+                            headers: kNetworkImageHeaders,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) =>
                                 _PlaceholderImage(theme),

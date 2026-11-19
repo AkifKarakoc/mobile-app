@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/features/places/data/dto/place_image.dart';
 import 'package:photo_view/photo_view.dart';
@@ -50,6 +51,7 @@ class PhotoGalleryGrid extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             child: CachedNetworkImage(
               imageUrl: url,
+              httpHeaders: kNetworkImageHeaders,
               fit: BoxFit.cover,
               placeholder: (_, __) => Container(
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -78,7 +80,7 @@ class PhotoGalleryGrid extends StatelessWidget {
           ),
           backgroundColor: Colors.black,
           body: PhotoView(
-            imageProvider: NetworkImage(url),
+            imageProvider: NetworkImage(url, headers: kNetworkImageHeaders),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered * 2,
           ),

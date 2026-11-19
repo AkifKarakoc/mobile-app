@@ -6,6 +6,7 @@ import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
 import 'package:mobile/core/utils/dialog_helper.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/loading_indicator.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
@@ -231,6 +232,7 @@ class _FavoriteCard extends ConsumerWidget {
 
     return Image.network(
       imageUrl,
+      headers: kNetworkImageHeaders,
       width: 128,
       height: 128,
       fit: BoxFit.cover,
@@ -255,9 +257,7 @@ class _FavoriteCard extends ConsumerWidget {
 
   Widget _buildCategoryChip(BuildContext context, PlaceDetailResponse place) {
     final colorScheme = Theme.of(context).colorScheme;
-    final category = place.category ?? 'other';
-    final categoryKey = 'places.categories.$category';
-    final categoryLabel = categoryKey.tr();
+    final categoryLabel = formatPlaceCategoryLabel(place.category);
 
     return Container(
       padding: const EdgeInsets.symmetric(

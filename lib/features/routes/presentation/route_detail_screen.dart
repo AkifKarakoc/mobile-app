@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/animated_card.dart';
 import 'package:mobile/core/widgets/empty_state.dart';
 import 'package:mobile/core/widgets/error_view.dart';
@@ -219,6 +220,7 @@ class _RouteBanner extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: CachedNetworkImage(
                     imageUrl: route.thumbnailUrl!,
+                    httpHeaders: kNetworkImageHeaders,
                     fit: BoxFit.cover,
                     placeholder: (_, __) => Container(
                       color: colorScheme.surfaceContainerHighest,

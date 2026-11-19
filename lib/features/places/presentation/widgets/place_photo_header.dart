@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/features/places/data/dto/place_detail_response.dart';
 import 'package:mobile/features/places/presentation/widgets/favorite_toggle_button.dart';
 
@@ -46,6 +47,7 @@ class PlacePhotoHeader extends StatelessWidget {
                       )
                     : Image.network(
                         photoUrl,
+                        headers: kNetworkImageHeaders,
                         fit: BoxFit.cover,
                         errorBuilder: (context, _, _) => DecoratedBox(
                           decoration: BoxDecoration(
@@ -98,7 +100,7 @@ class PlacePhotoHeader extends StatelessWidget {
                             place.category!.trim().isNotEmpty)
                           _InfoPill(
                             icon: Icons.category_outlined,
-                            label: place.category!,
+                            label: formatPlaceCategoryLabel(place.category),
                           ),
                         if (place.avgRating != null)
                           _InfoPill(

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/app/router/routes.dart';
 import 'package:mobile/app/theme/app_spacing.dart';
 import 'package:mobile/app/theme/app_typography.dart';
+import 'package:mobile/core/utils/place_display_utils.dart';
 import 'package:mobile/core/widgets/animated_card.dart';
 import 'package:mobile/core/widgets/error_view.dart';
 import 'package:mobile/core/widgets/shimmer_placeholder.dart';
@@ -157,6 +158,7 @@ class _QuestBanner extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: CachedNetworkImage(
                     imageUrl: quest.thumbnailUrl!,
+                    httpHeaders: kNetworkImageHeaders,
                     fit: BoxFit.cover,
                     placeholder: (_, __) => Container(
                       color: colorScheme.surfaceContainerHighest,
